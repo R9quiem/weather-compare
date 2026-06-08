@@ -1,19 +1,25 @@
-CITIES = {
-    "Saint Petersburg": {
-        "latitude": 59.9343,
-        "longitude": 30.3351,
-        "timezone": "Europe/Moscow",
-    },
-    "Tver": {
-        "latitude": 56.8587,
-        "longitude": 35.9176,
-        "timezone": "Europe/Moscow",
-    },
-    "Vladivostok": {
-        "latitude": 43.1155,
-        "longitude": 131.8855,
-    }
-}
+from app.models import CreateCity
+
+CITIES = [
+    CreateCity(
+        name="Санкт-Петербург",
+        country_code="RU",
+        latitude=59.9386,
+        longitude=30.3141,
+    ),
+    CreateCity(
+        name="Москва",
+        country_code="RU",
+        latitude=55.7558,
+        longitude=37.6173,
+    ),
+    CreateCity(
+        name="Берлин",
+        country_code="DE",
+        latitude=52.5200,
+        longitude=13.4050,
+    ),
+]
 
 START_DATE = "2025-01-01"
 END_DATE = "2025-12-31"
