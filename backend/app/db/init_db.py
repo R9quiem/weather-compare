@@ -16,12 +16,31 @@ CREATE TABLE IF NOT EXISTS cities (
 )
 """
 
+CREATE_WEATHER_TABLE = """
+CREATE TABLE IF NOT EXISTS hourly_weather (
+    city_id INTEGER NOT NULL,
+    observed_at TEXT NOT NULL,
+    
+    temperature_2m REAL,
+    precipitation REAL,
+    cloud_cover REAL,
+    relative_humidity_2m REAL,
+    wind_speed_10m REAL,
+
+    PRIMARY KEY (city_id, observed_at),
+    
+    FOREIGN KEY(city_id)
+        REFERENCES cities(id)
+        ON DELETE CASCADE
+)
+"""
 
 def init_db() -> None:
-    connection = create_connection()    
+    connection = create_connection()
 
     try:
         connection.execute(CREATE_CITIES_TABLE)
+        connection.execute(CREATE_WEATHER_TABLE)
         connection.commit()
     finally:
         connection.close()
