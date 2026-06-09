@@ -11,6 +11,10 @@ class CityService:
     def get_cities(self) -> list[City]:
         return self.repository.get_all()
 
+    def get_city_by_id(self, city_id: int) -> City | None:
+        return self.repository.get_by_id(city_id)
+
+
     def create_city(self, city: CreateCity) -> City:
         try:
             city = self.repository.create(city)
@@ -19,4 +23,4 @@ class CityService:
             return city
         except Exception:
             self.connection.rollback()
-            raise 
+            raise
