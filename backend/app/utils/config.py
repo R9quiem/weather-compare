@@ -14,14 +14,35 @@ CITIES = [
         longitude=37.6173,
     ),
     CreateCity(
-        name="Берлин",
-        country_code="DE",
-        latitude=52.5200,
-        longitude=13.4050,
+        name="Владивосток",
+        country_code="RU",
+        latitude=43.1155,
+        longitude=131.8855,
+    ),
+
+    CreateCity(
+        name="Тверь",
+        country_code="RU",
+        latitude=56.8584,
+        longitude=35.9006,
+    ),
+
+    CreateCity(
+        name="Ростов-на-Дону",
+        country_code="RU",
+        latitude=47.2221,
+        longitude=39.7203,
+    ),
+
+    CreateCity(
+        name="Марсель",
+        country_code="FR",
+        latitude=43.2965,
+        longitude=5.3698,
     ),
 ]
 
-START_DATE = "2025-01-01"
+START_DATE = "1995-01-01"
 END_DATE = "2025-12-31"
 
 HOURLY_VARIABLES = [ # Возвращает время: дата + час также в json

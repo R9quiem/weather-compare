@@ -10,7 +10,7 @@ class CityRepository:
     def create(self, data: CreateCity) -> City:
         cursor = self.connection.execute(
             """
-            INSERT INTO cities (
+            INSERT OR IGNORE INTO cities (
                 name,
                 country_code,
                 latitude,

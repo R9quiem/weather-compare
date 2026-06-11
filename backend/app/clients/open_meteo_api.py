@@ -1,7 +1,31 @@
+import time
+from email.utils import parsedate_to_datetime
+from datetime import datetime, timezone
 import requests
 
 from app.models.weather import WeatherHourly
 
+def get_retry_delay(response: requests.Response, attempt: int) -> float:
+     return 2 ** (attempt+1)
+
+def request_with_retry(
+    url: str,
+    params: dict,
+    max_retries: int = 5,
+) -> requests.Response:
+
+    for attempt in range(max_retries):
+        response = requests.get(url, params=params)
+
+        if response.status_code != 429:
+            response.raise_for_status()
+            return response
+
+        delay = get_retry_delay(response, attempt)
+        time.sleep(delay)
+
+    response.raise_for_status()
+    return response
 
 def load_weather(
             city_id,
@@ -22,8 +46,7 @@ def load_weather(
         "timezone": "auto",
     }
 
-    response = requests.get(url, params=params)
-    response.raise_for_status()
+    response = request_with_retry(url, params)
 
     data = response.json()
     hourly = data["hourly"]

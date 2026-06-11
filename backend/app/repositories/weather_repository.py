@@ -10,7 +10,7 @@ class WeatherRepository:
     def create_hourly_many(self, data: list[WeatherHourly]):
         self.connection.executemany(
             """
-            INSERT INTO hourly_weather (
+            INSERT OR IGNORE INTO hourly_weather (
                 city_id,
                 observed_at,
                 temperature_2m,
