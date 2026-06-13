@@ -16,6 +16,8 @@ class WeatherDaily:
     city_id: int
     observed_date: str
     temperature_2m_mean: float
+    temperature_2m_max: float
+    temperature_2m_min: float
     precipitation_sum: float
     cloud_cover_mean: float
     relative_humidity_2m_mean: float
