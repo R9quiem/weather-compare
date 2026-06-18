@@ -5,7 +5,7 @@ import {
     Tooltip,
     ResponsiveContainer,
     LineChart,
-    Line,
+    Line, AreaChart,
 } from "recharts";
 
 function TemperatureChart({ data }) {
@@ -45,10 +45,27 @@ function TemperatureChart({ data }) {
             type="monotone"
             dataKey="temperature_2m_mean"
             stroke="#2563eb"
-            strokeWidth={2.5}
+            strokeDasharray="5 5"
+            strokeWidth={2}
             dot={false}
             activeDot={{ r: 4 }}
           />
+            <Line
+                 type="monotone"
+            dataKey="temperature_2m_max"
+            stroke="#2563eb"
+            strokeWidth={2}
+            dot={false}
+            activeDot={{ r: 4 }}
+             />
+            <Line
+                 type="monotone"
+            dataKey="temperature_2m_min"
+            stroke="#2563eb"
+            strokeWidth={2}
+            dot={false}
+            activeDot={{ r: 4 }}
+             />
         </LineChart>
       </ResponsiveContainer>
         </div>
