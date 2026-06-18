@@ -1,9 +1,7 @@
 import CityWeatherPage from "./pages/CityWeatherPage.jsx";
 
 function App() {
-  return (
-    <CityWeatherPage/>
-  );
+    return <CityWeatherPage />;
 }
 
 export default App;
