@@ -29,7 +29,7 @@ class WeatherRepository:
                     record.precipitation,
                     record.cloud_cover,
                     record.relative_humidity_2m,
-                    record.wind_speed_10m
+                    record.wind_speed_10m,
                 )
                 for record in data
             ],
@@ -64,5 +64,6 @@ class WeatherRepository:
                 cloud_cover=row["cloud_cover"],
                 relative_humidity_2m=row["relative_humidity_2m"],
                 wind_speed_10m=row["wind_speed_10m"],
-            ) for row in rows
+            )
+            for row in rows
         ]

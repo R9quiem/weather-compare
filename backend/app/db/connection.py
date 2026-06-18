@@ -14,8 +14,6 @@ def create_connection() -> sqlite3.Connection:
 
     connection.row_factory = sqlite3.Row
 
-    connection.execute(
-        "PRAGMA foreign_keys = ON"
-    )
+    connection.execute("PRAGMA foreign_keys = ON")
 
     return connection

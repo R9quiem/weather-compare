@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS hourly_weather (
 )
 """
 
+
 def init_db() -> None:
     connection = create_connection()
 

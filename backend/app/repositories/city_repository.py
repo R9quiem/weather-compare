@@ -29,16 +29,12 @@ class CityRepository:
         city_id = cursor.lastrowid
 
         if city_id is None:
-            raise RuntimeError  (
-                "SQLite did not return the created city id"
-            )
+            raise RuntimeError("SQLite did not return the created city id")
 
         city = self.get_by_id(city_id)
 
         if city is None:
-            raise RuntimeError(
-                "Created city could not be read from database"
-            )
+            raise RuntimeError("Created city could not be read from database")
 
         return city
 
@@ -110,10 +106,7 @@ class CityRepository:
 
         rows = cursor.fetchall()
 
-        return [
-            self._row_to_city(row)
-            for row in rows
-        ]
+        return [self._row_to_city(row) for row in rows]
 
     def delete_by_id(self, city_id: int) -> bool:
         cursor = self.connection.execute(

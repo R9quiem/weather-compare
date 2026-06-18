@@ -11,6 +11,7 @@ class WeatherHourly:
     relative_humidity_2m: float
     wind_speed_10m: float
 
+
 @dataclass(frozen=True, slots=True)
 class WeatherDaily:
     city_id: int

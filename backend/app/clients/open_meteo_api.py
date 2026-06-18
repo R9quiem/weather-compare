@@ -1,12 +1,12 @@
 import time
-from email.utils import parsedate_to_datetime
-from datetime import datetime, timezone
 import requests
 
 from app.models.weather import WeatherHourly
 
+
 def get_retry_delay(response: requests.Response, attempt: int) -> float:
-     return 2 ** (attempt+1)
+    return 2 ** (attempt + 1)
+
 
 def request_with_retry(
     url: str,
@@ -27,14 +27,10 @@ def request_with_retry(
     response.raise_for_status()
     return response
 
+
 def load_weather(
-            city_id,
-            latitude,
-            longitude,
-            start_date,
-            end_date,
-            hourly_variables
-    )->list[WeatherHourly]:
+    city_id, latitude, longitude, start_date, end_date, hourly_variables
+) -> list[WeatherHourly]:
     url = "https://archive-api.open-meteo.com/v1/archive"
 
     params = {
@@ -60,9 +56,7 @@ def load_weather(
             temperature_2m=hourly["temperature_2m"][i],
             precipitation=hourly["precipitation"][i],
             cloud_cover=hourly["cloud_cover"][i],
-            relative_humidity_2m=hourly[
-                "relative_humidity_2m"
-            ][i],
+            relative_humidity_2m=hourly["relative_humidity_2m"][i],
             wind_speed_10m=hourly["wind_speed_10m"][i],
         )
 
