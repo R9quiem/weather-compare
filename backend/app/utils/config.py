@@ -2,18 +2,6 @@ from app.models import CreateCity
 
 CITIES = [
     CreateCity(
-        name="Санкт-Петербург",
-        country_code="RU",
-        latitude=59.9386,
-        longitude=30.3141,
-    ),
-    CreateCity(
-        name="Москва",
-        country_code="RU",
-        latitude=55.7558,
-        longitude=37.6173,
-    ),
-    CreateCity(
         name="Владивосток",
         country_code="RU",
         latitude=43.1155,
@@ -26,16 +14,64 @@ CITIES = [
         longitude=35.9006,
     ),
     CreateCity(
+        name="Санкт-Петербург",
+        country_code="RU",
+        latitude=59.9386,
+        longitude=30.3141,
+    ),
+    CreateCity(
+        name="Москва",
+        country_code="RU",
+        latitude=55.7558,
+        longitude=37.6173,
+    ),
+    CreateCity(
         name="Ростов-на-Дону",
         country_code="RU",
         latitude=47.2221,
         longitude=39.7203,
     ),
     CreateCity(
+        name="Екатеринбург",
+        country_code="RU",
+        latitude=56.8389,
+        longitude=60.6057,
+    ),
+    CreateCity(
+        name="Токио",
+        country_code="JP",
+        latitude=35.6762,
+        longitude=139.6503,
+    ),
+    CreateCity(
+        name="Нью-Йорк",
+        country_code="US",
+        latitude=40.7128,
+        longitude=-74.0060,
+    ),
+    CreateCity(
+        name="Лондон",
+        country_code="GB",
+        latitude=51.5074,
+        longitude=-0.1278,
+    ),
+    CreateCity(
+        name="Мадрид",
+        country_code="ES",
+        latitude=40.4168,
+        longitude=-3.7038,
+    ),
+    CreateCity(
         name="Марсель",
         country_code="FR",
         latitude=43.2965,
         longitude=5.3698,
+    ),
+    CreateCity(
+        name="Париж",
+        country_code="FR",
+        latitude=48.8566,
+        longitude=2.3522,
     ),
 ]
 

@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.router import router
+from app.db.seed import seed_database
+
+seed_database()
 
 app = FastAPI(title="Weather Analysis API")
 
