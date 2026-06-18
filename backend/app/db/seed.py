@@ -5,8 +5,10 @@ from app.repositories.city_repository import CityRepository
 from app.repositories.weather_repository import WeatherRepository
 from app.services.weather_service import WeatherService
 from app.utils.config import CITIES, START_DATE, END_DATE, HOURLY_VARIABLES
+from app.utils.logging import log_time
 
 
+@log_time
 def seed_database() -> None:
     init_db()
 
