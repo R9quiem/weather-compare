@@ -6,13 +6,14 @@ function CityWeatherPage() {
     const [cities, setCities] = useState([]);
     const [currentCityId, setCurrentCityId] = useState(null);
     const [dailyWeather, setDailyWeather] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isCitiesLoading, setIsCitiesLoading] = useState(true);
+    const [isWeatherLoading, setIsWeatherLoading] = useState(false);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         async function loadCities() {
             try {
-                setIsLoading(true);
+                setIsCitiesLoading(true);
                 setError(null);
 
                 const loadedCities = await getCities();
@@ -26,7 +27,7 @@ function CityWeatherPage() {
             } catch (requestError) {
                 setError(requestError.message);
             } finally {
-                setIsLoading(false);
+                setIsCitiesLoading(false);
             }
         }
 
@@ -36,7 +37,7 @@ function CityWeatherPage() {
     useEffect(()=> {
         async function loadDailyWeather() {
             try {
-                setIsLoading(true);
+                setIsWeatherLoading(true);
 
                 setError(null);
 
@@ -46,7 +47,7 @@ function CityWeatherPage() {
             } catch (requestError) {
                 setError(requestError.message);
             } finally {
-                setIsLoading(false)
+                setIsWeatherLoading(false)
             }
         }
 
@@ -58,11 +59,11 @@ function CityWeatherPage() {
     return (
         <div>
             <h1>City weather</h1>
-            {isLoading && <p>Загрузка городов...</p>}
+            {isCitiesLoading && <p>Загрузка городов...</p>}
 
             {error && <p>Ошибка: {error}</p>}
 
-            {!isLoading && !error && (
+            {!isCitiesLoading && !error && (
                 <ul>
                   {cities.map((city) => (
                     <li key={city.id}>
