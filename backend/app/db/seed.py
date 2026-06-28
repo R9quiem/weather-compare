@@ -3,6 +3,10 @@ from app.db.init_db import init_db
 from app.db.connection import create_connection
 from app.repositories.city_repository import CityRepository
 from app.repositories.weather_repository import WeatherRepository
+from app.services.weather_analysis_service import (
+    aggregate_hourly_weather_by_day,
+    calculate_daily_weather_averages,
+)
 from app.services.weather_service import WeatherService
 from app.utils.config import CITIES, START_DATE, END_DATE, HOURLY_VARIABLES
 from app.utils.logging import log_time
@@ -29,21 +33,32 @@ def seed_database() -> None:
                 city = city_repository.create(city_data)
                 connection.commit()
 
-            existing_weather = weather_repository.get_hourly_by_city_id(city.id)
+            hourly_weather = weather_repository.get_hourly_by_city_id(city.id)
 
-            if existing_weather:
-                continue
+            if not hourly_weather:
+                hourly_weather = load_weather(
+                    city_id=city.id,
+                    latitude=city.latitude,
+                    longitude=city.longitude,
+                    start_date=START_DATE,
+                    end_date=END_DATE,
+                    hourly_variables=HOURLY_VARIABLES,
+                )
 
-            hourly_weather = load_weather(
-                city_id=city.id,
-                latitude=city.latitude,
-                longitude=city.longitude,
-                start_date=START_DATE,
-                end_date=END_DATE,
-                hourly_variables=HOURLY_VARIABLES,
+                weather_service.create_hourly_weather(hourly_weather)
+
+            existing_daily_averages = weather_repository.get_daily_averages_by_city_id(
+                city.id
             )
 
-            weather_service.create_hourly_weather(hourly_weather)
+            if existing_daily_averages:
+                continue
+
+            daily_weather = aggregate_hourly_weather_by_day(hourly_weather)
+
+            daily_weather_averages = calculate_daily_weather_averages(daily_weather)
+
+            weather_service.create_daily_averages(list(daily_weather_averages.values()))
 
     finally:
         connection.close()

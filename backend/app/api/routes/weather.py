@@ -35,13 +35,10 @@ def get_daily_weather_averages_for_city(city_id: int):
 
         weather_service = WeatherService(connection, weather_repository)
 
-        hourly_weather = weather_service.get_hourly_weather(city_id)
-
-        daily_weather = aggregate_hourly_weather_by_day(hourly_weather)
-
-        daily_averages = calculate_daily_weather_averages(daily_weather)
+        daily_averages = weather_service.get_daily_weather(city_id)
 
         return daily_averages
 
     finally:
         connection.close()
+
