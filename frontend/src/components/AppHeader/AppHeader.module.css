@@ -1,0 +1,11 @@
+.app-header {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    gap: 50px
+}
+
+.app-nav {
+    display: flex;
+    gap: 10px
+}

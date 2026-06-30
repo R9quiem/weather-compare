@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import AppLayout from "./AppLayout.jsx";
 import CityWeatherPage from "../pages/CityWeatherPage.jsx";
+import WeatherComparePage from "../pages/WeatherComparePage.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -8,6 +9,7 @@ export const router = createBrowserRouter([
     element: <AppLayout />,
     children: [
       { path: "/", element: <CityWeatherPage /> },
+      { path: "/compare", element: <WeatherComparePage /> }
     ],
   },
 ]);
