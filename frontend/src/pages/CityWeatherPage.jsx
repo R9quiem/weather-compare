@@ -1,6 +1,6 @@
 import TemperatureChart from "../components/charts/TemperatureChart";
 import { useEffect, useState } from "react";
-import {getCities, getDailyWeather} from "../api.jsx";
+import {getCities, getDailyWeather} from "../api/weatherApi.jsx";
 
 function CityWeatherPage() {
     const [cities, setCities] = useState([]);
@@ -57,7 +57,7 @@ function CityWeatherPage() {
     },[currentCityId])
 
     return (
-        <div>
+        <div >
             <h1>City weather</h1>
             {isCitiesLoading && <p>Загрузка городов...</p>}
 
