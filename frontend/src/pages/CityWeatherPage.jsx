@@ -1,20 +1,27 @@
 import TemperatureChart from "../components/charts/TemperatureChart";
 import { useEffect, useState } from "react";
 import {getCities, getDailyWeather} from "../api/weatherApi.jsx";
+import {useDailyWeather} from "../hooks/useDailyWeather.jsx";
 
 function CityWeatherPage() {
     const [cities, setCities] = useState([]);
     const [currentCityId, setCurrentCityId] = useState(null);
-    const [dailyWeather, setDailyWeather] = useState([]);
     const [isCitiesLoading, setIsCitiesLoading] = useState(true);
-    const [isWeatherLoading, setIsWeatherLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [citiesError, setCitiesError] = useState(null);
+    const {
+        data: dailyWeather,
+        isLoading: isWeatherLoading,
+        error: weatherError,
+    } = useDailyWeather(currentCityId)
 
-    useEffect(() => {
+    const error = citiesError || weatherError;
+
+    useEffect(()=> {
         async function loadCities() {
             try {
                 setIsCitiesLoading(true);
-                setError(null);
+
+                setCitiesError(null);
 
                 const loadedCities = await getCities();
 
@@ -25,35 +32,15 @@ function CityWeatherPage() {
                 }
 
             } catch (requestError) {
-                setError(requestError.message);
+                setCitiesError(requestError.message);
             } finally {
-                setIsCitiesLoading(false);
+                setIsCitiesLoading(false)
             }
         }
 
-        loadCities();
-    }, []);
+        
+            loadCities()
 
-    useEffect(()=> {
-        async function loadDailyWeather() {
-            try {
-                setIsWeatherLoading(true);
-
-                setError(null);
-
-                const loadedDailyWeather = await getDailyWeather(currentCityId);
-
-                setDailyWeather(Object.values(loadedDailyWeather));
-            } catch (requestError) {
-                setError(requestError.message);
-            } finally {
-                setIsWeatherLoading(false)
-            }
-        }
-
-        if (currentCityId !== null) {
-          loadDailyWeather()
-        }
     },[currentCityId])
 
     return (
