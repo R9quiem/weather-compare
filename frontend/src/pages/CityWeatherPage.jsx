@@ -1,7 +1,8 @@
 import TemperatureChart from "../components/charts/TemperatureChart";
-import { useEffect, useState } from "react";
-import {getCities, getDailyWeather} from "../api/weatherApi.jsx";
+import {useEffect, useState} from "react";
+import {getCities} from "../api/weatherApi.jsx";
 import {useDailyWeather} from "../hooks/useDailyWeather.jsx";
+import CitySelect from "../components/CitySelect/CitySelect.jsx";
 
 function CityWeatherPage() {
     const [cities, setCities] = useState([]);
@@ -16,7 +17,7 @@ function CityWeatherPage() {
 
     const error = citiesError || weatherError;
 
-    useEffect(()=> {
+    useEffect(() => {
         async function loadCities() {
             try {
                 setIsCitiesLoading(true);
@@ -38,38 +39,27 @@ function CityWeatherPage() {
             }
         }
 
-        
-            loadCities()
-
-    },[currentCityId])
+        loadCities()
+    }, [])
 
     return (
-        <div >
+        <div>
             <h1>City weather</h1>
             {isCitiesLoading && <p>Загрузка городов...</p>}
 
             {error && <p>Ошибка: {error}</p>}
 
             {!isCitiesLoading && !error && (
-                <ul>
-                  {cities.map((city) => (
-                    <li key={city.id}>
-                      <label>
-                        <input
-                          type="radio"
-                          name="city"
-                          value={city.id}
-                          checked={currentCityId === city.id}
-                          onChange={() => setCurrentCityId(city.id)}
-                        />
-                        {city.name}, {city.country_code}
-                      </label>
-                    </li>
-                  ))}
-                </ul>
+                <CitySelect
+                    cities={cities}
+                    selectedCityId={currentCityId}
+                    setSelectedCityId={setCurrentCityId}
+                    placeholder="City"
+                />
             )}
             <TemperatureChart data={dailyWeather}/>
         </div>
     );
 }
+
 export default CityWeatherPage;

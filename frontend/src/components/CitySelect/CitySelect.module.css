@@ -1,0 +1,35 @@
+.city-select-trigger {
+  width: 200px;
+  height: 36px;
+  padding: 0 12px;
+  font-size: 15px;
+  border: 1px solid #000000;
+  border-radius: 6px;
+  background: white;
+  display: flex;
+  align-items: center;
+}
+
+.city-select-content {
+  background: white;
+  border: 1px solid #000000;
+  border-radius: 6px;
+  padding: 4px;
+
+}
+
+.city-select-item {
+  padding: 8px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.city-select-item[data-highlighted] {
+  background: #5e507c;
+  color: white;
+}
+
+.city-select-item[data-disabled] {
+  color: #9ca3af;
+  cursor: not-allowed;
+}

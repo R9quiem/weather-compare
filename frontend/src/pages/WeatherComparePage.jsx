@@ -1,7 +1,8 @@
 import TemperatureChart from "../components/charts/TemperatureChart";
-import { useEffect, useState } from "react";
-import {getCities, getDailyWeather} from "../api/weatherApi.jsx";
+import {useEffect, useState} from "react";
+import {getCities} from "../api/weatherApi.jsx";
 import {useDailyWeather} from "../hooks/useDailyWeather.jsx";
+import CitySelect from "../components/CitySelect/CitySelect.jsx";
 
 function CityWeatherPage() {
     const [cities, setCities] = useState([]);
@@ -36,54 +37,35 @@ function CityWeatherPage() {
     const error = cityError
 
     return (
-        <div >
+        <div>
             <h1>City weather</h1>
             {isCitiesLoading && <p>Загрузка городов...</p>}
 
             {error && <p>Ошибка: {error}</p>}
 
-            {!isCitiesLoading && !error && (
-                <ul>
-                  {cities.map((city) => (
-                    <li key={city.id}>
-                      <label>
-                        <input
-                          type="radio"
-                          name="firstCity"
-                          value={city.id}
-                          checked={firstCityId === city.id}
-                          onChange={() => setFirstCityId(city.id)}
-                          disabled={city.id===secondCityId}
-                        />
-                        {city.name}, {city.country_code}
-                      </label>
-                    </li>
-                  ))}
-                </ul>
-
-            )}
-            {!isCitiesLoading && !error && (
-                <ul>
-                  {cities.map((city) => (
-                    <li key={city.id}>
-                      <label>
-                        <input
-                          type="radio"
-                          name="secondCity"
-                          value={city.id}
-                          checked={secondCityId === city.id}
-                          onChange={() => setSecondCityId(city.id)}
-                          disabled={firstCityId===city.id}
-                        />
-                        {city.name}, {city.country_code}
-                      </label>
-                    </li>
-                  ))}
-                </ul>
-
-            )}
+            <div>
+                {!isCitiesLoading && !error && (
+                    <CitySelect
+                        cities={cities}
+                        selectedCityId={firstCityId}
+                        setSelectedCityId={setFirstCityId}
+                        placeholder="First city"
+                        disabledCityId={secondCityId}
+                    />
+                )}
+                {!isCitiesLoading && !error && (
+                    <CitySelect
+                        cities={cities}
+                        selectedCityId={secondCityId}
+                        setSelectedCityId={setSecondCityId}
+                        placeholder="Second city"
+                        disabledCityId={firstCityId}
+                    />
+                )}
+            </div>
             <TemperatureChart data={firstWeather.data}/>
         </div>
     );
 }
+
 export default CityWeatherPage;
