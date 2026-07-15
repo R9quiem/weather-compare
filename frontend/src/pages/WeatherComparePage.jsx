@@ -1,8 +1,8 @@
-import TemperatureChart from "../components/charts/TemperatureChart";
 import {useEffect, useState} from "react";
 import {getCities} from "../api/weatherApi.jsx";
 import {useDailyWeather} from "../hooks/useDailyWeather.jsx";
 import CitySelect from "../components/CitySelect/CitySelect.jsx";
+import CompareTemperatureChart from "../components/charts/CompareTemperatureChart.jsx";
 
 function CityWeatherPage() {
     const [cities, setCities] = useState([]);
@@ -34,6 +34,14 @@ function CityWeatherPage() {
     const firstWeather = useDailyWeather(firstCityId);
     const secondWeather = useDailyWeather(secondCityId);
 
+    const firstCityName = cities.find(
+        (city) => String(city.id) === String(firstCityId)
+    )?.name ?? "Первый город";
+
+    const secondCityName = cities.find(
+        (city) => String(city.id) === String(secondCityId)
+    )?.name ?? "Второй город";
+
     const error = cityError
 
     return (
@@ -63,7 +71,12 @@ function CityWeatherPage() {
                     />
                 )}
             </div>
-            <TemperatureChart data={firstWeather.data}/>
+            <CompareTemperatureChart
+                firstCityWeather={firstWeather.data}
+                secondCityWeather={secondWeather.data}
+                firstCityName={firstCityName}
+                secondCityName={secondCityName}
+            />
         </div>
     );
 }
