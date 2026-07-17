@@ -40,6 +40,7 @@ def load_weather(
         "end_date": end_date,
         "hourly": ",".join(hourly_variables),
         "timezone": "auto",
+        "models": "era5_land"
     }
 
     response = request_with_retry(url, params)
