@@ -13,8 +13,13 @@ function CitySelect({cities, selectedCityId, setSelectedCityId, disabledCityId, 
                 <Select.Value placeholder={placeholder}/>
             </Select.Trigger>
             <Select.Portal>
-                <Select.Content className={styles["city-select-content"]} align="center" position="popper">
-                    <Select.Viewport>
+                <Select.Content
+                    className={styles["city-select-content"]}
+                    align="start"
+                    position="popper"
+                    sideOffset={8}
+                >
+                    <Select.Viewport className={styles["city-select-viewport"]}>
                         {cities.map((city) => (
                             <Select.Item
                                 key={city.id}
@@ -25,8 +30,10 @@ function CitySelect({cities, selectedCityId, setSelectedCityId, disabledCityId, 
                                 <Select.ItemText>
                                     {city.name}, {city.country_code}
                                 </Select.ItemText>
+
                             </Select.Item>
                         ))}
+
                     </Select.Viewport>
                 </Select.Content>
             </Select.Portal>

@@ -1,11 +1,52 @@
 .app-header {
-    height: 50px;
+    height: 70px;
     display: flex;
     align-items: center;
-    gap: 50px
+    position: relative;
+    padding-left: 30px
 }
 
 .app-nav {
+    position: absolute;
+    left: 50%;
     display: flex;
-    gap: 10px
+    gap: 16px;
+    transform: translateX(-50%);
+}
+
+.app-nav a {
+    min-height: 38px;
+    padding: 0 16px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background-color: var(--color-secondary);
+    color: var(--color-text-secondary);
+
+    font-size: 13px;
+    font-weight: 550;
+    line-height: 1;
+    text-decoration: none;
+
+    transition:
+        color 50ms ease,
+        background-color 160ms ease,
+        transform 160ms ease;
+}
+
+.app-nav a:hover {
+    color: var(--color-text);
+}
+
+.app-nav a:active {
+    transform: scale(0.98);
+}
+
+.app-nav a[aria-current="page"] {
+    background: #424242;
+    color: white;
 }

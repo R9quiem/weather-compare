@@ -5,7 +5,7 @@ import styles from "./AppHeader.module.css"
 function AppHeader() {
   return (
     <header className={styles["app-header"]}>
-      <div>Weather Compare</div>
+      <div className={styles["app-name"]}>Weather Compare</div>
       <nav className={styles["app-nav"]}>
         <NavLink to="/" end>
           City Weather

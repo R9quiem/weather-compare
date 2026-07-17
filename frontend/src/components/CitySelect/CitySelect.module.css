@@ -1,35 +1,93 @@
 .city-select-trigger {
-  width: 200px;
-  height: 36px;
-  padding: 0 12px;
-  font-size: 15px;
-  border: 1px solid #000000;
-  border-radius: 6px;
-  background: white;
-  display: flex;
-  align-items: center;
+    width: 100%;
+    min-height: 44px;
+
+    padding: 0 12px;
+
+    font: inherit;
+    font-size: 15px;
+    font-weight: 500;
+
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+
+    background: var(--color-surface);
+    color: var(--color-text);
+
+
+    display: flex;
+    align-items: center;
+
+    cursor: pointer;
+
+    transition: border-color 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease;
 }
 
-.city-select-content {
-  background: white;
-  border: 1px solid #000000;
-  border-radius: 6px;
-  padding: 4px;
+.city-select-trigger:hover {
+    background-color: var(--color-secondary);
+}
 
+
+.city-select-content {
+    width: var(--radix-select-trigger-width);
+    max-height: min(
+            320px,
+            var(--radix-select-content-available-height)
+    );
+    z-index: 100;
+    overflow: hidden;
+
+    background: white;
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    padding: 4px;
+
+
+}
+
+.city-select-viewport {
+    max-height: 280px;
+    padding: 5px;
+
+    overflow-y: auto;
+
+    scrollbar-width: thin !important;
+    scrollbar-color: var(--color-text-secondary) transparent;
 }
 
 .city-select-item {
-  padding: 8px 10px;
-  border-radius: 4px;
-  cursor: pointer;
+    padding: 8px 10px;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
 .city-select-item[data-highlighted] {
-  background: #5e507c;
-  color: white;
+    background: #5e507c;
+    color: white;
 }
 
 .city-select-item[data-disabled] {
-  color: #9ca3af;
-  cursor: not-allowed;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.city-select-viewport::-webkit-scrollbar {
+    width: 6px;
+}
+
+.city-select-viewport::-webkit-scrollbar-track {
+    margin-block: 8px;
+    background: transparent;
+}
+
+.city-select-viewport::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: var(--color-text-secondary);
+
+}
+
+.city-select-viewport::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-secondary);
 }
