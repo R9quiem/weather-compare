@@ -1,0 +1,29 @@
+.overview {
+  grid-column: span 12;
+}
+
+.overviewGrid {
+    grid-auto-rows: 112px;
+}
+
+.page {
+  padding: 30px;
+}
+
+.chart {
+  grid-column: span 12;
+  grid-row: span 3;
+  min-height: 360px;
+}
+
+.select {
+  grid-column: span 3;
+  grid-row: span 1;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 8px;
+}
+
