@@ -1,124 +1,97 @@
-import {Area, CartesianGrid, ComposedChart, Legend, Line, ResponsiveContainer, Tooltip, XAxis, YAxis,} from "recharts";
+import {useMemo} from "react";
+
+import ClimateChart from "./ClimateChart/ClimateChart.jsx";
+import TemperatureSeries from "./TemperatureChart/TemperatureSeries.jsx";
+import TemperatureTooltip from "./TemperatureChart/TemperatureTooltip.jsx";
+import {getTemperatureDomain} from "./TemperatureChart/temperatureUtils.js";
+
+function mergeCityWeather(firstCityWeather, secondCityWeather) {
+    const secondCityByDate = new Map(
+        secondCityWeather.map((point) => [point.observed_date, point]),
+    );
+
+    return firstCityWeather.flatMap((firstPoint) => {
+        const secondPoint = secondCityByDate.get(firstPoint.observed_date);
+
+        if (!secondPoint) {
+            return [];
+        }
+
+        return [{
+            observed_date: firstPoint.observed_date,
+            firstCityMean: firstPoint.temperature_2m_mean,
+            firstCityMin: firstPoint.temperature_2m_min,
+            firstCityMax: firstPoint.temperature_2m_max,
+            firstCityRange: [
+                firstPoint.temperature_2m_min,
+                firstPoint.temperature_2m_max,
+            ],
+            secondCityMean: secondPoint.temperature_2m_mean,
+            secondCityMin: secondPoint.temperature_2m_min,
+            secondCityMax: secondPoint.temperature_2m_max,
+            secondCityRange: [
+                secondPoint.temperature_2m_min,
+                secondPoint.temperature_2m_max,
+            ],
+        }];
+    });
+}
 
 function CompareTemperatureChart({
-                                     firstCityWeather,
-                                     secondCityWeather,
-                                     firstCityName,
-                                     secondCityName,
-                                 }) {
+    firstCityWeather,
+    secondCityWeather,
+    firstCityName,
+    secondCityName,
+}) {
+    const chartData = useMemo(
+        () => mergeCityWeather(firstCityWeather, secondCityWeather),
+        [firstCityWeather, secondCityWeather],
+    );
 
+    const series = useMemo(() => [
+        {
+            id: "first-city",
+            label: firstCityName,
+            meanKey: "firstCityMean",
+            minKey: "firstCityMin",
+            maxKey: "firstCityMax",
+            rangeKey: "firstCityRange",
+            color: "#4f5fdb",
+        },
+        {
+            id: "second-city",
+            label: secondCityName,
+            meanKey: "secondCityMean",
+            minKey: "secondCityMin",
+            maxKey: "secondCityMax",
+            rangeKey: "secondCityRange",
+            color: "#e58b55",
+        },
+    ], [firstCityName, secondCityName]);
 
-    if (firstCityWeather.length === 0 || secondCityWeather.length === 0) {
+    const yDomain = useMemo(
+        () => getTemperatureDomain(chartData, series),
+        [chartData, series],
+    );
+
+    if (chartData.length === 0) {
         return <p>Выберите два города для сравнения</p>;
     }
 
-    const chartData = firstCityWeather.map((firstWeatherDay, index) => {
-        const secondWeatherDay = secondCityWeather[index];
-
-        return {
-            observed_date: firstWeatherDay.observed_date,
-            first_city_temperature: firstWeatherDay.temperature_2m_mean,
-            first_city_temperature_min: firstWeatherDay.temperature_2m_min,
-            first_city_temperature_max: firstWeatherDay.temperature_2m_max,
-            first_city_range: [
-                firstWeatherDay.temperature_2m_min,
-                firstWeatherDay.temperature_2m_max,
-            ],
-            second_city_temperature: secondWeatherDay.temperature_2m_mean,
-            second_city_temperature_min: secondWeatherDay.temperature_2m_min,
-            second_city_temperature_max: secondWeatherDay.temperature_2m_max,
-            second_city_range: [
-                secondWeatherDay.temperature_2m_min,
-                secondWeatherDay.temperature_2m_max,
-            ],
-        };
-    });
-
     return (
-        <div style={{width: "70%", height: 500}}>
-            <ResponsiveContainer>
-                <ComposedChart
-                    data={chartData}
-                    margin={{
-                        top: 20,
-                        right: 30,
-                        left: 10,
-                        bottom: 20,
-                    }}
-                >
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb"/>
-
-                    <XAxis
-                        dataKey="observed_date"
-                        tick={{fontSize: 12, fill: "#6b7280"}}
-                        tickMargin={10}
-                        minTickGap={24}
-                    />
-
-                    <YAxis
-                        tick={{fontSize: 12, fill: "#6b7280"}}
-                        tickMargin={10}
-                        unit="°C"
-                        domain={[
-                            (dataMin) => Math.floor(dataMin - 1),
-                            (dataMax) => Math.ceil(dataMax + 1),
-                        ]}
-                    />
-
-                    <Tooltip
-                        formatter={(value, name) => [
-                            `${value} °C`,
-                            name,
-                        ]}
-                        labelFormatter={(label) => `Дата: ${label}`}
-                    />
-
-                    <Legend/>
-
-                    <Area
-                        type="monotone"
-                        dataKey="first_city_range"
-                        name={`${firstCityName} — мин–макс`}
-                        stroke="#2563eb"
-                        fill="#2563eb"
-                        fillOpacity={0.18}
-                        strokeWidth={1}
-                    />
-
-                    <Area
-                        type="monotone"
-                        dataKey="second_city_range"
-                        name={`${secondCityName} — мин–макс`}
-                        stroke="#ea580c"
-                        fill="#ea580c"
-                        fillOpacity={0.18}
-                        strokeWidth={1}
-                    />
-
-                    <Line
-                        type="monotone"
-                        dataKey="first_city_temperature"
-                        name={`${firstCityName} — средняя`}
-                        stroke="#2563eb"
-                        strokeWidth={1}
-                        strokeDasharray="4 2"
-                        dot={false}
-                        activeDot={{r: 5}}
-                    />
-
-                    <Line
-                        type="monotone"
-                        dataKey="second_city_temperature"
-                        name={`${secondCityName} — средняя`}
-                        stroke="#ea580c"
-                        strokeWidth={1}
-                        strokeDasharray="4 2"
-                        dot={false}
-                        activeDot={{r: 5}}
-                    />
-
-                </ComposedChart>
-            </ResponsiveContainer>
+        <div style={{width: "70%"}}>
+            <ClimateChart
+                data={chartData}
+                yDomain={yDomain}
+                height={500}
+                unit="°C"
+                showLegend
+                tooltipContent={<TemperatureTooltip series={series}/>}
+            >
+                {series.map((item) => (
+                    <TemperatureSeries key={item.id} {...item}/>
+                ))}
+            </ClimateChart>
         </div>
     );
 }

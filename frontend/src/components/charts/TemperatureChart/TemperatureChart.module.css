@@ -1,0 +1,71 @@
+.tooltip {
+  min-width: 156px;
+  padding: 12px;
+  border: 1px solid #dfe2e7;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 1px 3px rgba(25, 32, 44, 0.05),
+    0 8px 20px rgba(25, 32, 44, 0.08);
+}
+
+.tooltipDate {
+  margin: 0 0 9px;
+  color: #343b47;
+  font-size: 14px;
+  font-weight: 650;
+  text-transform: capitalize;
+}
+
+.tooltipRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 22px;
+  color: #7c8490;
+  font-size: 11px;
+}
+
+.tooltipRow strong {
+  color: #343b47;
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.tooltipMean {
+  padding-bottom: 8px;
+}
+
+.tooltipMean strong {
+  color: #343b47;
+  font-size: 13px;
+}
+
+.tooltipRange {
+  padding-top: 7px;
+  border-top: 1px solid rgba(143, 152, 166, 0.28);
+}
+
+.tooltipSeriesSeparated {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(143, 152, 166, 0.28);
+}
+
+.tooltipSeriesName {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 5px;
+  color: #343b47;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.tooltipSeriesDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
