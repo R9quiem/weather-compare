@@ -1,0 +1,56 @@
+.chart {
+  position: relative;
+}
+
+.averageBadge {
+  position: absolute;
+  z-index: 2;
+  top: 2px;
+  right: 30px;
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  color: #7c8490;
+  font-size: 10px;
+  pointer-events: none;
+}
+
+.averageBadge strong {
+  color: #4f5663;
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.tooltip {
+  display: grid;
+  min-width: 150px;
+  padding: 12px;
+  border: 1px solid #dfe2e7;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow:
+    0 1px 3px rgba(25, 32, 44, 0.05),
+    0 8px 20px rgba(25, 32, 44, 0.08);
+}
+
+.tooltipMonth {
+  margin: 0 0 9px;
+  color: #343b47;
+  font-size: 12px;
+  font-weight: 650;
+  text-transform: capitalize;
+}
+
+.tooltipLabel {
+  color: #7c8490;
+  font-size: 11px;
+}
+
+.tooltipValue {
+  margin-top: 4px;
+  color: #4f5fdb;
+  font-size: 16px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
