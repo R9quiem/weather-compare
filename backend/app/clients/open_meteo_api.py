@@ -79,13 +79,30 @@ def load_weather(
         "end_date": end_date,
         "hourly": ",".join(hourly_variables),
         "timezone": "auto",
-        "models": "era5_land"
+        "models": "era5",
     }
-
     response = request_with_retry(url, params)
+    hourly = response.json()["hourly"]
 
-    data = response.json()
-    hourly = data["hourly"]
+    expected_length = len(hourly.get("time", []))
+
+    if expected_length == 0:
+        raise ValueError(f"Open-Meteo returned no hourly data for city {city_id}")
+
+    for variable in hourly_variables:
+        values = hourly.get(variable)
+
+        if values is None or len(values) != expected_length:
+            raise ValueError(
+                f"Open-Meteo returned incomplete {variable} data for city {city_id}"
+            )
+
+        missing_values = sum(value is None for value in values)
+        if missing_values:
+            raise ValueError(
+                f"Open-Meteo returned {missing_values} null values "
+                f"for {variable} in city {city_id}"
+            )
 
     rows: list[WeatherHourly] = []
 
@@ -96,8 +113,11 @@ def load_weather(
             temperature_2m=hourly["temperature_2m"][i],
             precipitation=hourly["precipitation"][i],
             cloud_cover=hourly["cloud_cover"][i],
+            sunshine_duration=hourly["sunshine_duration"][i],
             relative_humidity_2m=hourly["relative_humidity_2m"][i],
             wind_speed_10m=hourly["wind_speed_10m"][i],
+            wind_direction_10m=hourly["wind_direction_10m"][i],
+            wind_gusts_10m=hourly["wind_gusts_10m"][i],
         )
 
         rows.append(row)

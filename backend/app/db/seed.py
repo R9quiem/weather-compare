@@ -33,9 +33,11 @@ def seed_database() -> None:
                 city = city_repository.create(city_data)
                 connection.commit()
 
-            hourly_weather = weather_repository.get_hourly_by_city_id(city.id)
+            hourly_weather_is_complete = weather_repository.has_complete_hourly_weather(
+                city.id
+            )
 
-            if not hourly_weather:
+            if not hourly_weather_is_complete:
                 hourly_weather = load_weather(
                     city_id=city.id,
                     latitude=city.latitude,
@@ -47,18 +49,39 @@ def seed_database() -> None:
 
                 weather_service.create_hourly_weather(hourly_weather)
 
-            existing_daily_averages = weather_repository.get_daily_averages_by_city_id(
+                if not weather_repository.has_complete_hourly_weather(city.id):
+                    raise ValueError(
+                        f"Hourly weather is incomplete after seeding city {city.id}"
+                    )
+
+            daily_weather_is_complete = weather_repository.has_complete_daily_weather(
                 city.id
             )
 
-            if existing_daily_averages:
-                continue
+            if not daily_weather_is_complete:
+                hourly_weather = weather_repository.get_hourly_by_city_id(city.id)
 
-            daily_weather = aggregate_hourly_weather_by_day(hourly_weather)
+                daily_weather = aggregate_hourly_weather_by_day(hourly_weather)
 
-            daily_weather_averages = calculate_daily_weather_averages(daily_weather)
+                daily_weather_averages = calculate_daily_weather_averages(daily_weather)
 
-            weather_service.create_daily_averages(list(daily_weather_averages.values()))
+                weather_service.create_daily_averages(
+                    list(daily_weather_averages.values())
+                )
+
+                if not weather_repository.has_complete_daily_weather(city.id):
+                    raise ValueError(
+                        f"Daily weather is incomplete after seeding city {city.id}"
+                    )
+
+            if not weather_repository.has_complete_wind_rose(city.id):
+                wind_rose = weather_service.calculate_wind_rose(city.id)
+                weather_service.create_wind_rose(city.id, wind_rose)
+
+                if not weather_repository.has_complete_wind_rose(city.id):
+                    raise ValueError(
+                        f"Wind rose is incomplete after seeding city {city.id}"
+                    )
 
     finally:
         connection.close()

@@ -15,7 +15,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-async def lifespan(app:FastAPI):
+async def lifespan(app: FastAPI):
 
     logger.info("Application startup started")
 
@@ -39,6 +39,7 @@ async def lifespan(app:FastAPI):
         logger.info("Application shutdown started")
 
         logger.info("Application shutdown finished")
+
 
 app = FastAPI(
     title="Weather Analysis API",

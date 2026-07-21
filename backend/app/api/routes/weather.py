@@ -3,10 +3,6 @@ from fastapi import APIRouter
 from app.db.connection import create_connection
 from app.repositories.weather_repository import WeatherRepository
 from app.services.weather_service import WeatherService
-from app.services.weather_analysis_service import (
-    aggregate_hourly_weather_by_day,
-    calculate_daily_weather_averages,
-)
 
 router = APIRouter(prefix="/weather", tags=["weather"])
 
@@ -35,10 +31,7 @@ def get_daily_weather_averages_for_city(city_id: int):
 
         weather_service = WeatherService(connection, weather_repository)
 
-        daily_averages = weather_service.get_daily_weather(city_id)
-
-        return daily_averages
+        return weather_service.get_climate_data(city_id)
 
     finally:
         connection.close()
-
