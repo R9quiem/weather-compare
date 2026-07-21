@@ -6,9 +6,11 @@ import TemperatureSeries from "./TemperatureSeries.jsx";
 import TemperatureTooltip from "./TemperatureTooltip.jsx";
 import {
     addTemperatureRange,
+    formatTemperature,
     getTemperatureDomain,
     getTemperatureExtremes,
 } from "./temperatureUtils.js";
+import styles from "./TemperatureChart.module.css";
 
 const TEMPERATURE_SERIES = {
     id: "city-temperature",
@@ -30,23 +32,46 @@ function TemperatureChart({data}) {
         () => getTemperatureExtremes(chartData),
         [chartData],
     );
+    const averageTemperature = useMemo(() => {
+        const temperatures = data
+            .map((point) => point.temperature_2m_mean)
+            .filter(Number.isFinite);
+
+        if (temperatures.length === 0) {
+            return null;
+        }
+
+        return temperatures.reduce(
+            (total, temperature) => total + temperature,
+            0,
+        ) / temperatures.length;
+    }, [data]);
 
     return (
-        <ClimateChart
-            data={chartData}
-            yDomain={yDomain}
-            height={360}
-            unit="°C"
-            tooltipContent={
-                <TemperatureTooltip series={[TEMPERATURE_SERIES]}/>
-            }
-        >
-            <TemperatureSeries {...TEMPERATURE_SERIES}/>
-            <TemperatureExtremes
-                extremes={extremes}
-                color={TEMPERATURE_SERIES.color}
-            />
-        </ClimateChart>
+        <div className={styles.chart}>
+            {averageTemperature != null && (
+                <div className={styles.averageBadge}>
+                    <span>Средняя температура</span>
+                    <strong>{formatTemperature(averageTemperature)}</strong>
+                </div>
+            )}
+
+            <ClimateChart
+                data={chartData}
+                yDomain={yDomain}
+                height={360}
+                unit="°C"
+                tooltipContent={
+                    <TemperatureTooltip series={[TEMPERATURE_SERIES]}/>
+                }
+            >
+                <TemperatureSeries {...TEMPERATURE_SERIES}/>
+                <TemperatureExtremes
+                    extremes={extremes}
+                    color={TEMPERATURE_SERIES.color}
+                />
+            </ClimateChart>
+        </div>
     );
 }
 

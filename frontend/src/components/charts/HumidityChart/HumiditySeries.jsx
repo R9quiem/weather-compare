@@ -4,7 +4,7 @@ import {Area, Line, ReferenceLine} from "recharts";
 function HumiditySeries({
     dataKey = "relative_humidity_2m_mean",
     averageHumidity,
-    color = "#5a8dcc",
+    color = "#3f77bf",
 }) {
     const reactId = useId().replaceAll(":", "");
     const gradientId = `humidity-area-${reactId}`;
@@ -19,8 +19,8 @@ function HumiditySeries({
                     x2="0"
                     y2="1"
                 >
-                    <stop offset="0%" stopColor={color} stopOpacity={0.52}/>
-                    <stop offset="100%" stopColor={color} stopOpacity={0.44}/>
+                    <stop offset="0%" stopColor={color} stopOpacity={0.90}/>
+                    <stop offset="100%" stopColor={color} stopOpacity={0.30}/>
                 </linearGradient>
             </defs>
 

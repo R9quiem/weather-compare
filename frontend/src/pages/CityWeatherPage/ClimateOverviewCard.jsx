@@ -29,7 +29,7 @@ function ClimateOverviewCard({dailyWeather, windRose}) {
     const [selectedMetric, setSelectedMetric] = useState("temperature");
     const [windView, setWindView] = useState("speed");
     const showWindRose = selectedMetric === "wind" && windView === "rose";
-    
+
     const selectedMetricLabel = WEATHER_METRICS.find(
         (metric) => metric.key === selectedMetric,
     )?.label;
