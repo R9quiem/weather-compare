@@ -1,27 +1,66 @@
+import logging
 import time
+from datetime import UTC, datetime, timedelta
+
 import requests
 
 from app.models.weather import WeatherHourly
 
+logger = logging.getLogger(__name__)
+
 
 def get_retry_delay(response: requests.Response, attempt: int) -> float:
-    return 2 ** (attempt + 1)
+    retry_after = response.headers.get("Retry-After")
+
+    if retry_after is not None:
+        try:
+            return max(float(retry_after), 1.0)
+        except ValueError:
+            pass
+
+    try:
+        reason = response.json().get("reason", "").lower()
+    except requests.JSONDecodeError:
+        reason = ""
+
+    if "daily api request limit" in reason:
+        now = datetime.now(UTC)
+        next_utc_day = datetime.combine(
+            now.date() + timedelta(days=1),
+            datetime.min.time(),
+            tzinfo=UTC,
+        )
+        return max((next_utc_day - now).total_seconds() + 5 * 60, 60.0)
+
+    if "hourly api request limit" in reason:
+        return 60 * 60
+
+    return min(60 * (2**attempt), 15 * 60)
 
 
 def request_with_retry(
     url: str,
     params: dict,
-    max_retries: int = 5,
+    max_retries: int = 8,
 ) -> requests.Response:
 
     for attempt in range(max_retries):
-        response = requests.get(url, params=params)
+        response = requests.get(url, params=params, timeout=180)
 
         if response.status_code != 429:
             response.raise_for_status()
             return response
 
+        if attempt == max_retries - 1:
+            break
+
         delay = get_retry_delay(response, attempt)
+        logger.warning(
+            "Open-Meteo rate limit reached; retrying in %.0f seconds (%s/%s)",
+            delay,
+            attempt + 1,
+            max_retries - 1,
+        )
         time.sleep(delay)
 
     response.raise_for_status()
