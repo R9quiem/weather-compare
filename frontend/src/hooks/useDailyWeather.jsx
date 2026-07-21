@@ -3,6 +3,7 @@ import { getDailyWeather } from "../api/weatherApi.jsx";
 
 export function useDailyWeather(cityId) {
   const [data, setData] = useState([]);
+  const [windRose, setWindRose] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -19,7 +20,8 @@ export function useDailyWeather(cityId) {
         const loadedWeather = await getDailyWeather(cityId);
 
         if (!isCancelled) {
-          setData(Object.values(loadedWeather));
+          setData(loadedWeather.daily);
+          setWindRose(loadedWeather.wind_rose);
         }
       } catch (requestError) {
         if (!isCancelled) {
@@ -39,5 +41,5 @@ export function useDailyWeather(cityId) {
     };
   }, [cityId]);
 
-  return { data, isLoading, error };
+  return { data, windRose, isLoading, error };
 }
