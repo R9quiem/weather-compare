@@ -10,7 +10,7 @@
     display: flex;
     align-items: baseline;
     gap: 14px;
-    color: #6f7886;
+    color: var(--color-text-muted);
     font-size: 10px;
     pointer-events: none;
 }
@@ -23,28 +23,28 @@
 
 .averageBadgeItem i {
     width: 14px;
-    border-top: 2px solid #4f5fdb;
+    border-top: 2px solid var(--color-accent-primary);
 }
 
 .averageBadgeItem .apparentTemperatureKey {
-    border-color: #8f98a6;
+    border-color: var(--chart-secondary);
     border-top-style: dashed;
 }
 
 .tooltip {
     min-width: 156px;
     padding: 12px;
-    border: 1px solid #dfe2e7;
+    border: 1px solid var(--color-border-subtle);
     border-radius: 14px;
-    background: rgba(255, 255, 255, 0.8);
+    background: rgb(var(--rgb-surface) / 80%);
     box-shadow:
-        0 1px 3px rgba(25, 32, 44, 0.05),
-        0 8px 20px rgba(25, 32, 44, 0.08);
+        0 1px 3px rgb(var(--rgb-shadow) / 5%),
+        0 8px 20px rgb(var(--rgb-shadow) / 8%);
 }
 
 .tooltipDate {
     margin: 0 0 9px;
-    color: #343b47;
+    color: var(--color-text-strong);
     font-size: 14px;
     font-weight: 650;
     text-transform: capitalize;
@@ -56,12 +56,12 @@
     justify-content: space-between;
     gap: 20px;
     min-height: 22px;
-    color: #7c8490;
+    color: var(--color-text-muted);
     font-size: 11px;
 }
 
 .tooltipRow strong {
-    color: #343b47;
+    color: var(--color-text-strong);
     font-size: 12px;
     font-weight: 600;
     font-variant-numeric: tabular-nums;
@@ -72,28 +72,28 @@
 }
 
 .tooltipMean strong {
-    color: #343b47;
+    color: var(--color-text-strong);
     font-size: 13px;
 }
 
 .tooltipApparent {
     padding-bottom: 8px;
-    color: #737d8a;
+    color: var(--color-text-muted);
 }
 
 .tooltipApparent strong {
-    color: #5f6977;
+    color: var(--color-text-muted);
 }
 
 .tooltipRange {
     padding-top: 7px;
-    border-top: 1px solid rgba(143, 152, 166, 0.28);
+    border-top: 1px solid rgb(var(--rgb-muted) / 28%);
 }
 
 .tooltipSeriesSeparated {
     margin-top: 10px;
     padding-top: 10px;
-    border-top: 1px solid rgba(143, 152, 166, 0.28);
+    border-top: 1px solid rgb(var(--rgb-muted) / 28%);
 }
 
 .tooltipSeriesName {
@@ -101,7 +101,7 @@
     align-items: center;
     gap: 6px;
     margin-bottom: 5px;
-    color: #343b47;
+    color: var(--color-text-strong);
     font-size: 11px;
     font-weight: 600;
 }

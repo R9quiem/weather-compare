@@ -10,13 +10,13 @@
   display: flex;
   align-items: baseline;
   gap: 7px;
-  color: #718287;
+  color: var(--chart-humidity);
   font-size: 10px;
   pointer-events: none;
 }
 
 .averageBadge strong {
-  color: #356f78;
+  color: var(--chart-humidity);
   font-size: 11px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
@@ -26,30 +26,30 @@
   display: grid;
   min-width: 150px;
   padding: 12px;
-  border: 1px solid #d8e3e4;
+  border: 1px solid var(--color-border-subtle);
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.84);
+  background: rgb(var(--rgb-surface) / 84%);
   box-shadow:
-    0 1px 3px rgba(25, 32, 44, 0.05),
-    0 8px 20px rgba(25, 32, 44, 0.08);
+    0 1px 3px rgb(var(--rgb-shadow) / 5%),
+    0 8px 20px rgb(var(--rgb-shadow) / 8%);
 }
 
 .tooltipDate {
   margin: 0 0 9px;
-  color: #343b47;
+  color: var(--color-text-strong);
   font-size: 12px;
   font-weight: 650;
   text-transform: capitalize;
 }
 
 .tooltipLabel {
-  color: #718287;
+  color: var(--chart-humidity);
   font-size: 11px;
 }
 
 .tooltipValue {
   margin-top: 4px;
-  color: #5a8dcc;
+  color: var(--chart-humidity);
   font-size: 16px;
   font-weight: 650;
   font-variant-numeric: tabular-nums;

@@ -34,16 +34,16 @@
     width: 25px;
     height: 25px;
     border-radius: 50%;
-    color: white;
+    color: var(--color-text-inverse);
     font-size: 9px;
     font-weight: 700;
 }
 
 .blue .side {
-    background: #4f5fdb;
+    background: var(--color-accent-primary);
 }
 .orange .side {
-    background: #e58b55;
+    background: var(--color-accent-secondary);
 }
 .role {
     letter-spacing: 0.08em;
@@ -59,7 +59,7 @@
     min-width: 0;
     padding: 14px 0 13px;
     border: 0;
-    border-bottom: 2px solid #aaacb5;
+    border-bottom: 2px solid var(--color-border-strong);
     background: transparent;
     color: var(--color-text);
     font: inherit;
@@ -73,7 +73,7 @@
     border-color: var(--color-text);
 }
 .trigger:focus-visible {
-    outline: 2px solid #4f5fdb;
+    outline: 2px solid var(--color-accent-primary);
     outline-offset: 4px;
 }
 
@@ -93,7 +93,7 @@
     flex: 0 0 auto;
     width: 34px;
     height: 34px;
-    border: 1px solid #bfc1c9;
+    border: 1px solid var(--color-border);
     border-radius: 50%;
     transition: transform 160ms ease;
 }
@@ -126,10 +126,10 @@
     max-height: min(390px, var(--radix-select-content-available-height));
     padding: 6px;
     overflow: hidden;
-    border: 1px solid #bfc1c9;
+    border: 1px solid var(--color-border);
     border-radius: 18px;
-    background: #f7f7f8;
-    box-shadow: 0 18px 50px rgba(22, 24, 31, 0.16);
+    background: var(--color-surface-hover);
+    box-shadow: 0 18px 50px rgb(var(--rgb-shadow) / 16%);
 }
 
 .viewport {
@@ -144,22 +144,22 @@
     min-height: 46px;
     padding: 0 12px;
     border-radius: 12px;
-    color: #26272c;
+    color: var(--color-text-strong);
     font-size: 13px;
     cursor: pointer;
     outline: none;
 }
 
 .item[data-highlighted] {
-    background: #232429;
-    color: white;
+    background: var(--color-text-strong);
+    color: var(--color-text-inverse);
 }
 .item[data-disabled] {
     cursor: not-allowed;
     opacity: 0.35;
 }
 .country {
-    color: #989ba5;
+    color: var(--color-text-secondary);
     font-size: 9px;
     font-variant-numeric: tabular-nums;
 }

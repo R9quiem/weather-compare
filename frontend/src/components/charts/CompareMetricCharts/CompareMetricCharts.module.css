@@ -1,10 +1,10 @@
 .tooltip {
     min-width: 190px;
     padding: 12px 14px;
-    border: 1px solid #d8dbe1;
+    border: 1px solid var(--color-border-subtle);
     border-radius: 13px;
-    background: rgba(255, 255, 255, 0.96);
-    box-shadow: 0 12px 30px rgba(21, 25, 35, 0.12);
+    background: var(--color-surface);
+    box-shadow: 0 12px 30px rgb(var(--rgb-shadow) / 12%);
 }
 
 .tooltip p {
@@ -52,7 +52,7 @@
 
 .lineKey i {
     width: 18px;
-    border-top: 2px solid #7f8490;
+    border-top: 2px solid var(--color-text-muted);
 }
 
 .lineKey .dashed {
@@ -100,7 +100,7 @@
 .cloudTooltipCity + .cloudTooltipCity {
     margin-top: 10px;
     padding-top: 10px;
-    border-top: 1px solid #e2e4e8;
+    border-top: 1px solid var(--color-border-subtle);
 }
 
 .cloudTooltipTitle {
@@ -116,12 +116,12 @@
     justify-content: space-between;
     gap: 18px;
     padding-block: 2px;
-    color: #666b74;
+    color: var(--color-text-muted);
     font-size: 10px;
 }
 
 .cloudTooltipRow strong {
-    color: #25262b;
+    color: var(--color-text-strong);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
 }

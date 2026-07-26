@@ -10,13 +10,13 @@
     display: flex;
     align-items: baseline;
     gap: 7px;
-    color: #788496;
+    color: var(--chart-axis);
     font-size: 10px;
     pointer-events: none;
 }
 
 .dominant strong {
-    color: #536b91;
+    color: var(--chart-wind);
     font-size: 11px;
     font-weight: 600;
     font-variant-numeric: tabular-nums;
@@ -25,7 +25,7 @@
 .explanation {
     max-width: 520px;
     margin: -2px auto 0;
-    color: #77818f;
+    color: var(--chart-label);
     font-size: 11px;
     line-height: 1.35;
     text-align: center;
@@ -36,28 +36,28 @@
     gap: 5px;
     min-width: 174px;
     padding: 12px;
-    border: 1px solid #dce1e8;
+    border: 1px solid var(--chart-grid);
     border-radius: 14px;
-    background: rgba(255, 255, 255, 0.88);
+    background: var(--color-surface-glass);
     box-shadow:
-        0 1px 3px rgba(25, 32, 44, 0.05),
-        0 8px 20px rgba(25, 32, 44, 0.08);
+        0 1px 3px rgb(var(--rgb-shadow) / 5%),
+        0 8px 20px rgb(var(--rgb-shadow) / 8%);
 }
 
 .tooltip strong {
-    color: #343b47;
+    color: var(--color-text-strong);
     font-size: 12px;
     font-weight: 650;
 }
 
 .tooltip span {
-    color: #5277ad;
+    color: var(--chart-wind);
     font-size: 15px;
     font-weight: 650;
     font-variant-numeric: tabular-nums;
 }
 
 .tooltip small {
-    color: #788496;
+    color: var(--chart-axis);
     font-size: 10px;
 }
