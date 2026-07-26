@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS daily_averages_weather (
     temperature_2m_mean REAL,
     temperature_2m_max REAL,
     temperature_2m_min REAL,
+    apparent_temperature_mean REAL,
     precipitation_sum REAL,
     cloud_cover_mean REAL,
     sunshine_duration_sum REAL,
@@ -85,6 +86,7 @@ WEATHER_COLUMN_MIGRATIONS = {
         "wind_gusts_10m": "REAL",
     },
     "daily_averages_weather": {
+        "apparent_temperature_mean": "REAL",
         "sunshine_duration_sum": "REAL",
         "wind_direction_10m_dominant": "REAL",
         "wind_gusts_10m_max": "REAL",

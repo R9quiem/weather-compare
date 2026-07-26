@@ -6,7 +6,6 @@ from app.repositories.weather_repository import WeatherRepository
 
 class WeatherService:
     WIND_DIRECTIONS = ("N", "NE", "E", "SE", "S", "SW", "W", "NW")
-
     def __init__(
         self,
         connection: sqlite3.Connection,
@@ -70,6 +69,18 @@ class WeatherService:
     ) -> None:
         try:
             self.repository.replace_wind_rose(city_id, sectors)
+            self.connection.commit()
+        except Exception:
+            self.connection.rollback()
+            raise
+
+    def update_daily_apparent_temperatures(
+        self,
+        city_id: int,
+        values_by_day: dict[str, float],
+    ) -> None:
+        try:
+            self.repository.update_daily_apparent_temperatures(city_id, values_by_day)
             self.connection.commit()
         except Exception:
             self.connection.rollback()

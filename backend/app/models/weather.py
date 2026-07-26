@@ -22,6 +22,7 @@ class WeatherDaily:
     temperature_2m_mean: float | None
     temperature_2m_max: float | None
     temperature_2m_min: float | None
+    apparent_temperature_mean: float | None
     precipitation_sum: float | None
     cloud_cover_mean: float | None
     sunshine_duration_sum: float | None

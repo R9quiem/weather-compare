@@ -16,6 +16,7 @@ class WeatherRepository:
                 temperature_2m_mean,
                 temperature_2m_max,
                 temperature_2m_min,
+                apparent_temperature_mean,
                 precipitation_sum,
                 cloud_cover_mean,
                 sunshine_duration_sum,
@@ -24,7 +25,7 @@ class WeatherRepository:
                 wind_direction_10m_dominant,
                 wind_gusts_10m_max
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(city_id, observed_date) DO UPDATE SET
                 temperature_2m_mean = COALESCE(
                     daily_averages_weather.temperature_2m_mean,
@@ -37,6 +38,10 @@ class WeatherRepository:
                 temperature_2m_min = COALESCE(
                     daily_averages_weather.temperature_2m_min,
                     excluded.temperature_2m_min
+                ),
+                apparent_temperature_mean = COALESCE(
+                    daily_averages_weather.apparent_temperature_mean,
+                    excluded.apparent_temperature_mean
                 ),
                 precipitation_sum = COALESCE(
                     daily_averages_weather.precipitation_sum,
@@ -74,6 +79,7 @@ class WeatherRepository:
                     record.temperature_2m_mean,
                     record.temperature_2m_max,
                     record.temperature_2m_min,
+                    record.apparent_temperature_mean,
                     record.precipitation_sum,
                     record.cloud_cover_mean,
                     record.sunshine_duration_sum,
@@ -86,6 +92,23 @@ class WeatherRepository:
             ],
         )
 
+    def update_daily_apparent_temperatures(
+        self,
+        city_id: int,
+        values_by_day: dict[str, float],
+    ) -> None:
+        self.connection.executemany(
+            """
+            UPDATE daily_averages_weather
+            SET apparent_temperature_mean = ?
+            WHERE city_id = ? AND observed_date = ?
+            """,
+            [
+                (value, city_id, observed_date)
+                for observed_date, value in values_by_day.items()
+            ],
+        )
+
     def get_daily_averages_by_city_id(self, city_id: int) -> list[WeatherDaily]:
         cursor = self.connection.execute(
             """
@@ -95,6 +118,7 @@ class WeatherRepository:
                 temperature_2m_mean,
                 temperature_2m_max,
                 temperature_2m_min,
+                apparent_temperature_mean,
                 precipitation_sum,
                 cloud_cover_mean,
                 sunshine_duration_sum,
@@ -118,6 +142,7 @@ class WeatherRepository:
                 temperature_2m_mean=row["temperature_2m_mean"],
                 temperature_2m_max=row["temperature_2m_max"],
                 temperature_2m_min=row["temperature_2m_min"],
+                apparent_temperature_mean=row["apparent_temperature_mean"],
                 precipitation_sum=row["precipitation_sum"],
                 cloud_cover_mean=row["cloud_cover_mean"],
                 sunshine_duration_sum=row["sunshine_duration_sum"],
@@ -271,8 +296,7 @@ class WeatherRepository:
         ).fetchall()
 
         return [
-            (row["sector"], row["sample_count"], row["average_speed"])
-            for row in rows
+            (row["sector"], row["sample_count"], row["average_speed"]) for row in rows
         ]
 
     def replace_wind_rose(
@@ -417,4 +441,21 @@ class WeatherRepository:
                 "directions",
                 "gusts",
             )
+        )
+
+    def has_complete_daily_apparent_temperature(self, city_id: int) -> bool:
+        row = self.connection.execute(
+            """
+            SELECT
+                COUNT(*) AS total_rows,
+                COUNT(apparent_temperature_mean) AS apparent_temperature_rows
+            FROM daily_averages_weather
+            WHERE city_id = ?
+            """,
+            (city_id,),
+        ).fetchone()
+
+        return (
+            row["total_rows"] > 0
+            and row["apparent_temperature_rows"] == row["total_rows"]
         )

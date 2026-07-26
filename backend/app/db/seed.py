@@ -1,4 +1,4 @@
-from app.clients.open_meteo_api import load_weather
+from app.clients.open_meteo_api import load_daily_apparent_temperature, load_weather
 from app.db.init_db import init_db
 from app.db.connection import create_connection
 from app.repositories.city_repository import CityRepository
@@ -72,6 +72,26 @@ def seed_database() -> None:
                 if not weather_repository.has_complete_daily_weather(city.id):
                     raise ValueError(
                         f"Daily weather is incomplete after seeding city {city.id}"
+                    )
+
+            if not weather_repository.has_complete_daily_apparent_temperature(city.id):
+                apparent_temperatures = load_daily_apparent_temperature(
+                    latitude=city.latitude,
+                    longitude=city.longitude,
+                    start_date=START_DATE,
+                    end_date=END_DATE,
+                )
+                weather_service.update_daily_apparent_temperatures(
+                    city.id,
+                    apparent_temperatures,
+                )
+
+                if not weather_repository.has_complete_daily_apparent_temperature(
+                    city.id
+                ):
+                    raise ValueError(
+                        "Daily apparent temperature is incomplete after seeding "
+                        f"city {city.id}"
                     )
 
             if not weather_repository.has_complete_wind_rose(city.id):

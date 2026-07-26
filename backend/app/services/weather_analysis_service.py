@@ -87,6 +87,7 @@ def aggregate_hourly_weather_by_day(
                 temperature_2m_mean=mean(record.temperature_2m for record in records),
                 temperature_2m_max=maximum(record.temperature_2m for record in records),
                 temperature_2m_min=minimum(record.temperature_2m for record in records),
+                apparent_temperature_mean=None,
                 precipitation_sum=total(record.precipitation for record in records),
                 cloud_cover_mean=mean(record.cloud_cover for record in records),
                 sunshine_duration_sum=total(
@@ -146,6 +147,9 @@ def get_historical_weather_averages(daily_weather: list[WeatherDaily]) -> dict:
     averages["temperature_2m_min"] = rounded_mean(
         item.temperature_2m_min for item in daily_weather
     )
+    averages["apparent_temperature"] = rounded_mean(
+        item.apparent_temperature_mean for item in daily_weather
+    )
 
     return averages
 
@@ -188,6 +192,9 @@ def calculate_daily_weather_averages(daily_weather: list[WeatherDaily]) -> dict:
             ),
             temperature_2m_min=rounded_mean(
                 item.temperature_2m_min for item in records_list
+            ),
+            apparent_temperature_mean=rounded_mean(
+                item.apparent_temperature_mean for item in records_list
             ),
             precipitation_sum=rounded_mean(
                 item.precipitation_sum for item in records_list

@@ -1,4 +1,5 @@
 import logging
+import statistics
 import time
 from datetime import UTC, datetime, timedelta
 from email.utils import parsedate_to_datetime
@@ -148,3 +149,40 @@ def load_weather(
         rows.append(row)
 
     return rows
+
+
+def load_daily_apparent_temperature(
+    latitude: float,
+    longitude: float,
+    start_date: str,
+    end_date: str,
+) -> dict[str, float]:
+    response = request_with_retry(
+        "https://archive-api.open-meteo.com/v1/archive",
+        {
+            "latitude": latitude,
+            "longitude": longitude,
+            "start_date": start_date,
+            "end_date": end_date,
+            "daily": "apparent_temperature_mean",
+            "timezone": "auto",
+            "models": "era5",
+        },
+    )
+    daily = response.json()["daily"]
+    dates = daily.get("time", [])
+    values = daily.get("apparent_temperature_mean", [])
+
+    if not dates or len(dates) != len(values):
+        raise ValueError("Open-Meteo returned incomplete apparent temperature data")
+
+    grouped: dict[str, list[float]] = {}
+    for observed_date, value in zip(dates, values, strict=True):
+        if value is None:
+            continue
+        grouped.setdefault(observed_date[5:], []).append(value)
+
+    return {
+        observed_date: round(statistics.mean(day_values), 2)
+        for observed_date, day_values in grouped.items()
+    }
