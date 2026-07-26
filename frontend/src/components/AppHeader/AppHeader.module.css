@@ -3,7 +3,27 @@
     display: flex;
     align-items: center;
     position: relative;
-    padding-left: 30px
+    padding-left: 30px;
+}
+
+.app-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--color-text);
+    font-size: 24px;
+    font-weight: 650;
+    line-height: 1;
+    letter-spacing: -0.035em;
+}
+
+.app-name::before {
+    content: "";
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    background: #4f5fdb;
+    box-shadow: 5px 5px 0 #e58b55;
 }
 
 .app-nav {

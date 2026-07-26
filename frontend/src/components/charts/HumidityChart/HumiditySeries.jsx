@@ -1,5 +1,5 @@
-import {useId} from "react";
-import {Area, Line, ReferenceLine} from "recharts";
+import { useId } from "react";
+import { Area, Line, ReferenceLine } from "recharts";
 
 function HumiditySeries({
     dataKey = "relative_humidity_2m_mean",
@@ -12,15 +12,9 @@ function HumiditySeries({
     return (
         <>
             <defs>
-                <linearGradient
-                    id={gradientId}
-                    x1="0"
-                    y1="0"
-                    x2="0"
-                    y2="1"
-                >
-                    <stop offset="0%" stopColor={color} stopOpacity={0.90}/>
-                    <stop offset="100%" stopColor={color} stopOpacity={0.30}/>
+                <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={color} stopOpacity={1.0} />
+                    <stop offset="100%" stopColor={color} stopOpacity={0.25} />
                 </linearGradient>
             </defs>
 

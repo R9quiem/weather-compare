@@ -1,26 +1,16 @@
-import {useId} from "react";
-import {Area, Line, ReferenceLine} from "recharts";
+import { useId } from "react";
+import { Area, Line, ReferenceLine } from "recharts";
 
-function WindSeries({
-    dataKey = "wind_speed_10m_mean",
-    annualAverage,
-    color = "#5277ad",
-}) {
+function WindSeries({ dataKey = "wind_speed_10m_mean", annualAverage, color = "#3f77bf" }) {
     const reactId = useId().replaceAll(":", "");
     const gradientId = `wind-area-${reactId}`;
 
     return (
         <>
             <defs>
-                <linearGradient
-                    id={gradientId}
-                    x1="0"
-                    y1="0"
-                    x2="0"
-                    y2="1"
-                >
-                    <stop offset="0%" stopColor={color} stopOpacity={0.90}/>
-                    <stop offset="100%" stopColor={color} stopOpacity={0.30}/>
+                <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={color} stopOpacity={1.0} />
+                    <stop offset="100%" stopColor={color} stopOpacity={0.25} />
                 </linearGradient>
             </defs>
 
@@ -59,7 +49,6 @@ function WindSeries({
                 }}
                 isAnimationActive={false}
             />
-
         </>
     );
 }
