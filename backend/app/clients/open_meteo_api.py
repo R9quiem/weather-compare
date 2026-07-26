@@ -10,6 +10,9 @@ from app.models.weather import WeatherHourly
 
 logger = logging.getLogger(__name__)
 
+REQUEST_TIMEOUT = (10, 180)
+NETWORK_RETRY_DELAY_SECONDS = 2
+
 
 def get_retry_delay(response: requests.Response, attempt: int) -> float:
     retry_after = response.headers.get("Retry-After")
@@ -69,9 +72,23 @@ def request_with_retry(
     params: dict,
     max_retries: int = 8,
 ) -> requests.Response:
-
     for attempt in range(max_retries):
-        response = requests.get(url, params=params, timeout=180)
+        try:
+            response = requests.get(url, params=params, timeout=REQUEST_TIMEOUT)
+        except requests.RequestException as error:
+            if attempt == max_retries - 1:
+                raise
+
+            delay = min(NETWORK_RETRY_DELAY_SECONDS * (2**attempt), 60)
+            logger.warning(
+                "Open-Meteo request failed; retrying in %.0f seconds (%s/%s): %s",
+                delay,
+                attempt + 1,
+                max_retries - 1,
+                error,
+            )
+            time.sleep(delay)
+            continue
 
         if response.status_code != 429:
             response.raise_for_status()
