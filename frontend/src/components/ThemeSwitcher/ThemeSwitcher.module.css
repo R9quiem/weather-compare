@@ -1,0 +1,108 @@
+.trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    padding: 0;
+}
+
+.trigger svg {
+    width: 19px;
+    height: 19px;
+    stroke-width: 1.8;
+}
+
+.menu {
+    z-index: 200;
+    width: 270px;
+    padding: 7px;
+    border: 1px solid var(--color-border);
+    border-radius: 11px;
+    background: var(--color-surface);
+    box-shadow: 0 16px 38px rgb(var(--rgb-shadow) / 22%);
+    transform-origin: var(--radix-dropdown-menu-content-transform-origin);
+    animation: menuIn 140ms ease-out;
+}
+
+.title {
+    padding: 8px 9px 7px;
+    color: var(--color-text-strong);
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.options {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+    padding: 4px;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 11px;
+    background: var(--color-surface-control);
+}
+
+.option {
+    display: grid;
+    grid-template-rows: 18px auto;
+    place-items: center;
+    gap: 5px;
+    min-width: 0;
+    min-height: 54px;
+    padding: 7px 5px 6px;
+    border-radius: 8px;
+    color: var(--color-text-muted);
+    font-size: 11px;
+    font-weight: 550;
+    line-height: 1;
+    cursor: pointer;
+    outline: none;
+    user-select: none;
+    transition:
+        background-color 160ms ease,
+        color 160ms ease,
+        box-shadow 160ms ease;
+}
+
+.option svg {
+    width: 17px;
+    height: 17px;
+    stroke-width: 1.8;
+}
+
+.option span {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.option[data-state="checked"] {
+    background: var(--color-surface);
+    color: var(--color-text);
+    box-shadow:
+        0 1px 2px rgb(var(--rgb-shadow) / 10%),
+        0 4px 12px rgb(var(--rgb-shadow) / 8%);
+}
+
+.option[data-highlighted]:not([data-state="checked"]) {
+    background: rgb(var(--rgb-surface) / 55%);
+    color: var(--color-accent-primary);
+}
+
+@keyframes menuIn {
+    from {
+        opacity: 0;
+        transform: translateY(-3px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .menu {
+        animation: none;
+    }
+}

@@ -80,3 +80,68 @@
     --radar-label: #c16e3d;
 
 }
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+
+    --rgb-surface: 58 61 68;
+    --rgb-shadow: 0 0 0;
+    --rgb-muted: 159 166 178;
+    --rgb-accent-primary: 113 128 239;
+    --rgb-accent-secondary: 240 155 103;
+
+    --color-page: #282a2f;
+    --color-surface: #33353b;
+    --color-surface-muted: #393c43;
+    --color-surface-control: #40434a;
+    --color-surface-hover: #4a4e56;
+    --color-surface-panel: rgb(45 47 53 / 90%);
+    --color-surface-glass: rgb(58 61 68 / 92%);
+
+    --color-text: #f4f4f5;
+    --color-text-strong: #e6e7ea;
+    --color-text-secondary: #a4a7ae;
+    --color-text-muted: #8e949f;
+    --color-text-subtle: #747b87;
+    --color-text-inverse: #111216;
+    --color-nav-active: #ffffff;
+    --color-nav-active-text: #111216;
+
+    --color-border: #595d66;
+    --color-border-strong: #6a6f7a;
+    --color-border-subtle: #4b4e56;
+    --color-divider: #535760;
+
+    --color-accent-primary: #7180ef;
+    --color-accent-primary-strong: #8793f4;
+    --color-accent-secondary: #f09b67;
+    --color-success: #58b898;
+    --color-danger: #ef917e;
+    --color-danger-soft: #2c1c1a;
+
+    --chart-temperature: #7c89f2;
+    --chart-secondary: #9da5b3;
+    --chart-precipitation: #65a7dc;
+    --chart-humidity: #8eacd1;
+    --chart-wind: #7495c2;
+    --chart-wind-muted: #94a892;
+    --chart-cloud-clear: #83bfea;
+    --chart-cloud-partly: #738193;
+    --chart-cloud-overcast: #566170;
+    --chart-cloud-outline: #8eacd1;
+    --chart-grid: #464950;
+    --chart-axis: #a4a9b2;
+    --chart-label: #8e949f;
+
+    --insight-temperature-surface: #3b3c50;
+    --insight-precipitation-surface: #344149;
+    --insight-humidity-surface: #35404a;
+    --insight-wind-surface: #3a423c;
+    --insight-cloud-surface: #3b3e44;
+    --insight-wind-text: #a5b0a2;
+    --insight-wind-accent: #667364;
+
+    --radar-neutral: #a6adba;
+    --radar-mark: #858c98;
+    --radar-label: #ef9b6d;
+}

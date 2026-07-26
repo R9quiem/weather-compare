@@ -2,6 +2,7 @@ import { ArrowLeftRight, ChartSpline, CloudSun } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher.jsx";
+import ThemeSwitcher from "../ThemeSwitcher/ThemeSwitcher.jsx";
 import UnitSwitcher from "../UnitSwitcher/UnitSwitcher.jsx";
 import controlStyles from "./HeaderControl.module.css";
 import styles from "./AppHeader.module.css";
@@ -34,6 +35,7 @@ function AppHeader() {
                 ))}
             </nav>
             <div className={styles["app-tools"]}>
+                <ThemeSwitcher />
                 <UnitSwitcher />
                 <LanguageSwitcher />
             </div>

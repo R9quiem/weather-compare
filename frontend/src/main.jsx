@@ -6,12 +6,15 @@ import "./styles/theme.css";
 import "./index.css";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./app/router.jsx";
+import { ThemeProvider } from "./theme/ThemeProvider.jsx";
 import { UnitProvider } from "./units/UnitsContext.jsx";
 
 createRoot(document.getElementById("root")).render(
     <StrictMode>
-        <UnitProvider>
-            <RouterProvider router={router} />
-        </UnitProvider>
+        <ThemeProvider>
+            <UnitProvider>
+                <RouterProvider router={router} />
+            </UnitProvider>
+        </ThemeProvider>
     </StrictMode>
 );
