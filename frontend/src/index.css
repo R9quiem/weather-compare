@@ -1,18 +1,3 @@
-:root {
-    --font-sans: "Inter Variable", Inter, Arial, sans-serif;
-
-    --color-page: #DFE0E5;
-    --color-secondary: #EFF0F2;
-    --color-surface: #ffffff;
-
-    --color-text: #060608;
-    --color-text-reverse: white;
-    --color-text-secondary: #959595;
-
-    --color-border: #bbbdc8;
-
-}
-
 * {
     box-sizing: border-box;
 }
@@ -30,4 +15,3 @@ body {
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
 }
-

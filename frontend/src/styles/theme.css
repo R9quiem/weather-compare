@@ -1,0 +1,82 @@
+:root {
+    color-scheme: light;
+
+    --font-sans: "Inter Variable", Inter, Arial, sans-serif;
+
+    /* Color channels used when the same color needs different opacity. */
+    --rgb-white: 255 255 255;
+    --rgb-surface: 255 255 255;
+    --rgb-black: 0 0 0;
+    --rgb-shadow: 22 24 31;
+    --rgb-muted: 104 116 132;
+    --rgb-accent-primary: 79 95 219;
+    --rgb-accent-secondary: 229 139 85;
+    --rgb-sun: 255 156 65;
+
+    /* Surfaces */
+    --color-page: #dfe0e5;
+    --color-surface: #ffffff;
+    --color-surface-muted: #eff0f2;
+    --color-surface-control: #eceef2;
+    --color-surface-hover: #f7f7f8;
+    --color-surface-panel: rgb(232 235 240 / 72%);
+    --color-surface-glass: rgb(255 255 255 / 88%);
+    --color-white: #ffffff;
+    --color-black: #000000;
+
+    /* Typography */
+    --color-text: #060608;
+    --color-text-strong: #202126;
+    --color-text-secondary: #959595;
+    --color-text-muted: #7c8490;
+    --color-text-subtle: #8f98a6;
+    --color-text-inverse: #ffffff;
+    --color-nav-active: #202126;
+    --color-nav-active-text: #ffffff;
+
+    /* Structure */
+    --color-border: #bbbdc8;
+    --color-border-strong: #aaacb5;
+    --color-border-subtle: #dfe2e7;
+    --color-divider: #cfd4dc;
+    /* Brand and state accents */
+    --color-accent-primary: #4f5fdb;
+    --color-accent-primary-strong: #4050c8;
+    --color-accent-secondary: #e58b55;
+    --color-success: #238067;
+    --color-danger: #8c2c1c;
+    --color-danger-soft: #fff7f5;
+
+    /* Weather data */
+    --chart-temperature: #596de2;
+    --chart-secondary: #8f98a6;
+    --chart-precipitation: #4e91c7;
+    --chart-humidity: #7292bd;
+    --chart-wind: #5277ad;
+    --chart-wind-muted: #839080;
+    --chart-cloud-clear: #8ec5f4;
+    --chart-cloud-partly: #c9d1dc;
+    --chart-cloud-overcast: #687484;
+    --chart-cloud-outline: #7292bd;
+    --chart-grid: #e7e9ed;
+    --chart-axis: #6b7280;
+    --chart-label: #8e97a1;
+
+    /* Climate insight surfaces */
+    --insight-temperature-surface: #f2f3ff;
+    --insight-precipitation-surface: #edf6fb;
+    --insight-humidity-surface: #f1f6fb;
+    --insight-wind-surface: #f1f4f0;
+    --insight-cloud-surface: #f0f2f5;
+    --insight-wind-text: #657163;
+    --insight-wind-accent: #788675;
+
+    /* Status scenes */
+    --sun-core: #ffdca5;
+    --sun-mid: #ffb85f;
+    --sun-edge: rgb(251 153 62 / 82%);
+    --radar-neutral: #8f98a6;
+    --radar-mark: #969ca6;
+    --radar-label: #c16e3d;
+
+}
