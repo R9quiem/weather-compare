@@ -1,6 +1,7 @@
 import logging
 import time
 from datetime import UTC, datetime, timedelta
+from email.utils import parsedate_to_datetime
 
 import requests
 
@@ -16,15 +17,35 @@ def get_retry_delay(response: requests.Response, attempt: int) -> float:
         try:
             return max(float(retry_after), 1.0)
         except ValueError:
-            pass
+            try:
+                retry_at = parsedate_to_datetime(retry_after)
+                if retry_at.tzinfo is None:
+                    retry_at = retry_at.replace(tzinfo=UTC)
+                return max(
+                    (retry_at.astimezone(UTC) - datetime.now(UTC)).total_seconds(),
+                    1.0,
+                )
+            except (TypeError, ValueError, OverflowError):
+                pass
 
     try:
         reason = response.json().get("reason", "").lower()
     except requests.JSONDecodeError:
         reason = ""
 
+    now = datetime.now(UTC)
+
+    if "minutely api request limit" in reason or "minute api request limit" in reason:
+        next_utc_minute = now.replace(second=0, microsecond=0) + timedelta(minutes=1)
+        return max((next_utc_minute - now).total_seconds() + 5, 1.0)
+
+    if "hourly api request limit" in reason:
+        next_utc_hour = now.replace(minute=0, second=0, microsecond=0) + timedelta(
+            hours=1
+        )
+        return max((next_utc_hour - now).total_seconds() + 30, 1.0)
+
     if "daily api request limit" in reason:
-        now = datetime.now(UTC)
         next_utc_day = datetime.combine(
             now.date() + timedelta(days=1),
             datetime.min.time(),
@@ -32,8 +53,12 @@ def get_retry_delay(response: requests.Response, attempt: int) -> float:
         )
         return max((next_utc_day - now).total_seconds() + 5 * 60, 60.0)
 
-    if "hourly api request limit" in reason:
-        return 60 * 60
+    if "monthly api request limit" in reason:
+        if now.month == 12:
+            next_utc_month = datetime(now.year + 1, 1, 1, tzinfo=UTC)
+        else:
+            next_utc_month = datetime(now.year, now.month + 1, 1, tzinfo=UTC)
+        return max((next_utc_month - now).total_seconds() + 5 * 60, 60.0)
 
     return min(60 * (2**attempt), 15 * 60)
 
