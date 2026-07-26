@@ -1,5 +1,7 @@
 import { Select } from "radix-ui";
+import { useTranslation } from "react-i18next";
 
+import { getCityName } from "../../utils/localization.js";
 import styles from "./CitySelect.module.css";
 
 function CitySelect({
@@ -12,6 +14,7 @@ function CitySelect({
     ariaLabel,
     classNames = {},
 }) {
+    const { t } = useTranslation();
     const selectStyles = {
         trigger: classNames.trigger ?? styles["city-select-trigger"],
         value: classNames.value ?? styles["city-select-value"],
@@ -56,7 +59,7 @@ function CitySelect({
                                 disabled={city.id === disabledCityId}
                                 className={selectStyles.item}
                             >
-                                <Select.ItemText>{city.name}</Select.ItemText>
+                                <Select.ItemText>{getCityName(t, city)}</Select.ItemText>
                                 <span className={selectStyles.country}>{city.country_code}</span>
                             </Select.Item>
                         ))}

@@ -1,4 +1,5 @@
 import CitySelect from "../CitySelect/CitySelect.jsx";
+import { useTranslation } from "react-i18next";
 
 import styles from "./CompareCityPicker.module.css";
 
@@ -12,7 +13,8 @@ function CompareCityPicker({
     disabledCityId,
     isLoading,
 }) {
-    const role = side === "01" ? "Первый город" : "Второй город";
+    const { t } = useTranslation();
+    const role = t(side === "01" ? "compare.firstCity" : "compare.secondCity");
 
     return (
         <div className={`${styles.picker} ${styles[accent]}`}>
@@ -26,9 +28,9 @@ function CompareCityPicker({
                 selectedCityId={selectedCityId}
                 setSelectedCityId={setSelectedCityId}
                 disabledCityId={disabledCityId}
-                placeholder={isLoading ? "Загрузка…" : "Выберите город"}
+                placeholder={isLoading ? t("common.loading") : t("common.chooseCity")}
                 isLoading={isLoading}
-                ariaLabel={`Выбрать город ${side}`}
+                ariaLabel={t("compare.selectCity", { side })}
                 classNames={{
                     trigger: styles.trigger,
                     value: styles.cityText,

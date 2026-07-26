@@ -1,0 +1,290 @@
+{
+    "brand": "Weather Report",
+    "nav": {
+        "label": "Main navigation",
+        "current": "Current Weather",
+        "climate": "City Climate",
+        "compare": "Compare Cities"
+    },
+    "language": {
+        "label": "Interface language",
+        "russian": "Russian",
+        "english": "English",
+        "selected": "Selected"
+    },
+    "theme": {
+        "label": "Appearance",
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+    },
+    "units": {
+        "label": "Measurement units",
+        "temperature": "Temperature scale",
+        "precipitation": "Precipitation amount",
+        "wind": "Wind speed",
+        "values": {
+            "celsius": "°C",
+            "fahrenheit": "°F",
+            "mm": "mm",
+            "in": "in",
+            "kmh": "km/h",
+            "ms": "m/s",
+            "mph": "mph"
+        }
+    },
+    "status": {
+        "returnHome": "Return to homepage",
+        "coming": {
+            "title": "Coming soon!",
+            "description": "This page is under construction",
+            "action": "Explore city climate"
+        },
+        "notFound": {
+            "eyebrow": "Error 404",
+            "title": "Page not found",
+            "description": "It may have been removed, moved, or the address may be incorrect."
+        }
+    },
+    "common": {
+        "loading": "Loading…",
+        "noData": "No data",
+        "chooseCity": "Choose a city",
+        "requestError": "Request error: {{status}}",
+        "kmh": "{{value}} km/h",
+        "mm": "{{value}} mm",
+        "percentagePoints": "{{value}} pp"
+    },
+    "metrics": {
+        "temperature": "Temperature",
+        "precipitation": "Precipitation",
+        "humidity": "Humidity",
+        "wind": "Wind",
+        "cloud": "Cloud cover"
+    },
+    "cities": {
+        "vladivostok": "Vladivostok",
+        "tver": "Tver",
+        "saint_petersburg": "Saint Petersburg",
+        "moscow": "Moscow",
+        "rostov_on_don": "Rostov-on-Don",
+        "yekaterinburg": "Yekaterinburg",
+        "tokyo": "Tokyo",
+        "new_york": "New York",
+        "london": "London",
+        "madrid": "Madrid",
+        "marseille": "Marseille",
+        "paris": "Paris"
+    },
+    "months": {
+        "january": "January",
+        "february": "February",
+        "march": "March",
+        "april": "April",
+        "may": "May",
+        "june": "June",
+        "july": "July",
+        "august": "August",
+        "september": "September",
+        "october": "October",
+        "november": "November",
+        "december": "December"
+    },
+    "seasons": {
+        "winter": "Winter",
+        "spring": "Spring",
+        "summer": "Summer",
+        "autumn": "Autumn"
+    },
+    "directions": {
+        "N": "North",
+        "NE": "Northeast",
+        "E": "East",
+        "SE": "Southeast",
+        "S": "South",
+        "SW": "Southwest",
+        "W": "West",
+        "NW": "Northwest",
+        "short": {
+            "N": "N",
+            "NE": "NE",
+            "E": "E",
+            "SE": "SE",
+            "S": "S",
+            "SW": "SW",
+            "W": "W",
+            "NW": "NW"
+        }
+    },
+    "cityPage": {
+        "eyebrow": "City climate",
+        "period": "Observation period: 1995–2025",
+        "overview": "Climate overview",
+        "windView": "Wind chart view",
+        "speed": "Speed",
+        "windRose": "Wind rose",
+        "chartPlaceholder": "This metric chart will be added later",
+        "chartNotes": {
+            "temperature": "Air temperature at 2 m · daily mean values",
+            "precipitation": "Atmospheric precipitation (rain and snow) · average monthly total",
+            "humidity": "Relative humidity at 2 m · daily mean values",
+            "windSpeed": "Wind speed at 10 m · daily mean values",
+            "windRose": "Wind directions at 10 m · distribution of hourly observations",
+            "cloud": "Share of days by category · 24 hourly observations per day · 20% and 80% thresholds",
+            "calibrated": " · ERA5 data adjusted using station observations",
+            "reanalysis": " · ERA5 reanalysis data"
+        },
+        "stats": {
+            "meanTemperature": "Mean temperature",
+            "temperatureRange": "Mean minimum and maximum: {{min}} / {{max}}",
+            "annualPrecipitation": "Annual precipitation",
+            "wettestMonth": "Most precipitation: {{month}} · {{value}}",
+            "meanHumidity": "Mean humidity",
+            "humidityRange": "Monthly range: {{min}}–{{max}}%",
+            "prevailingWind": "Prevailing wind",
+            "windFrequency": "Wind comes from here in {{value}}% of observations",
+            "windFallback": "mean speed at 10 m",
+            "prevailingCloud": "Prevailing cloud cover",
+            "cloudFrequency": "{{value}}% of days fall into this category",
+            "cloud": {
+                "clear": "Clear sky",
+                "partly_cloudy": "Partly cloudy",
+                "cloudy": "Overcast sky"
+            }
+        },
+        "insight": {
+            "analyzing": "Analyzing climate",
+            "profile": "Climate profile",
+            "chooseCity": "Choose a city to see its climate profile",
+            "temperature": {
+                "eyebrow": "Temperature pattern",
+                "title": "Mean temperature",
+                "detail": "Daily mean climate normal",
+                "coldest": "Coldest month",
+                "warmest": "Warmest month",
+                "apparent": "Mean apparent temperature",
+                "difference": "{{value}} {{position}} air temperature",
+                "below": "below",
+                "above": "above",
+                "apparentFallback": "Accounts for humidity and wind"
+            },
+            "precipitation": {
+                "eyebrow": "Precipitation pattern",
+                "title": "Annual total",
+                "detail": "Mean climate normal for rain and snow",
+                "maximum": "Most precipitation",
+                "minimum": "Least precipitation",
+                "seasonMaximum": "Seasonal maximum",
+                "annualShare": "{{value}}% of the annual total"
+            },
+            "humidity": {
+                "eyebrow": "Humidity pattern",
+                "title": "Seasonal range",
+                "detail": "Difference between the highest and lowest monthly means",
+                "driest": "Driest month",
+                "mostHumid": "Most humid month",
+                "annual": "Mean annual relative humidity"
+            },
+            "windRose": {
+                "eyebrow": "Wind direction",
+                "title": "Prevailing direction",
+                "frequency": "{{value}}% of all observations",
+                "distribution": "Distribution by direction",
+                "second": "Second most frequent",
+                "averageSpeed": "Mean speed from this direction",
+                "arrow": "The arrow shows where the wind most often comes from"
+            },
+            "windSpeed": {
+                "eyebrow": "Wind pattern",
+                "title": "Mean wind speed",
+                "detail": "Daily mean speed at 10 m",
+                "windiest": "Windiest month",
+                "calmest": "Calmest month",
+                "variability": "Seasonal variability",
+                "low": "Low",
+                "moderate": "Moderate",
+                "high": "High"
+            },
+            "cloud": {
+                "eyebrow": "Cloud cover pattern",
+                "dominant": "Prevailing: {{state}} — {{value}}%",
+                "dominantEmpty": "Prevailing condition — no data",
+                "detail": "Mean share of days per year",
+                "clearVsCloudy": "Clear versus overcast",
+                "moreClear": "clear more often",
+                "moreCloudy": "overcast more often",
+                "extremes": "Extreme conditions",
+                "extremesDetail": "clear or overcast",
+                "clear": "Clear sky",
+                "partly": "Partly cloudy",
+                "cloudy": "Overcast sky",
+                "clearShort": "clear",
+                "partlyShort": "partly",
+                "cloudyShort": "overcast"
+            }
+        }
+    },
+    "compare": {
+        "eyebrow": "Climate comparison",
+        "title": "Compare cities",
+        "loadError": "Could not load data: {{error}}",
+        "citySelection": "Choose cities to compare",
+        "swap": "Swap cities",
+        "firstCity": "First city",
+        "secondCity": "Second city",
+        "selectCity": "Choose city {{side}}",
+        "cityFallback": "City {{number}}",
+        "period": "Observation period",
+        "results": "Key comparison results",
+        "overview": "Climate overview",
+        "metricSelection": "Metric to compare",
+        "windView": "Wind chart view",
+        "legend": "Chart legend",
+        "loadingClimate": "Loading climate data…",
+        "chooseTwoCities": "Choose two cities to compare",
+        "summary": {
+            "temperatureLeader": "Higher mean temperature",
+            "temperatureDifference": "Temperature difference",
+            "precipitationLeader": "More annual precipitation",
+            "precipitationDifference": "Precipitation difference",
+            "humidityLeader": "Higher mean humidity",
+            "humidityDifference": "Humidity difference",
+            "windLeader": "Higher mean wind speed",
+            "windDifference": "Speed difference",
+            "cloudLeader": "Higher share of overcast days",
+            "cloudDifference": "Share difference",
+            "tie": "Values are equal"
+        }
+    },
+    "charts": {
+        "average": "Average",
+        "apparent": "Feels like",
+        "minimum": "Minimum",
+        "maximum": "Maximum",
+        "minShort": "Min",
+        "maxShort": "Max",
+        "averageTemperature": "Mean temperature",
+        "airTemperature": "Air temperature",
+        "apparentTemperature": "Apparent temperature",
+        "averageApparent": "Mean apparent temperature",
+        "averagePrecipitation": "Mean precipitation",
+        "monthlyAverage": "Monthly average",
+        "averageHumidity": "Mean humidity",
+        "annualAverage": "Annual average",
+        "averageWind": "Mean wind speed",
+        "atTenMetres": "At 10 m",
+        "clearDays": "Clear days",
+        "partlyCloudy": "Partly cloudy",
+        "cloudyDays": "Overcast days",
+        "observations": "{{value}}% of observations",
+        "prevailing": "Prevailing",
+        "frequency": "Frequency",
+        "windRoseAria": "Wind rose: wind direction frequency over the full period",
+        "windRoseDescription": "Each axis shows where the wind comes from: the farther the contour is from the center, the more often wind blows from that direction.",
+        "compareWindRoseAria": "Comparison of two city wind roses",
+        "leftCity": "Left — {{city}}",
+        "rightCity": "Right — {{city}}",
+        "approxDays": "{{value}}% · ≈{{days}} days",
+        "cloud": { "clear": "Clear", "partly": "Partly cloudy", "cloudy": "Overcast" }
+    }
+}
