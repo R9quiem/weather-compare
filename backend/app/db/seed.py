@@ -32,6 +32,9 @@ def seed_database() -> None:
             if city is None:
                 city = city_repository.create(city_data)
                 connection.commit()
+            elif city.slug != city_data.slug:
+                city = city_repository.update_slug(city.id, city_data.slug)
+                connection.commit()
 
             hourly_weather_is_complete = weather_repository.has_complete_hourly_weather(
                 city.id

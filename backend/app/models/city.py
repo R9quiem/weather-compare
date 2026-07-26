@@ -4,6 +4,7 @@ from dataclasses import dataclass
 @dataclass(frozen=True, slots=True)
 class City:
     id: int
+    slug: str
     name: str
     country_code: str
     latitude: float
@@ -12,6 +13,7 @@ class City:
 
 @dataclass(frozen=True, slots=True)
 class CreateCity:
+    slug: str
     name: str
     country_code: str
     latitude: float

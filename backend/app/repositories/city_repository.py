@@ -11,14 +11,16 @@ class CityRepository:
         cursor = self.connection.execute(
             """
             INSERT OR IGNORE INTO cities (
+                slug,
                 name,
                 country_code,
                 latitude,
                 longitude
             )
-            VALUES (?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?)
             """,
             (
+                data.slug,
                 data.name,
                 data.country_code,
                 data.latitude,
@@ -43,6 +45,7 @@ class CityRepository:
             """
             SELECT
                 id,
+                slug,
                 name,
                 country_code,
                 latitude,
@@ -69,6 +72,7 @@ class CityRepository:
             """
             SELECT
                 id,
+                slug,
                 name,
                 country_code,
                 latitude,
@@ -95,6 +99,7 @@ class CityRepository:
             """
             SELECT
                 id,
+                slug,
                 name,
                 country_code,
                 latitude,
@@ -107,6 +112,18 @@ class CityRepository:
         rows = cursor.fetchall()
 
         return [self._row_to_city(row) for row in rows]
+
+    def update_slug(self, city_id: int, slug: str) -> City:
+        self.connection.execute(
+            "UPDATE cities SET slug = ? WHERE id = ?",
+            (slug, city_id),
+        )
+
+        city = self.get_by_id(city_id)
+        if city is None:
+            raise RuntimeError("Updated city could not be read from database")
+
+        return city
 
     def delete_by_id(self, city_id: int) -> bool:
         cursor = self.connection.execute(
@@ -123,6 +140,7 @@ class CityRepository:
     def _row_to_city(row: sqlite3.Row) -> City:
         return City(
             id=row["id"],
+            slug=row["slug"],
             name=row["name"],
             country_code=row["country_code"],
             latitude=row["latitude"],

@@ -4,6 +4,7 @@ from app.db.connection import create_connection
 CREATE_CITIES_TABLE = """
 CREATE TABLE IF NOT EXISTS cities (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    slug TEXT UNIQUE,
     name TEXT NOT NULL,
     country_code TEXT NOT NULL,
     latitude REAL NOT NULL,
@@ -93,6 +94,10 @@ WEATHER_COLUMN_MIGRATIONS = {
     },
 }
 
+CITY_COLUMN_MIGRATIONS = {
+    "slug": "TEXT",
+}
+
 
 def add_missing_weather_columns(connection) -> None:
     for table_name, columns in WEATHER_COLUMN_MIGRATIONS.items():
@@ -108,6 +113,22 @@ def add_missing_weather_columns(connection) -> None:
                 )
 
 
+def add_missing_city_columns(connection) -> None:
+    existing_columns = {
+        row["name"] for row in connection.execute("PRAGMA table_info(cities)")
+    }
+
+    for column_name, column_type in CITY_COLUMN_MIGRATIONS.items():
+        if column_name not in existing_columns:
+            connection.execute(
+                f"ALTER TABLE cities ADD COLUMN {column_name} {column_type}"
+            )
+
+    connection.execute(
+        "CREATE UNIQUE INDEX IF NOT EXISTS idx_cities_slug ON cities(slug)"
+    )
+
+
 def init_db() -> None:
     connection = create_connection()
 
@@ -116,6 +137,7 @@ def init_db() -> None:
         connection.execute(CREATE_HOURLY_WEATHER_TABLE)
         connection.execute(CREATE_DAILY_AVERAGES_WEATHER_TABLE)
         connection.execute(CREATE_WIND_ROSE_TABLE)
+        add_missing_city_columns(connection)
         add_missing_weather_columns(connection)
         connection.commit()
     finally:
