@@ -1,0 +1,274 @@
+.page {
+    min-width: 0;
+    padding: 30px;
+}
+
+.overview {
+    grid-column: span 12;
+}
+
+.compareGrid {
+    grid-auto-rows: auto;
+}
+
+.heroCard,
+.chartCard {
+    grid-column: 1 / -1;
+    min-width: 0;
+}
+
+.heroCard,
+.chartCard {
+    padding: 0;
+}
+
+.intro,
+.duel,
+.summary,
+.chartSection {
+    min-width: 0;
+}
+
+.intro {
+    padding: 24px 24px 21px;
+}
+
+.eyebrow,
+.chartEyebrow {
+    margin: 0 0 6px;
+    color: var(--color-text-secondary);
+    font-size: 11px;
+    font-weight: 650;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.title {
+    max-width: 620px;
+    margin: 0;
+    font-size: clamp(32px, 3vw, 40px);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.045em;
+}
+
+.error {
+    margin: 0 30px 20px;
+    padding: 14px 18px;
+    border: 1px solid #d79a8d;
+    border-radius: 14px;
+    background: #fff7f5;
+    color: #8c2c1c;
+    font-size: 13px;
+}
+
+.duel {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 76px minmax(0, 1fr);
+    align-items: stretch;
+    min-height: 220px;
+    padding-inline: 24px;
+    border-top: 1px solid var(--color-border);
+}
+
+.swapButton {
+    align-self: center;
+    justify-self: center;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid #bfc1c9;
+    border-radius: 50%;
+    background: #ececef;
+    color: #24252a;
+    cursor: pointer;
+    transition:
+        background-color 160ms ease,
+        color 160ms ease,
+        transform 180ms ease;
+}
+
+.swapButton svg {
+    width: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.swapButton:hover:not(:disabled) {
+    background: #202126;
+    color: white;
+    transform: rotate(180deg);
+}
+
+.swapButton:disabled {
+    cursor: default;
+    opacity: 0.4;
+}
+
+.summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-column: 1 / -1;
+    gap: 8px;
+}
+
+.summaryItem {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 20px;
+    min-width: 0;
+    padding: 12px 15px;
+    border: 1px solid #e0e2e7;
+    border-radius: 14px;
+    background: #ffffff;
+}
+
+.summaryLeader {
+    background-color: #ffffff;
+}
+
+.summaryDifference {
+    background-color: #ffffff;
+}
+
+.summaryItem span {
+    color: var(--color-text-secondary);
+    font-size: 11px;
+}
+
+.summaryItem strong {
+    overflow: hidden;
+    font-size: 16px;
+    font-weight: 620;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.chartSection {
+    overflow: hidden;
+    padding: 24px 24px 18px;
+}
+
+.chartHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 32px;
+}
+
+.chartHeader h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.04em;
+}
+
+.chartControls {
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.metricPicker,
+.windPicker {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    border: 1px solid #dfe2e7;
+    border-radius: 14px;
+    background: #eceef2;
+}
+
+.metricButton,
+.windPicker button {
+    min-height: 34px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: #7c8490;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 550;
+    cursor: pointer;
+    transition:
+        color 160ms ease,
+        background-color 160ms ease,
+        box-shadow 160ms ease;
+}
+
+.metricButton:hover,
+.windPicker button:hover {
+    color: #4f5fdb;
+    background: rgba(255, 255, 255, 0.55);
+}
+
+.metricButton[aria-pressed="true"],
+.windPicker button[aria-pressed="true"] {
+    background: #ffffff;
+    color: #17181c;
+    box-shadow:
+        0 1px 2px rgba(6, 6, 8, 0.08),
+        0 4px 12px rgba(6, 6, 8, 0.06);
+}
+
+.windPicker {
+    padding: 3px;
+    border-radius: 11px;
+}
+
+.windPicker button {
+    min-height: 28px;
+    padding-inline: 10px;
+    border-radius: 8px;
+    font-size: 10px;
+}
+
+.legend {
+    display: flex;
+    gap: 22px;
+    color: #656871;
+    font-size: 11px;
+}
+
+.legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.legend i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+}
+
+.blueDot {
+    background: #4f5fdb;
+}
+.orangeDot {
+    background: #e58b55;
+}
+
+.chartBody {
+    position: relative;
+    min-height: 470px;
+    margin-top: 14px;
+}
+
+.loading {
+    display: grid;
+    place-items: center;
+    min-height: 470px;
+    color: var(--color-text-secondary);
+    font-size: 12px;
+}

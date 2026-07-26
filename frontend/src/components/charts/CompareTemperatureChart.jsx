@@ -1,13 +1,13 @@
-import {useMemo} from "react";
+import { useMemo } from "react";
 
 import ClimateChart from "./ClimateChart/ClimateChart.jsx";
 import TemperatureSeries from "./TemperatureChart/TemperatureSeries.jsx";
 import TemperatureTooltip from "./TemperatureChart/TemperatureTooltip.jsx";
-import {getTemperatureDomain} from "./TemperatureChart/temperatureUtils.js";
+import { getTemperatureDomain } from "./TemperatureChart/temperatureUtils.js";
 
 function mergeCityWeather(firstCityWeather, secondCityWeather) {
     const secondCityByDate = new Map(
-        secondCityWeather.map((point) => [point.observed_date, point]),
+        secondCityWeather.map((point) => [point.observed_date, point])
     );
 
     return firstCityWeather.flatMap((firstPoint) => {
@@ -17,23 +17,19 @@ function mergeCityWeather(firstCityWeather, secondCityWeather) {
             return [];
         }
 
-        return [{
-            observed_date: firstPoint.observed_date,
-            firstCityMean: firstPoint.temperature_2m_mean,
-            firstCityMin: firstPoint.temperature_2m_min,
-            firstCityMax: firstPoint.temperature_2m_max,
-            firstCityRange: [
-                firstPoint.temperature_2m_min,
-                firstPoint.temperature_2m_max,
-            ],
-            secondCityMean: secondPoint.temperature_2m_mean,
-            secondCityMin: secondPoint.temperature_2m_min,
-            secondCityMax: secondPoint.temperature_2m_max,
-            secondCityRange: [
-                secondPoint.temperature_2m_min,
-                secondPoint.temperature_2m_max,
-            ],
-        }];
+        return [
+            {
+                observed_date: firstPoint.observed_date,
+                firstCityMean: firstPoint.temperature_2m_mean,
+                firstCityMin: firstPoint.temperature_2m_min,
+                firstCityMax: firstPoint.temperature_2m_max,
+                firstCityRange: [firstPoint.temperature_2m_min, firstPoint.temperature_2m_max],
+                secondCityMean: secondPoint.temperature_2m_mean,
+                secondCityMin: secondPoint.temperature_2m_min,
+                secondCityMax: secondPoint.temperature_2m_max,
+                secondCityRange: [secondPoint.temperature_2m_min, secondPoint.temperature_2m_max],
+            },
+        ];
     });
 }
 
@@ -45,51 +41,50 @@ function CompareTemperatureChart({
 }) {
     const chartData = useMemo(
         () => mergeCityWeather(firstCityWeather, secondCityWeather),
-        [firstCityWeather, secondCityWeather],
+        [firstCityWeather, secondCityWeather]
     );
 
-    const series = useMemo(() => [
-        {
-            id: "first-city",
-            label: firstCityName,
-            meanKey: "firstCityMean",
-            minKey: "firstCityMin",
-            maxKey: "firstCityMax",
-            rangeKey: "firstCityRange",
-            color: "#4f5fdb",
-        },
-        {
-            id: "second-city",
-            label: secondCityName,
-            meanKey: "secondCityMean",
-            minKey: "secondCityMin",
-            maxKey: "secondCityMax",
-            rangeKey: "secondCityRange",
-            color: "#e58b55",
-        },
-    ], [firstCityName, secondCityName]);
-
-    const yDomain = useMemo(
-        () => getTemperatureDomain(chartData, series),
-        [chartData, series],
+    const series = useMemo(
+        () => [
+            {
+                id: "first-city",
+                label: firstCityName,
+                meanKey: "firstCityMean",
+                minKey: "firstCityMin",
+                maxKey: "firstCityMax",
+                rangeKey: "firstCityRange",
+                color: "#4f5fdb",
+            },
+            {
+                id: "second-city",
+                label: secondCityName,
+                meanKey: "secondCityMean",
+                minKey: "secondCityMin",
+                maxKey: "secondCityMax",
+                rangeKey: "secondCityRange",
+                color: "#e58b55",
+            },
+        ],
+        [firstCityName, secondCityName]
     );
+
+    const yDomain = useMemo(() => getTemperatureDomain(chartData, series), [chartData, series]);
 
     if (chartData.length === 0) {
         return <p>Выберите два города для сравнения</p>;
     }
 
     return (
-        <div style={{width: "70%"}}>
+        <div style={{ width: "100%" }}>
             <ClimateChart
                 data={chartData}
                 yDomain={yDomain}
-                height={500}
+                height={470}
                 unit="°C"
-                showLegend
-                tooltipContent={<TemperatureTooltip series={series}/>}
+                tooltipContent={<TemperatureTooltip series={series} />}
             >
                 {series.map((item) => (
-                    <TemperatureSeries key={item.id} {...item}/>
+                    <TemperatureSeries key={item.id} {...item} />
                 ))}
             </ClimateChart>
         </div>
