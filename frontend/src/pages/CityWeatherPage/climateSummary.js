@@ -1,18 +1,3 @@
-const MONTH_NAMES = [
-    "Январь",
-    "Февраль",
-    "Март",
-    "Апрель",
-    "Май",
-    "Июнь",
-    "Июль",
-    "Август",
-    "Сентябрь",
-    "Октябрь",
-    "Ноябрь",
-    "Декабрь",
-];
-
 export function formatTemperature(value) {
     if (value == null) {
         return "—";
@@ -71,7 +56,7 @@ export function calculateClimateSummary(dailyWeather) {
         monthlyHumidityMax: monthlyHumidity.length ? Math.max(...monthlyHumidity) : null,
         annualWindSpeed: totals.windSpeed / dailyWeather.length,
         annualPrecipitation: monthlyPrecipitation.reduce((sum, value) => sum + value, 0),
-        wettestMonth: MONTH_NAMES[wettestMonthIndex],
+        wettestMonthIndex,
         wettestMonthPrecipitation: monthlyPrecipitation[wettestMonthIndex],
     };
 }

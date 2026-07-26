@@ -1,9 +1,11 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import ClimateChart from "./ClimateChart/ClimateChart.jsx";
 import TemperatureSeries from "./TemperatureChart/TemperatureSeries.jsx";
 import TemperatureTooltip from "./TemperatureChart/TemperatureTooltip.jsx";
 import { getTemperatureDomain } from "./TemperatureChart/temperatureUtils.js";
+import { useMeasurementFormatter } from "../../units/useMeasurementFormatter.js";
 
 function mergeCityWeather(firstCityWeather, secondCityWeather) {
     const secondCityByDate = new Map(
@@ -39,6 +41,8 @@ function CompareTemperatureChart({
     firstCityName,
     secondCityName,
 }) {
+    const { t } = useTranslation();
+    const { convertValue, unitLabel } = useMeasurementFormatter();
     const chartData = useMemo(
         () => mergeCityWeather(firstCityWeather, secondCityWeather),
         [firstCityWeather, secondCityWeather]
@@ -53,7 +57,7 @@ function CompareTemperatureChart({
                 minKey: "firstCityMin",
                 maxKey: "firstCityMax",
                 rangeKey: "firstCityRange",
-                color: "#4f5fdb",
+                color: "var(--color-accent-primary)",
             },
             {
                 id: "second-city",
@@ -62,7 +66,7 @@ function CompareTemperatureChart({
                 minKey: "secondCityMin",
                 maxKey: "secondCityMax",
                 rangeKey: "secondCityRange",
-                color: "#e58b55",
+                color: "var(--color-accent-secondary)",
             },
         ],
         [firstCityName, secondCityName]
@@ -71,7 +75,7 @@ function CompareTemperatureChart({
     const yDomain = useMemo(() => getTemperatureDomain(chartData, series), [chartData, series]);
 
     if (chartData.length === 0) {
-        return <p>Выберите два города для сравнения</p>;
+        return <p>{t("compare.chooseTwoCities")}</p>;
     }
 
     return (
@@ -80,7 +84,7 @@ function CompareTemperatureChart({
                 data={chartData}
                 yDomain={yDomain}
                 height={470}
-                unit="°C"
+                yTickFormatter={(value) => `${convertValue("temperature", value).toFixed(0)} ${unitLabel("temperature")}`}
                 tooltipContent={<TemperatureTooltip series={series} />}
             >
                 {series.map((item) => (

@@ -1,23 +1,24 @@
-import {useMemo} from "react";
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import ClimateChart from "../ClimateChart/ClimateChart.jsx";
 import WindSeries from "./WindSeries.jsx";
 import WindTooltip from "./WindTooltip.jsx";
-import {calculateWindSummary, formatWindSpeed} from "./windUtils.js";
+import { calculateWindSummary } from "./windUtils.js";
 import styles from "./WindChart.module.css";
+import { useMeasurementFormatter } from "../../../units/useMeasurementFormatter.js";
 
-function WindChart({data}) {
-    const summary = useMemo(
-        () => calculateWindSummary(data),
-        [data],
-    );
+function WindChart({ data }) {
+    const { t } = useTranslation();
+    const { convertValue, formatWind, unitLabel } = useMeasurementFormatter();
+    const summary = useMemo(() => calculateWindSummary(data), [data]);
 
     return (
         <div className={styles.chart}>
             {summary.annualAverage != null && (
                 <div className={styles.averageBadge}>
-                    <span>Средняя за год</span>
-                    <strong>{formatWindSpeed(summary.annualAverage)}</strong>
+                    <span>{t("charts.annualAverage")}</span>
+                    <strong>{formatWind(summary.annualAverage)}</strong>
                 </div>
             )}
 
@@ -25,10 +26,10 @@ function WindChart({data}) {
                 data={data}
                 yDomain={summary.yDomain}
                 height={360}
-                unit=" км/ч"
-                tooltipContent={<WindTooltip/>}
+                yTickFormatter={(value) => `${convertValue("wind", value).toFixed(1)} ${unitLabel("wind")}`}
+                tooltipContent={<WindTooltip />}
             >
-                <WindSeries annualAverage={summary.annualAverage}/>
+                <WindSeries annualAverage={summary.annualAverage} />
             </ClimateChart>
         </div>
     );

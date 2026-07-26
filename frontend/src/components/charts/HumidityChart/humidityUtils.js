@@ -1,7 +1,4 @@
-const dateFormatter = new Intl.DateTimeFormat("ru-RU", {
-    day: "numeric",
-    month: "long",
-});
+import i18n from "../../../i18n.js";
 
 export function formatHumidity(value) {
     if (value == null) {
@@ -14,7 +11,10 @@ export function formatHumidity(value) {
 export function formatHumidityDate(date) {
     const [month, day] = date.split("-").map(Number);
 
-    return dateFormatter.format(new Date(2000, month - 1, day));
+    return new Intl.DateTimeFormat(i18n.resolvedLanguage ?? "ru", {
+        day: "numeric",
+        month: "long",
+    }).format(new Date(2000, month - 1, day));
 }
 
 export function calculateAverageHumidity(data) {
@@ -22,10 +22,7 @@ export function calculateAverageHumidity(data) {
         return null;
     }
 
-    const total = data.reduce(
-        (sum, point) => sum + point.relative_humidity_2m_mean,
-        0,
-    );
+    const total = data.reduce((sum, point) => sum + point.relative_humidity_2m_mean, 0);
 
     return total / data.length;
 }

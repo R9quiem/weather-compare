@@ -1,4 +1,5 @@
-import {MONTH_ZONES} from "../ClimateChart/chartUtils.js";
+import i18n from "../../../i18n.js";
+import { MONTH_ZONES } from "../ClimateChart/chartUtils.js";
 
 export function prepareMonthlyPrecipitation(dailyWeather) {
     const monthlyTotals = Array(12).fill(0);
@@ -9,10 +10,8 @@ export function prepareMonthlyPrecipitation(dailyWeather) {
         monthlyTotals[monthIndex] += day.precipitation_sum ?? 0;
     });
 
-    const monthlyAverage = monthlyTotals.reduce(
-        (total, value) => total + value,
-        0,
-    ) / monthlyTotals.length;
+    const monthlyAverage =
+        monthlyTotals.reduce((total, value) => total + value, 0) / monthlyTotals.length;
 
     const data = MONTH_ZONES.map((month, index) => ({
         observed_date: month.labelDate,
@@ -37,5 +36,5 @@ export function formatPrecipitation(value) {
 
     const digits = value >= 10 ? 0 : 1;
 
-    return `${Number(value).toFixed(digits)} мм`;
+    return i18n.t("common.mm", { value: Number(value).toFixed(digits) });
 }

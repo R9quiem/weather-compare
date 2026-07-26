@@ -1,12 +1,15 @@
 import DashboardCard from "../../components/DashboardCard/DashboardCard.jsx";
+import { useTranslation } from "react-i18next";
 
 import { getMetricInsight } from "./metricInsights.js";
 import styles from "./CityWeatherPage.module.css";
+import { useMeasurementFormatter } from "../../units/useMeasurementFormatter.js";
 
 function TemperatureVisual({ visual }) {
+    const { t } = useTranslation();
     return (
         <div className={styles.temperatureVisual}>
-            <span>Средняя ощущаемая температура</span>
+            <span>{t("cityPage.insight.temperature.apparent")}</span>
             <strong>{visual.apparent}</strong>
             <small>{visual.difference}</small>
         </div>
@@ -14,9 +17,12 @@ function TemperatureVisual({ visual }) {
 }
 
 function PrecipitationVisual({ visual }) {
+    const { t } = useTranslation();
     return (
         <div className={styles.precipitationVisual}>
-            <span className={styles.seasonMark}>Сезонный максимум</span>
+            <span className={styles.seasonMark}>
+                {t("cityPage.insight.precipitation.seasonMaximum")}
+            </span>
             <strong>{visual.season}</strong>
             <small>{visual.share}</small>
         </div>
@@ -38,17 +44,18 @@ function HumidityVisual({ visual }) {
 }
 
 function WindVisual({ visual }) {
+    const { t } = useTranslation();
     if (visual.mode === "rose") {
         return (
             <div className={styles.windRoseVisual}>
                 <div className={styles.miniCompass}>
-                    <span className={styles.compassNorth}>С</span>
+                    <span className={styles.compassNorth}>{t("directions.short.N")}</span>
                     <div
                         className={styles.compassArrow}
                         style={{ transform: `rotate(${visual.angle}deg)` }}
                     />
                 </div>
-                <p>Стрелка показывает, откуда чаще всего приходит ветер</p>
+                <p>{t("cityPage.insight.windRose.arrow")}</p>
             </div>
         );
     }
@@ -57,7 +64,7 @@ function WindVisual({ visual }) {
         <div className={styles.windSpeedVisual}>
             <strong>{visual.range}</strong>
             <div>
-                <span>Сезонная изменчивость</span>
+                <span>{t("cityPage.insight.windSpeed.variability")}</span>
                 <p>{visual.category}</p>
             </div>
         </div>
@@ -107,7 +114,17 @@ function MetricInsightCard({
     windView,
     isLoading,
 }) {
-    const insight = getMetricInsight(selectedMetric, dailyWeather, windRose, cloudCover, windView);
+    const { t } = useTranslation();
+    const measurementFormatter = useMeasurementFormatter();
+    const insight = getMetricInsight(
+        t,
+        selectedMetric,
+        dailyWeather,
+        windRose,
+        cloudCover,
+        windView,
+        measurementFormatter
+    );
 
     const layoutClass = insight?.visual?.mode
         ? styles[`insight_${insight.variant}_${insight.visual.mode}`]
@@ -117,18 +134,19 @@ function MetricInsightCard({
         <DashboardCard
             className={`${styles.metricInsight} ${styles[`insight_${insight?.variant ?? selectedMetric}`]} ${layoutClass}`}
         >
-            <div className={`${styles.insightAccent} ${styles[selectedMetric]}`} />
             <p className={styles.insightEyebrow}>
-                {isLoading ? "Анализируем климат" : (insight?.eyebrow ?? "Климатический профиль")}
+                {isLoading
+                    ? t("cityPage.insight.analyzing")
+                    : (insight?.eyebrow ?? t("cityPage.insight.profile"))}
             </p>
             <div className={styles.insightHeading}>
-                <h2>{insight?.title ?? "Нет данных"}</h2>
+                <h2>{insight?.title ?? t("common.noData")}</h2>
                 {(isLoading || insight?.value) && (
                     <strong>{isLoading ? "…" : insight.value}</strong>
                 )}
             </div>
             <p className={styles.insightDetail}>
-                {insight?.detail ?? "Выберите город, чтобы увидеть климатическую характеристику"}
+                {insight?.detail ?? t("cityPage.insight.chooseCity")}
             </p>
 
             {!isLoading && <MetricVisual insight={insight} />}

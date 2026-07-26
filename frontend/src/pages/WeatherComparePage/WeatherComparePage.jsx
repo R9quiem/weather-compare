@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { getCities } from "../../api/weatherApi.jsx";
 import { useDailyWeather } from "../../hooks/useDailyWeather.jsx";
@@ -7,8 +8,10 @@ import CompareDashboard from "./CompareDashboard.jsx";
 import CompareOverviewCard from "./CompareOverviewCard.jsx";
 import CompareStats from "./CompareStats.jsx";
 import { calculateComparisonSummary } from "./compareSummary.js";
+import { getCityName } from "../../utils/localization.js";
 
 function WeatherComparePage() {
+    const { t } = useTranslation();
     const [cities, setCities] = useState([]);
     const [firstCityId, setFirstCityId] = useState(null);
     const [secondCityId, setSecondCityId] = useState(null);
@@ -42,8 +45,8 @@ function WeatherComparePage() {
     const secondWeather = useDailyWeather(secondCityId);
     const firstCity = cities.find((city) => String(city.id) === String(firstCityId));
     const secondCity = cities.find((city) => String(city.id) === String(secondCityId));
-    const firstCityName = firstCity?.name ?? "Город 1";
-    const secondCityName = secondCity?.name ?? "Город 2";
+    const firstCityName = getCityName(t, firstCity, t("compare.cityFallback", { number: 1 }));
+    const secondCityName = getCityName(t, secondCity, t("compare.cityFallback", { number: 2 }));
     const error = cityError || firstWeather.error || secondWeather.error;
     const isWeatherLoading = firstWeather.isLoading || secondWeather.isLoading;
 

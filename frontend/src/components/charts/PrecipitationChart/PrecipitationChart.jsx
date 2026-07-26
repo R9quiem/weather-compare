@@ -1,28 +1,24 @@
-import {useMemo} from "react";
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import ClimateChart from "../ClimateChart/ClimateChart.jsx";
 import PrecipitationSeries from "./PrecipitationSeries.jsx";
 import PrecipitationTooltip from "./PrecipitationTooltip.jsx";
-import {
-    formatPrecipitation,
-    prepareMonthlyPrecipitation,
-} from "./precipitationUtils.js";
+import { prepareMonthlyPrecipitation } from "./precipitationUtils.js";
 import styles from "./PrecipitationChart.module.css";
+import { useMeasurementFormatter } from "../../../units/useMeasurementFormatter.js";
 
-function PrecipitationChart({data}) {
-    const precipitation = useMemo(
-        () => prepareMonthlyPrecipitation(data),
-        [data],
-    );
+function PrecipitationChart({ data }) {
+    const { t } = useTranslation();
+    const { convertValue, formatPrecipitation, unitLabel } = useMeasurementFormatter();
+    const precipitation = useMemo(() => prepareMonthlyPrecipitation(data), [data]);
 
     return (
         <div className={styles.chart}>
             {data.length > 0 && (
                 <div className={styles.averageBadge}>
-                    <span>Среднее за месяц</span>
-                    <strong>
-                        {formatPrecipitation(precipitation.monthlyAverage)}
-                    </strong>
+                    <span>{t("charts.monthlyAverage")}</span>
+                    <strong>{formatPrecipitation(precipitation.monthlyAverage)}</strong>
                 </div>
             )}
 
@@ -30,14 +26,12 @@ function PrecipitationChart({data}) {
                 data={precipitation.data}
                 yDomain={precipitation.yDomain}
                 height={360}
-                unit="мм"
+                yTickFormatter={(value) => `${convertValue("precipitation", value).toFixed(1)} ${unitLabel("precipitation")}`}
                 timeScale="monthly"
                 tooltipCursor={false}
-                tooltipContent={<PrecipitationTooltip/>}
+                tooltipContent={<PrecipitationTooltip />}
             >
-                <PrecipitationSeries
-                    monthlyAverage={precipitation.monthlyAverage}
-                />
+                <PrecipitationSeries monthlyAverage={precipitation.monthlyAverage} />
             </ClimateChart>
         </div>
     );

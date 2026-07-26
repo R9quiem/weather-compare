@@ -1,36 +1,12 @@
-const MONTH_NAMES = [
-    "Январь",
-    "Февраль",
-    "Март",
-    "Апрель",
-    "Май",
-    "Июнь",
-    "Июль",
-    "Август",
-    "Сентябрь",
-    "Октябрь",
-    "Ноябрь",
-    "Декабрь",
-];
-
-const WIND_DIRECTIONS = {
-    N: "Северный",
-    NE: "Северо-восточный",
-    E: "Восточный",
-    SE: "Юго-восточный",
-    S: "Южный",
-    SW: "Юго-западный",
-    W: "Западный",
-    NW: "Северо-западный",
-};
+import { getMonthName } from "../../utils/localization.js";
 
 const WIND_ANGLES = { N: 0, NE: 45, E: 90, SE: 135, S: 180, SW: 225, W: 270, NW: 315 };
 
 const SEASONS = [
-    { name: "Зима", months: [11, 0, 1] },
-    { name: "Весна", months: [2, 3, 4] },
-    { name: "Лето", months: [5, 6, 7] },
-    { name: "Осень", months: [8, 9, 10] },
+    { key: "winter", months: [11, 0, 1] },
+    { key: "spring", months: [2, 3, 4] },
+    { key: "summer", months: [5, 6, 7] },
+    { key: "autumn", months: [8, 9, 10] },
 ];
 
 function average(values) {
@@ -39,13 +15,8 @@ function average(values) {
     return presentValues.reduce((sum, value) => sum + value, 0) / presentValues.length;
 }
 
-function formatTemperature(value) {
-    if (!Number.isFinite(value)) return "—";
-    return `${value > 0 ? "+" : ""}${value.toFixed(1)}°`;
-}
-
 function formatNumber(value, digits = 0) {
-    return Number.isFinite(value) ? value.toFixed(digits) : "—";
+    return Number.isFinite(value) ? value.toFixed(digits) : "вЂ”";
 }
 
 function groupByMonth(data, key, operation = "average") {
@@ -61,7 +32,7 @@ function groupByMonth(data, key, operation = "average") {
     });
 
     return months.map((values, index) => ({
-        month: MONTH_NAMES[index],
+        monthIndex: index,
         value:
             operation === "sum" ? values.reduce((sum, value) => sum + value, 0) : average(values),
     }));
@@ -105,7 +76,7 @@ export function addApparentTemperature(data) {
     }));
 }
 
-function temperatureInsight(dailyWeather) {
+function temperatureInsight(t, dailyWeather, formatter) {
     const actual = average(dailyWeather.map((point) => point.temperature_2m_mean));
     const apparent = average(dailyWeather.map((point) => point.apparent_temperature_mean));
     const monthly = groupByMonth(dailyWeather, "temperature_2m_mean");
@@ -116,38 +87,45 @@ function temperatureInsight(dailyWeather) {
 
     return {
         variant: "temperature",
-        eyebrow: "Температурный режим",
-        title: "Средняя температура",
-        value: formatTemperature(actual),
-        detail: "Среднесуточная климатическая норма",
+        eyebrow: t("cityPage.insight.temperature.eyebrow"),
+        title: t("cityPage.insight.temperature.title"),
+        value: formatter.formatTemperature(actual),
+        detail: t("cityPage.insight.temperature.detail"),
         secondary: [
             {
-                label: "Самый холодный месяц",
-                value: coldest?.month ?? "—",
-                detail: formatTemperature(coldest?.value),
+                label: t("cityPage.insight.temperature.coldest"),
+                value: getMonthName(t, coldest?.monthIndex),
+                detail: formatter.formatTemperature(coldest?.value),
             },
             {
-                label: "Самый тёплый месяц",
-                value: warmest?.month ?? "—",
-                detail: formatTemperature(warmest?.value),
+                label: t("cityPage.insight.temperature.warmest"),
+                value: getMonthName(t, warmest?.monthIndex),
+                detail: formatter.formatTemperature(warmest?.value),
             },
         ],
         visual: {
-            apparent: formatTemperature(apparent),
+            apparent: formatter.formatTemperature(apparent),
             difference: Number.isFinite(difference)
-                ? `${Math.abs(difference).toFixed(1)}° ${difference <= 0 ? "ниже" : "выше"} температуры воздуха`
-                : "Учитывает влажность и ветер",
+                ? t("cityPage.insight.temperature.difference", {
+                      value: formatter.formatTemperature(Math.abs(difference), { delta: true }),
+                      position: t(
+                          difference <= 0
+                              ? "cityPage.insight.temperature.below"
+                              : "cityPage.insight.temperature.above"
+                      ),
+                  })
+                : t("cityPage.insight.temperature.apparentFallback"),
         },
     };
 }
 
-function precipitationInsight(dailyWeather) {
+function precipitationInsight(t, dailyWeather, formatter) {
     const monthly = groupByMonth(dailyWeather, "precipitation_sum", "sum");
     const wettest = findExtreme(monthly, "max");
     const driest = findExtreme(monthly, "min");
     const annual = monthly.reduce((sum, item) => sum + (item.value ?? 0), 0);
     const seasonTotals = SEASONS.map((season) => ({
-        name: season.name,
+        key: season.key,
         value: season.months.reduce((sum, index) => sum + (monthly[index].value ?? 0), 0),
     }));
     const dominantSeason = findExtreme(seasonTotals, "max");
@@ -155,32 +133,34 @@ function precipitationInsight(dailyWeather) {
 
     return {
         variant: "precipitation",
-        eyebrow: "Режим осадков",
-        title: "Годовая сумма",
-        value: `${formatNumber(annual)} мм`,
-        detail: "Средняя климатическая норма дождя и снега",
+        eyebrow: t("cityPage.insight.precipitation.eyebrow"),
+        title: t("cityPage.insight.precipitation.title"),
+        value: formatter.formatPrecipitation(annual),
+        detail: t("cityPage.insight.precipitation.detail"),
         secondary: [
             {
-                label: "Максимум осадков",
-                value: wettest?.month ?? "—",
-                detail: `${formatNumber(wettest?.value)} мм`,
+                label: t("cityPage.insight.precipitation.maximum"),
+                value: getMonthName(t, wettest?.monthIndex),
+                detail: formatter.formatPrecipitation(wettest?.value),
             },
             {
-                label: "Минимум осадков",
-                value: driest?.month ?? "—",
-                detail: `${formatNumber(driest?.value)} мм`,
+                label: t("cityPage.insight.precipitation.minimum"),
+                value: getMonthName(t, driest?.monthIndex),
+                detail: formatter.formatPrecipitation(driest?.value),
             },
         ],
         visual: {
-            season: dominantSeason?.name ?? "—",
+            season: dominantSeason ? t(`seasons.${dominantSeason.key}`) : "вЂ”",
             share: Number.isFinite(seasonShare)
-                ? `${seasonShare.toFixed(0)}% годовой суммы`
-                : "Нет данных",
+                ? t("cityPage.insight.precipitation.annualShare", {
+                      value: seasonShare.toFixed(0),
+                  })
+                : t("common.noData"),
         },
     };
 }
 
-function humidityInsight(dailyWeather) {
+function humidityInsight(t, dailyWeather) {
     const monthly = groupByMonth(dailyWeather, "relative_humidity_2m_mean");
     const mostHumid = findExtreme(monthly, "max");
     const driest = findExtreme(monthly, "min");
@@ -192,30 +172,30 @@ function humidityInsight(dailyWeather) {
 
     return {
         variant: "humidity",
-        eyebrow: "Режим влажности",
-        title: "Сезонный диапазон",
+        eyebrow: t("cityPage.insight.humidity.eyebrow"),
+        title: t("cityPage.insight.humidity.title"),
         value: `${formatNumber(range)}%`,
-        detail: "Разница между крайними среднемесячными значениями",
+        detail: t("cityPage.insight.humidity.detail"),
         secondary: [
             {
-                label: "Самый сухой месяц",
-                value: driest?.month ?? "—",
+                label: t("cityPage.insight.humidity.driest"),
+                value: getMonthName(t, driest?.monthIndex),
                 detail: `${formatNumber(driest?.value)}%`,
             },
             {
-                label: "Самый влажный месяц",
-                value: mostHumid?.month ?? "—",
+                label: t("cityPage.insight.humidity.mostHumid"),
+                value: getMonthName(t, mostHumid?.monthIndex),
                 detail: `${formatNumber(mostHumid?.value)}%`,
             },
         ],
         visual: {
             level: Math.round(annual ?? 0),
-            caption: "Средняя относительная влажность за год",
+            caption: t("cityPage.insight.humidity.annual"),
         },
     };
 }
 
-function windInsight(dailyWeather, windRose, windView) {
+function windInsight(t, dailyWeather, windRose, windView, formatter) {
     if (windView === "rose") {
         const prevailing = windRose.reduce(
             (result, sector) => (!result || sector.frequency > result.frequency ? sector : result),
@@ -228,21 +208,23 @@ function windInsight(dailyWeather, windRose, windView) {
 
         return {
             variant: "wind",
-            eyebrow: "Направление ветра",
-            title: "Преобладающее направление",
-            value: WIND_DIRECTIONS[prevailing?.direction] ?? "—",
+            eyebrow: t("cityPage.insight.windRose.eyebrow"),
+            title: t("cityPage.insight.windRose.title"),
+            value: prevailing ? t(`directions.${prevailing.direction}`) : "вЂ”",
             detail: prevailing
-                ? `${prevailing.frequency.toFixed(1)}% всех наблюдений`
-                : "Распределение по направлениям",
+                ? t("cityPage.insight.windRose.frequency", {
+                      value: prevailing.frequency.toFixed(1),
+                  })
+                : t("cityPage.insight.windRose.distribution"),
             secondary: [
                 {
-                    label: "Второе по частоте",
-                    value: WIND_DIRECTIONS[secondDirection?.direction] ?? "—",
-                    detail: secondDirection ? `${secondDirection.frequency.toFixed(1)}%` : "—",
+                    label: t("cityPage.insight.windRose.second"),
+                    value: secondDirection ? t(`directions.${secondDirection.direction}`) : "вЂ”",
+                    detail: secondDirection ? `${secondDirection.frequency.toFixed(1)}%` : "вЂ”",
                 },
                 {
-                    label: "Средняя скорость этого ветра",
-                    value: prevailing ? `${formatNumber(prevailing.average_speed, 1)} км/ч` : "—",
+                    label: t("cityPage.insight.windRose.averageSpeed"),
+                    value: prevailing ? formatter.formatWind(prevailing.average_speed) : "вЂ”",
                 },
             ],
             visual: {
@@ -263,58 +245,58 @@ function windInsight(dailyWeather, windRose, windView) {
     const variabilityRatio = Number.isFinite(variability) && annual ? variability / annual : null;
     const variabilityLabel =
         variabilityRatio == null
-            ? "Нет данных"
+            ? t("common.noData")
             : variabilityRatio < 0.15
-              ? "Низкая"
+              ? t("cityPage.insight.windSpeed.low")
               : variabilityRatio < 0.3
-                ? "Умеренная"
-                : "Высокая";
+                ? t("cityPage.insight.windSpeed.moderate")
+                : t("cityPage.insight.windSpeed.high");
 
     return {
         variant: "wind",
-        eyebrow: "Ветровой режим",
-        title: "Средняя скорость ветра",
-        value: `${formatNumber(annual, 1)} км/ч`,
-        detail: "Среднесуточная скорость на высоте 10 м",
+        eyebrow: t("cityPage.insight.windSpeed.eyebrow"),
+        title: t("cityPage.insight.windSpeed.title"),
+        value: formatter.formatWind(annual),
+        detail: t("cityPage.insight.windSpeed.detail"),
         secondary: [
             {
-                label: "Наиболее ветреный месяц",
-                value: windiest?.month ?? "—",
-                detail: `${formatNumber(windiest?.value, 1)} км/ч`,
+                label: t("cityPage.insight.windSpeed.windiest"),
+                value: getMonthName(t, windiest?.monthIndex),
+                detail: formatter.formatWind(windiest?.value),
             },
             {
-                label: "Наиболее спокойный месяц",
-                value: calmest?.month ?? "—",
-                detail: `${formatNumber(calmest?.value, 1)} км/ч`,
+                label: t("cityPage.insight.windSpeed.calmest"),
+                value: getMonthName(t, calmest?.monthIndex),
+                detail: formatter.formatWind(calmest?.value),
             },
         ],
         visual: {
             mode: "speed",
-            range: `${formatNumber(variability, 1)} км/ч`,
+            range: formatter.formatWind(variability),
             category: variabilityLabel,
         },
     };
 }
 
-function cloudInsight(cloudCover) {
+function cloudInsight(t, cloudCover) {
     const values = [
         {
-            name: "Ясное небо",
-            shortLabel: "ясно",
+            name: t("cityPage.insight.cloud.clear"),
+            shortLabel: t("cityPage.insight.cloud.clearShort"),
             value: average(cloudCover.map((point) => point.clear)),
-            color: "#8ec5f4",
+            color: "var(--chart-cloud-clear)",
         },
         {
-            name: "Переменная облачность",
-            shortLabel: "частично",
+            name: t("cityPage.insight.cloud.partly"),
+            shortLabel: t("cityPage.insight.cloud.partlyShort"),
             value: average(cloudCover.map((point) => point.partly_cloudy)),
-            color: "#c9d1dc",
+            color: "var(--chart-cloud-partly)",
         },
         {
-            name: "Пасмурное небо",
-            shortLabel: "пасмурно",
+            name: t("cityPage.insight.cloud.cloudy"),
+            shortLabel: t("cityPage.insight.cloud.cloudyShort"),
             value: average(cloudCover.map((point) => point.cloudy)),
-            color: "#687484",
+            color: "var(--chart-cloud-overcast)",
         },
     ];
     const dominant = findExtreme(values, "max");
@@ -325,42 +307,49 @@ function cloudInsight(cloudCover) {
 
     return {
         variant: "cloud",
-        eyebrow: "Режим облачности",
+        eyebrow: t("cityPage.insight.cloud.eyebrow"),
         title: dominant
-            ? `Преобладает: ${dominant.name.toLowerCase()} — ${formatNumber(dominant.value)}%`
-            : "Преобладающее состояние — нет данных",
+            ? t("cityPage.insight.cloud.dominant", {
+                  state: dominant.name.toLowerCase(),
+                  value: formatNumber(dominant.value),
+              })
+            : t("cityPage.insight.cloud.dominantEmpty"),
         value: null,
-        detail: "Средняя доля дней за год",
+        detail: t("cityPage.insight.cloud.detail"),
         secondary: [
             {
-                label: "Ясно против пасмурно",
+                label: t("cityPage.insight.cloud.clearVsCloudy"),
                 value: `${formatNumber(contrast)}%`,
-                detail: clear >= cloudy ? "чаще ясно" : "чаще пасмурно",
+                detail: t(
+                    clear >= cloudy
+                        ? "cityPage.insight.cloud.moreClear"
+                        : "cityPage.insight.cloud.moreCloudy"
+                ),
             },
             {
-                label: "Крайние состояния",
+                label: t("cityPage.insight.cloud.extremes"),
                 value: `${formatNumber(extremesShare)}%`,
-                detail: "ясно или пасмурно",
+                detail: t("cityPage.insight.cloud.extremesDetail"),
             },
         ],
         visual: { segments: values },
     };
 }
 
-export function getMetricInsight(metric, dailyWeather, windRose, cloudCover, windView) {
+export function getMetricInsight(t, metric, dailyWeather, windRose, cloudCover, windView, formatter) {
     if (!dailyWeather.length && metric !== "cloud") return null;
 
     switch (metric) {
         case "temperature":
-            return temperatureInsight(dailyWeather);
+            return temperatureInsight(t, dailyWeather, formatter);
         case "precipitation":
-            return precipitationInsight(dailyWeather);
+            return precipitationInsight(t, dailyWeather, formatter);
         case "humidity":
-            return humidityInsight(dailyWeather);
+            return humidityInsight(t, dailyWeather);
         case "wind":
-            return windInsight(dailyWeather, windRose, windView);
+            return windInsight(t, dailyWeather, windRose, windView, formatter);
         case "cloud":
-            return cloudInsight(cloudCover);
+            return cloudInsight(t, cloudCover);
         default:
             return null;
     }

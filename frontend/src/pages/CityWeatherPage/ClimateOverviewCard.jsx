@@ -5,25 +5,11 @@ import TemperatureChart from "../../components/charts/TemperatureChart/Temperatu
 import WindChart from "../../components/charts/WindChart/WindChart.jsx";
 import WindRoseChart from "../../components/charts/WindRoseChart/WindRoseChart.jsx";
 import DashboardCard from "../../components/DashboardCard/DashboardCard.jsx";
+import { useTranslation } from "react-i18next";
 
 import styles from "./CityWeatherPage.module.css";
 
-const WEATHER_METRICS = [
-    { key: "temperature", label: "Температура" },
-    { key: "precipitation", label: "Осадки" },
-    { key: "humidity", label: "Влажность" },
-    { key: "wind", label: "Ветер" },
-    { key: "cloud", label: "Облачность" },
-];
-
-const CHART_NOTES = {
-    temperature: "Температура воздуха на высоте 2 м · среднесуточные значения",
-    precipitation: "Атмосферные осадки (дождь и снег) · среднемесячная сумма",
-    humidity: "Относительная влажность воздуха на высоте 2 м · среднесуточные значения",
-    windSpeed: "Скорость ветра на высоте 10 м · среднесуточные значения",
-    windRose: "Направления ветра на высоте 10 м · распределение по почасовым наблюдениям",
-    cloud: "Доля дней по категориям · 24 почасовых наблюдения в сутки · пороги 20% и 80%",
-};
+const WEATHER_METRICS = ["temperature", "precipitation", "humidity", "wind", "cloud"];
 
 function ClimateOverviewCard({
     dailyWeather,
@@ -34,27 +20,24 @@ function ClimateOverviewCard({
     windView,
     setWindView,
 }) {
+    const { t } = useTranslation();
     const showWindRose = selectedMetric === "wind" && windView === "rose";
-
-    const selectedMetricLabel = WEATHER_METRICS.find(
-        (metric) => metric.key === selectedMetric
-    )?.label;
-    let chartNote =
-        selectedMetric === "wind"
-            ? CHART_NOTES[showWindRose ? "windRose" : "windSpeed"]
-            : CHART_NOTES[selectedMetric];
+    const selectedMetricLabel = t(`metrics.${selectedMetric}`);
+    const noteKey =
+        selectedMetric === "wind" ? (showWindRose ? "windRose" : "windSpeed") : selectedMetric;
+    let chartNote = t(`cityPage.chartNotes.${noteKey}`);
 
     if (selectedMetric === "cloud") {
         chartNote += cloudCover?.[0]?.calibrated
-            ? " · данные ERA5 скорректированы по наблюдениям станции"
-            : " · данные реанализа ERA5";
+            ? t("cityPage.chartNotes.calibrated")
+            : t("cityPage.chartNotes.reanalysis");
     }
 
     return (
         <DashboardCard className={styles.chart}>
             <div className={styles.chartHeader}>
                 <div className={styles.chartHeading}>
-                    <p className={styles.chartLabel}>Обзор климата</p>
+                    <p className={styles.chartLabel}>{t("cityPage.overview")}</p>
                     <div className={styles.chartTitleRow}>
                         <h2 className={styles.chartTitle}>{selectedMetricLabel}</h2>
                     </div>
@@ -65,24 +48,24 @@ function ClimateOverviewCard({
                 <div className={styles.metricPickerShell}>
                     <div className={styles.metricPicker} role="group">
                         {WEATHER_METRICS.map((metric) => {
-                            const isWindMetric = metric.key === "wind";
+                            const isWindMetric = metric === "wind";
 
                             return (
-                                <div key={metric.key} className={styles.metricButtonSlot}>
+                                <div key={metric} className={styles.metricButtonSlot}>
                                     <button
                                         type="button"
                                         className={styles.metricButton}
-                                        aria-pressed={selectedMetric === metric.key}
-                                        onClick={() => setSelectedMetric(metric.key)}
+                                        aria-pressed={selectedMetric === metric}
+                                        onClick={() => setSelectedMetric(metric)}
                                     >
-                                        {metric.label}
+                                        {t(`metrics.${metric}`)}
                                     </button>
 
                                     {isWindMetric && selectedMetric === "wind" && (
                                         <div
                                             className={styles.windViewPicker}
                                             role="group"
-                                            aria-label="Вид графика ветра"
+                                            aria-label={t("cityPage.windView")}
                                         >
                                             <button
                                                 type="button"
@@ -90,7 +73,7 @@ function ClimateOverviewCard({
                                                 aria-pressed={windView === "speed"}
                                                 onClick={() => setWindView("speed")}
                                             >
-                                                Скорость
+                                                {t("cityPage.speed")}
                                             </button>
                                             <button
                                                 type="button"
@@ -98,7 +81,7 @@ function ClimateOverviewCard({
                                                 aria-pressed={windView === "rose"}
                                                 onClick={() => setWindView("rose")}
                                             >
-                                                Роза ветров
+                                                {t("cityPage.windRose")}
                                             </button>
                                         </div>
                                     )}
@@ -127,9 +110,7 @@ function ClimateOverviewCard({
                 {!["temperature", "precipitation", "humidity", "wind", "cloud"].includes(
                     selectedMetric
                 ) && (
-                    <div className={styles.chartPlaceholder}>
-                        График показателя будет добавлен позже
-                    </div>
+                    <div className={styles.chartPlaceholder}>{t("cityPage.chartPlaceholder")}</div>
                 )}
             </div>
         </DashboardCard>

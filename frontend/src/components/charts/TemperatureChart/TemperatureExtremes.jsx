@@ -1,8 +1,11 @@
-import {ReferenceDot} from "recharts";
+import { ReferenceDot } from "recharts";
+import { useTranslation } from "react-i18next";
 
-import {formatDate, formatTemperature} from "./temperatureUtils.js";
+import { formatDate } from "./temperatureUtils.js";
+import { useMeasurementFormatter } from "../../../units/useMeasurementFormatter.js";
 
-function ExtremeLabel({viewBox, point, kind, valueKey}) {
+function ExtremeLabel({ viewBox, point, kind, valueKey }) {
+    const { formatTemperature } = useMeasurementFormatter();
     if (!viewBox || !point) {
         return null;
     }
@@ -20,26 +23,20 @@ function ExtremeLabel({viewBox, point, kind, valueKey}) {
                 width={width}
                 height={height}
                 rx={9}
-                fill="#ffffff"
-                stroke="#cfd5df"
+                fill="var(--color-surface)"
+                stroke="var(--color-divider)"
             />
             <text
                 x={x + width / 2}
                 y={y + 13}
                 textAnchor="middle"
-                fill="#343b47"
+                fill="var(--color-text-strong)"
                 fontSize={10}
                 fontWeight={650}
             >
                 {kind} {formatTemperature(point[valueKey])}
             </text>
-            <text
-                x={x + width / 2}
-                y={y + 26}
-                textAnchor="middle"
-                fill="#7c8490"
-                fontSize={9}
-            >
+            <text x={x + width / 2} y={y + 26} textAnchor="middle" fill="var(--color-text-muted)" fontSize={9}>
                 {formatDate(point.observed_date, true)}
             </text>
         </g>
@@ -50,8 +47,9 @@ function TemperatureExtremes({
     extremes,
     minKey = "temperature_2m_min",
     maxKey = "temperature_2m_max",
-    color = "#4f5fdb",
+    color = "var(--color-accent-primary)",
 }) {
+    const { t } = useTranslation();
     if (!extremes) {
         return null;
     }
@@ -63,12 +61,12 @@ function TemperatureExtremes({
                 y={extremes.max[maxKey]}
                 r={3.5}
                 fill={color}
-                stroke="#ffffff"
+                stroke="var(--color-surface)"
                 strokeWidth={1.5}
                 label={
                     <ExtremeLabel
                         point={extremes.max}
-                        kind="Макс"
+                        kind={t("charts.maxShort")}
                         valueKey={maxKey}
                     />
                 }
@@ -78,12 +76,12 @@ function TemperatureExtremes({
                 y={extremes.min[minKey]}
                 r={3.5}
                 fill={color}
-                stroke="#ffffff"
+                stroke="var(--color-surface)"
                 strokeWidth={1.5}
                 label={
                     <ExtremeLabel
                         point={extremes.min}
-                        kind="Мин"
+                        kind={t("charts.minShort")}
                         valueKey={minKey}
                     />
                 }

@@ -1,7 +1,11 @@
 import styles from "./TemperatureChart.module.css";
-import { formatDate, formatTemperature } from "./temperatureUtils.js";
+import { formatDate } from "./temperatureUtils.js";
+import { useTranslation } from "react-i18next";
+import { useMeasurementFormatter } from "../../../units/useMeasurementFormatter.js";
 
 function TemperatureTooltip({ active, label, payload, series, apparentTemperatureKey }) {
+    const { t } = useTranslation();
+    const { formatTemperature } = useMeasurementFormatter();
     if (!active) {
         return null;
     }
@@ -34,24 +38,24 @@ function TemperatureTooltip({ active, label, payload, series, apparentTemperatur
                     )}
 
                     <div className={`${styles.tooltipRow} ${styles.tooltipMean}`}>
-                        <span>Средняя</span>
+                        <span>{t("charts.average")}</span>
                         <strong>{formatTemperature(point[item.meanKey])}</strong>
                     </div>
 
                     {apparentTemperatureKey && Number.isFinite(point[apparentTemperatureKey]) && (
                         <div className={`${styles.tooltipRow} ${styles.tooltipApparent}`}>
-                            <span>Ощущается</span>
+                            <span>{t("charts.apparent")}</span>
                             <strong>{formatTemperature(point[apparentTemperatureKey])}</strong>
                         </div>
                     )}
 
                     <div className={styles.tooltipRange}>
                         <div className={styles.tooltipRow}>
-                            <span>Минимум</span>
+                            <span>{t("charts.minimum")}</span>
                             <strong>{formatTemperature(point[item.minKey])}</strong>
                         </div>
                         <div className={styles.tooltipRow}>
-                            <span>Максимум</span>
+                            <span>{t("charts.maximum")}</span>
                             <strong>{formatTemperature(point[item.maxKey])}</strong>
                         </div>
                     </div>

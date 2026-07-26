@@ -1,14 +1,16 @@
-import {formatWindDate, formatWindSpeed} from "./windUtils.js";
+import { formatWindDate } from "./windUtils.js";
+import { useTranslation } from "react-i18next";
 import styles from "./WindChart.module.css";
+import { useMeasurementFormatter } from "../../../units/useMeasurementFormatter.js";
 
-function WindTooltip({active, label, payload}) {
+function WindTooltip({ active, label, payload }) {
+    const { t } = useTranslation();
+    const { formatWind } = useMeasurementFormatter();
     if (!active) {
         return null;
     }
 
-    const point = payload?.find(
-        (entry) => entry.payload?.observed_date,
-    )?.payload;
+    const point = payload?.find((entry) => entry.payload?.observed_date)?.payload;
 
     if (!point) {
         return null;
@@ -17,11 +19,11 @@ function WindTooltip({active, label, payload}) {
     return (
         <div className={styles.tooltip}>
             <p className={styles.tooltipDate}>{formatWindDate(label)}</p>
-            <span className={styles.tooltipLabel}>Средняя скорость</span>
+            <span className={styles.tooltipLabel}>{t("charts.averageWind")}</span>
             <strong className={styles.tooltipValue}>
-                {formatWindSpeed(point.wind_speed_10m_mean)}
+                {formatWind(point.wind_speed_10m_mean)}
             </strong>
-            <small className={styles.tooltipMeta}>На высоте 10 м</small>
+            <small className={styles.tooltipMeta}>{t("charts.atTenMetres")}</small>
         </div>
     );
 }

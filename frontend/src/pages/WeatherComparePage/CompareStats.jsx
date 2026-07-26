@@ -1,46 +1,55 @@
 import DashboardCard from "../../components/DashboardCard/DashboardCard.jsx";
+import { useTranslation } from "react-i18next";
 
+import { getCityName } from "../../utils/localization.js";
 import styles from "./WeatherComparePage.module.css";
+import { useMeasurementFormatter } from "../../units/useMeasurementFormatter.js";
 
 function CompareStats({ summary }) {
-    const leaderRgb =
+    const { t } = useTranslation();
+    const { formatPrecipitation, formatTemperature, formatWind } = useMeasurementFormatter();
+    const leaderColor =
         summary.leaderSide === "first"
-            ? "79, 95, 219"
+            ? "var(--color-accent-primary)"
             : summary.leaderSide === "second"
-              ? "229, 139, 85"
-              : "142, 151, 165";
-    const differenceOpacity =
-        summary.leaderSide === "neutral" ? 0.04 : 0.06 + summary.differenceIntensity * 0.2;
-    const leaderStyle = {
-        borderColor: `rgba(${leaderRgb}, 0.18)`,
-        background: `linear-gradient(105deg, #ffffff 50%, rgba(${leaderRgb}, 0.11))`,
+              ? "var(--color-accent-secondary)"
+              : "var(--color-text-subtle)";
+    const resultStyle = {
+        "--summary-accent": leaderColor,
     };
-    const differenceStyle = {
-        borderColor: `rgba(${leaderRgb}, ${differenceOpacity.toFixed(3)})`,
-        background: `linear-gradient(105deg, #ffffff 38%, rgba(${leaderRgb}, ${differenceOpacity.toFixed(3)}))`,
-    };
+    const formattedDifference = (() => {
+        if (summary.difference == null) return "—";
+        if (summary.metric === "temperature") return formatTemperature(summary.difference, { delta: true });
+        if (summary.metric === "precipitation") return formatPrecipitation(summary.difference);
+        if (summary.metric === "wind") return formatWind(summary.difference);
+        return t("common.percentagePoints", { value: summary.difference.toFixed(1) });
+    })();
+    const leaderName = summary.isTie ? t("compare.summary.tie") : getCityName(t, summary.leader);
 
     return (
-        <div className={styles.summary} role="region" aria-label="Основные результаты сравнения">
-            <DashboardCard className={styles.summaryItem}>
-                <span>Период наблюдений</span>
+        <>
+            <DashboardCard
+                className={styles.summaryItem}
+                aria-label={t("compare.period")}
+            >
+                <span>{t("compare.period")}</span>
                 <strong>1995–2025</strong>
             </DashboardCard>
             <DashboardCard
-                className={`${styles.summaryItem} ${styles.summaryLeader}`}
-                style={leaderStyle}
+                className={styles.summaryResult}
+                style={resultStyle}
+                aria-label={t("compare.results")}
             >
-                <span>{summary.leaderLabel}</span>
-                <strong>{summary.leaderName}</strong>
+                <div className={`${styles.summaryMetric} ${styles.summaryLeaderMetric}`}>
+                    <span>{t(`compare.summary.${summary.leaderLabelKey}`)}</span>
+                    <strong>{leaderName}</strong>
+                </div>
+                <div className={styles.summaryMetric}>
+                    <span>{t(`compare.summary.${summary.differenceLabelKey}`)}</span>
+                    <strong>{formattedDifference}</strong>
+                </div>
             </DashboardCard>
-            <DashboardCard
-                className={`${styles.summaryItem} ${styles.summaryDifference}`}
-                style={differenceStyle}
-            >
-                <span>{summary.differenceLabel}</span>
-                <strong>{summary.difference}</strong>
-            </DashboardCard>
-        </div>
+        </>
     );
 }
 

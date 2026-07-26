@@ -1,4 +1,5 @@
 import DashboardCard from "../../components/DashboardCard/DashboardCard.jsx";
+import { useTranslation } from "react-i18next";
 import {
     CompareCloudCoverChart,
     CompareHumidityChart,
@@ -10,13 +11,7 @@ import CompareTemperatureChart from "../../components/charts/CompareTemperatureC
 
 import styles from "./WeatherComparePage.module.css";
 
-const WEATHER_METRICS = [
-    { key: "temperature", label: "Температура" },
-    { key: "precipitation", label: "Осадки" },
-    { key: "humidity", label: "Влажность" },
-    { key: "wind", label: "Ветер" },
-    { key: "cloud", label: "Облачность" },
-];
+const WEATHER_METRICS = ["temperature", "precipitation", "humidity", "wind", "cloud"];
 
 function CompareOverviewCard({
     firstWeather,
@@ -30,9 +25,8 @@ function CompareOverviewCard({
     isLoading,
     error,
 }) {
-    const selectedMetricLabel = WEATHER_METRICS.find(
-        (metric) => metric.key === selectedMetric
-    )?.label;
+    const { t } = useTranslation();
+    const selectedMetricLabel = t(`metrics.${selectedMetric}`);
     const chartProps = {
         firstData: firstWeather.data,
         secondData: secondWeather.data,
@@ -45,7 +39,7 @@ function CompareOverviewCard({
             <div className={styles.chartSection}>
                 <div className={styles.chartHeader}>
                     <div>
-                        <p className={styles.chartEyebrow}>Обзор климата</p>
+                        <p className={styles.chartEyebrow}>{t("compare.overview")}</p>
                         <h2>{selectedMetricLabel}</h2>
                     </div>
 
@@ -53,17 +47,17 @@ function CompareOverviewCard({
                         <div
                             className={styles.metricPicker}
                             role="group"
-                            aria-label="Показатель для сравнения"
+                            aria-label={t("compare.metricSelection")}
                         >
                             {WEATHER_METRICS.map((metric) => (
                                 <button
-                                    key={metric.key}
+                                    key={metric}
                                     type="button"
                                     className={styles.metricButton}
-                                    aria-pressed={selectedMetric === metric.key}
-                                    onClick={() => setSelectedMetric(metric.key)}
+                                    aria-pressed={selectedMetric === metric}
+                                    onClick={() => setSelectedMetric(metric)}
                                 >
-                                    {metric.label}
+                                    {t(`metrics.${metric}`)}
                                 </button>
                             ))}
                         </div>
@@ -72,27 +66,27 @@ function CompareOverviewCard({
                             <div
                                 className={styles.windPicker}
                                 role="group"
-                                aria-label="Вид графика ветра"
+                                aria-label={t("compare.windView")}
                             >
                                 <button
                                     type="button"
                                     aria-pressed={windView === "speed"}
                                     onClick={() => setWindView("speed")}
                                 >
-                                    Скорость
+                                    {t("cityPage.speed")}
                                 </button>
                                 <button
                                     type="button"
                                     aria-pressed={windView === "rose"}
                                     onClick={() => setWindView("rose")}
                                 >
-                                    Роза ветров
+                                    {t("cityPage.windRose")}
                                 </button>
                             </div>
                         )}
 
                         {selectedMetric !== "cloud" && (
-                            <div className={styles.legend} aria-label="Легенда графика">
+                            <div className={styles.legend} aria-label={t("compare.legend")}>
                                 <span>
                                     <i className={styles.blueDot} /> {firstCityName}
                                 </span>
@@ -106,7 +100,7 @@ function CompareOverviewCard({
 
                 <div className={styles.chartBody}>
                     {isLoading && (
-                        <div className={styles.loading}>Загружаем климатические данные…</div>
+                        <div className={styles.loading}>{t("compare.loadingClimate")}</div>
                     )}
 
                     {!isLoading && !error && selectedMetric === "temperature" && (

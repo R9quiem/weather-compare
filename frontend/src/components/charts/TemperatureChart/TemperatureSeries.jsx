@@ -8,7 +8,7 @@ function TemperatureSeries({
     minKey,
     maxKey,
     rangeKey,
-    color = "#4f5fdb",
+    color = "var(--color-accent-primary)",
 }) {
     const reactId = useId().replaceAll(":", "");
     const gradientId = `temperature-range-${id}-${reactId}`;
@@ -74,7 +74,7 @@ function TemperatureSeries({
                 activeDot={{
                     r: 4,
                     fill: color,
-                    stroke: "#ffffff",
+                    stroke: "var(--color-white)",
                     strokeWidth: 2,
                 }}
                 isAnimationActive={false}

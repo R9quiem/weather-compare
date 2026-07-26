@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { Line } from "recharts";
+import { useTranslation } from "react-i18next";
 
 import ClimateChart from "../ClimateChart/ClimateChart.jsx";
 import TemperatureExtremes from "./TemperatureExtremes.jsx";
@@ -11,20 +12,26 @@ import {
     getTemperatureExtremes,
 } from "./temperatureUtils.js";
 import styles from "./TemperatureChart.module.css";
+import { useMeasurementFormatter } from "../../../units/useMeasurementFormatter.js";
 
 const TEMPERATURE_SERIES = {
     id: "city-temperature",
-    label: "Средняя температура",
     meanKey: "temperature_2m_mean",
     minKey: "temperature_2m_min",
     maxKey: "temperature_2m_max",
     rangeKey: "temperatureRange",
-    color: "#4f5fdb",
+    color: "var(--color-accent-primary)",
 };
 const APPARENT_TEMPERATURE_KEY = "apparent_temperature_mean";
-const APPARENT_TEMPERATURE_COLOR = "#8f98a6";
+const APPARENT_TEMPERATURE_COLOR = "var(--chart-secondary)";
 
 function TemperatureChart({ data }) {
+    const { t } = useTranslation();
+    const { convertValue, unitLabel } = useMeasurementFormatter();
+    const temperatureSeries = {
+        ...TEMPERATURE_SERIES,
+        label: t("charts.averageTemperature"),
+    };
     const chartData = useMemo(() => addTemperatureRange(data), [data]);
     const yDomain = useMemo(() => {
         const baseDomain = getTemperatureDomain(chartData, [TEMPERATURE_SERIES]);
@@ -46,11 +53,11 @@ function TemperatureChart({ data }) {
             <div className={styles.averageBadge}>
                 <span className={styles.averageBadgeItem}>
                     <i className={styles.airTemperatureKey} />
-                    Температура воздуха
+                    {t("charts.airTemperature")}
                 </span>
                 <span className={styles.averageBadgeItem}>
                     <i className={styles.apparentTemperatureKey} />
-                    Ощущаемая температура
+                    {t("charts.apparentTemperature")}
                 </span>
             </div>
 
@@ -58,19 +65,19 @@ function TemperatureChart({ data }) {
                 data={chartData}
                 yDomain={yDomain}
                 height={360}
-                unit="°C"
+                yTickFormatter={(value) => `${convertValue("temperature", value).toFixed(0)} ${unitLabel("temperature")}`}
                 tooltipContent={
                     <TemperatureTooltip
-                        series={[TEMPERATURE_SERIES]}
+                        series={[temperatureSeries]}
                         apparentTemperatureKey={APPARENT_TEMPERATURE_KEY}
                     />
                 }
             >
-                <TemperatureSeries {...TEMPERATURE_SERIES} />
+                <TemperatureSeries {...temperatureSeries} />
                 <Line
                     type="monotone"
                     dataKey={APPARENT_TEMPERATURE_KEY}
-                    name="Средняя ощущаемая"
+                    name={t("charts.averageApparent")}
                     stroke={APPARENT_TEMPERATURE_COLOR}
                     strokeWidth={2}
                     strokeDasharray="7 5"
@@ -78,7 +85,7 @@ function TemperatureChart({ data }) {
                     activeDot={{
                         r: 4,
                         fill: APPARENT_TEMPERATURE_COLOR,
-                        stroke: "#ffffff",
+                        stroke: "var(--color-white)",
                         strokeWidth: 2,
                     }}
                     isAnimationActive={false}

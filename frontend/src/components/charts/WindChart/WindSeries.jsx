@@ -1,7 +1,9 @@
 import { useId } from "react";
 import { Area, Line, ReferenceLine } from "recharts";
+import { useTranslation } from "react-i18next";
 
-function WindSeries({ dataKey = "wind_speed_10m_mean", annualAverage, color = "#3f77bf" }) {
+function WindSeries({ dataKey = "wind_speed_10m_mean", annualAverage, color = "var(--chart-wind)" }) {
+    const { t } = useTranslation();
     const reactId = useId().replaceAll(":", "");
     const gradientId = `wind-area-${reactId}`;
 
@@ -17,7 +19,7 @@ function WindSeries({ dataKey = "wind_speed_10m_mean", annualAverage, color = "#
             {annualAverage != null && (
                 <ReferenceLine
                     y={annualAverage}
-                    stroke="#8793a5"
+                    stroke="var(--chart-secondary)"
                     strokeWidth={1}
                     strokeDasharray="4 4"
                 />
@@ -37,14 +39,14 @@ function WindSeries({ dataKey = "wind_speed_10m_mean", annualAverage, color = "#
             <Line
                 type="monotone"
                 dataKey={dataKey}
-                name="Средняя скорость ветра"
+                name={t("charts.averageWind")}
                 stroke={color}
                 strokeWidth={2.4}
                 dot={false}
                 activeDot={{
                     r: 4,
                     fill: color,
-                    stroke: "#ffffff",
+                    stroke: "var(--color-white)",
                     strokeWidth: 2,
                 }}
                 isAnimationActive={false}

@@ -1,11 +1,13 @@
 import { useId } from "react";
 import { Area, Line, ReferenceLine } from "recharts";
+import { useTranslation } from "react-i18next";
 
 function HumiditySeries({
     dataKey = "relative_humidity_2m_mean",
     averageHumidity,
-    color = "#3f77bf",
+    color = "var(--chart-humidity)",
 }) {
+    const { t } = useTranslation();
     const reactId = useId().replaceAll(":", "");
     const gradientId = `humidity-area-${reactId}`;
 
@@ -21,7 +23,7 @@ function HumiditySeries({
             {averageHumidity != null && (
                 <ReferenceLine
                     y={averageHumidity}
-                    stroke="#7f979b"
+                    stroke="var(--chart-secondary)"
                     strokeWidth={1}
                     strokeDasharray="4 4"
                 />
@@ -41,14 +43,14 @@ function HumiditySeries({
             <Line
                 type="monotone"
                 dataKey={dataKey}
-                name="Средняя влажность"
+                name={t("charts.averageHumidity")}
                 stroke={color}
                 strokeWidth={2.5}
                 dot={false}
                 activeDot={{
                     r: 4,
                     fill: color,
-                    stroke: "#ffffff",
+                    stroke: "var(--color-white)",
                     strokeWidth: 2,
                 }}
                 isAnimationActive={false}

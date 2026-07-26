@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
     CartesianGrid,
     ComposedChart,
@@ -27,13 +28,14 @@ function ClimateChart({
     timeScale = "daily",
     tooltipCursor,
 }) {
+    const { i18n } = useTranslation();
     const [hoveredMonth, setHoveredMonth] = useState(null);
     const [yMin, yMax] = yDomain;
     const hasNumericDomain = Number.isFinite(yMin) && Number.isFinite(yMax);
     const monthEdgeHeight = hasNumericDomain ? (yMax - yMin) * 0.025 : 0;
     const showDailyMonthStructure = timeScale === "daily";
     const defaultTooltipCursor = {
-        stroke: "#8f98a6",
+        stroke: "var(--chart-secondary)",
         strokeWidth: 1,
         strokeDasharray: "3 4",
     };
@@ -67,22 +69,22 @@ function ClimateChart({
                                 x2={month.end}
                                 y1={hasNumericDomain ? yMin : undefined}
                                 y2={hasNumericDomain ? yMax : undefined}
-                                fill="#8e97a1"
+                                fill="var(--chart-label)"
                                 fillOpacity={hoveredMonth === month.key ? 0.08 : 0}
                                 stroke="none"
                                 style={{ pointerEvents: "none" }}
                             />
                         ))}
 
-                    <CartesianGrid vertical={false} stroke="#e7e9ed" strokeDasharray="3 3" />
+                    <CartesianGrid vertical={false} stroke="var(--chart-grid)" strokeDasharray="3 3" />
 
                     <XAxis
                         dataKey="observed_date"
                         ticks={MONTH_TICKS}
-                        tickFormatter={formatMonth}
+                        tickFormatter={(date) => formatMonth(date, i18n.resolvedLanguage)}
                         interval={0}
                         tickLine={false}
-                        tick={{ fontSize: 10, fill: "#8e97a1" }}
+                        tick={{ fontSize: 10, fill: "var(--chart-label)" }}
                         tickMargin={10}
                     />
 
@@ -91,7 +93,7 @@ function ClimateChart({
                         unit={unit}
                         ticks={yTicks}
                         tickFormatter={yTickFormatter}
-                        tick={{ fontSize: 12, fill: "#6b7280" }}
+                        tick={{ fontSize: 12, fill: "var(--chart-axis)" }}
                         tickMargin={10}
                     />
 
@@ -116,7 +118,7 @@ function ClimateChart({
                                     { x: date, y: yMin },
                                     { x: date, y: yMin + monthEdgeHeight },
                                 ]}
-                                stroke="#8f98a6"
+                                stroke="var(--chart-secondary)"
                                 strokeWidth={1.2}
                             />
                         ))}

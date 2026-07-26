@@ -1,33 +1,20 @@
 import DashboardCard from "../../components/DashboardCard/DashboardCard.jsx";
 import DashboardGrid from "../../components/DashboardGrid/DashboardGrid.jsx";
+import { useTranslation } from "react-i18next";
 
-import { formatTemperature } from "./climateSummary.js";
+import { getMonthName } from "../../utils/localization.js";
+import { useMeasurementFormatter } from "../../units/useMeasurementFormatter.js";
 import styles from "./CityWeatherPage.module.css";
 
-const CLOUD_LABELS = {
-    clear: "Ясное небо",
-    partly_cloudy: "Переменная облачность",
-    cloudy: "Пасмурное небо",
-};
-
-const WIND_LABELS = {
-    N: "Северный",
-    NE: "Северо-восточный",
-    E: "Восточный",
-    SE: "Юго-восточный",
-    S: "Южный",
-    SW: "Юго-западный",
-    W: "Западный",
-    NW: "Северо-западный",
-};
+const CLOUD_KEYS = ["clear", "partly_cloudy", "cloudy"];
 
 function average(values) {
     const present = values.filter(Number.isFinite);
     return present.length ? present.reduce((sum, value) => sum + value, 0) / present.length : null;
 }
 
-function getCloudPreview(cloudCover) {
-    const states = Object.keys(CLOUD_LABELS).map((key) => ({
+function getCloudPreview(t, cloudCover) {
+    const states = CLOUD_KEYS.map((key) => ({
         key,
         value: average(cloudCover.map((point) => point[key])),
     }));
@@ -37,14 +24,14 @@ function getCloudPreview(cloudCover) {
     );
 
     return {
-        value: dominant ? CLOUD_LABELS[dominant.key] : "—",
+        value: dominant ? t(`cityPage.stats.cloud.${dominant.key}`) : "—",
         detail: Number.isFinite(dominant?.value)
-            ? `Так классифицировано ${dominant.value.toFixed(0)}% дней`
+            ? t("cityPage.stats.cloudFrequency", { value: dominant.value.toFixed(0) })
             : "—",
     };
 }
 
-function getWindPreview(windRose, climateSummary) {
+function getWindPreview(t, windRose, climateSummary, formatWind) {
     const prevailing = windRose.reduce(
         (result, sector) => (!result || sector.frequency > result.frequency ? sector : result),
         null
@@ -52,12 +39,18 @@ function getWindPreview(windRose, climateSummary) {
 
     return prevailing
         ? {
-              value: WIND_LABELS[prevailing.direction] ?? prevailing.direction,
-              detail: `Отсюда ветер приходит в ${prevailing.frequency.toFixed(1)}% наблюдений`,
+              value: t(`directions.${prevailing.direction}`, {
+                  defaultValue: prevailing.direction,
+              }),
+              detail: t("cityPage.stats.windFrequency", {
+                  value: prevailing.frequency.toFixed(1),
+              }),
           }
         : {
-              value: climateSummary ? `${climateSummary.annualWindSpeed.toFixed(1)} км/ч` : "—",
-              detail: "средняя скорость на высоте 10 м",
+              value: climateSummary
+                  ? formatWind(climateSummary.annualWindSpeed)
+                  : "—",
+              detail: t("cityPage.stats.windFallback"),
           };
 }
 
@@ -68,53 +61,66 @@ function ClimateStats({
     selectedMetric,
     isLoading,
 }) {
+    const { t } = useTranslation();
+    const { formatPrecipitation, formatTemperature, formatWind } = useMeasurementFormatter();
     const value = (formatter) => (isLoading ? "…" : formatter());
-    const cloud = getCloudPreview(cloudCover);
-    const wind = getWindPreview(windRose, climateSummary);
+    const cloud = getCloudPreview(t, cloudCover);
+    const wind = getWindPreview(t, windRose, climateSummary, formatWind);
     const cards = [
         {
             key: "temperature",
-            label: "Средняя температура",
+            label: t("cityPage.stats.meanTemperature"),
             value: value(() => formatTemperature(climateSummary?.annualMean)),
             detail: value(() =>
                 climateSummary
-                    ? `Средние минимум и максимум: ${formatTemperature(climateSummary.annualMinMean)} / ${formatTemperature(climateSummary.annualMaxMean)}`
+                    ? t("cityPage.stats.temperatureRange", {
+                          min: formatTemperature(climateSummary.annualMinMean),
+                          max: formatTemperature(climateSummary.annualMaxMean),
+                      })
                     : "—"
             ),
         },
         {
             key: "precipitation",
-            label: "Осадки за год",
+            label: t("cityPage.stats.annualPrecipitation"),
             value: value(() =>
-                climateSummary ? `${climateSummary.annualPrecipitation.toFixed(0)} мм` : "—"
+                climateSummary
+                    ? formatPrecipitation(climateSummary.annualPrecipitation)
+                    : "—"
             ),
             detail: value(() =>
                 climateSummary
-                    ? `Больше всего осадков: ${climateSummary.wettestMonth} · ${climateSummary.wettestMonthPrecipitation.toFixed(0)} мм`
+                    ? t("cityPage.stats.wettestMonth", {
+                          month: getMonthName(t, climateSummary.wettestMonthIndex),
+                          value: formatPrecipitation(climateSummary.wettestMonthPrecipitation),
+                      })
                     : "—"
             ),
         },
         {
             key: "humidity",
-            label: "Средняя влажность",
+            label: t("cityPage.stats.meanHumidity"),
             value: value(() =>
                 climateSummary ? `${climateSummary.annualHumidity.toFixed(0)}%` : "—"
             ),
             detail: value(() =>
                 Number.isFinite(climateSummary?.monthlyHumidityMin)
-                    ? `Диапазон по месяцам: ${climateSummary.monthlyHumidityMin.toFixed(0)}–${climateSummary.monthlyHumidityMax.toFixed(0)}%`
+                    ? t("cityPage.stats.humidityRange", {
+                          min: climateSummary.monthlyHumidityMin.toFixed(0),
+                          max: climateSummary.monthlyHumidityMax.toFixed(0),
+                      })
                     : "—"
             ),
         },
         {
             key: "wind",
-            label: "Преобладающий ветер",
+            label: t("cityPage.stats.prevailingWind"),
             value: value(() => wind.value),
             detail: value(() => wind.detail),
         },
         {
             key: "cloud",
-            label: "Преобладающая облачность",
+            label: t("cityPage.stats.prevailingCloud"),
             value: value(() => cloud.value),
             detail: value(() => cloud.detail),
         },

@@ -1,4 +1,5 @@
 import { Area } from "recharts";
+import { useTranslation } from "react-i18next";
 
 import ClimateChart from "../ClimateChart/ClimateChart.jsx";
 import CloudCoverTooltip from "./CloudCoverTooltip.jsx";
@@ -6,25 +7,31 @@ import CloudCoverTooltip from "./CloudCoverTooltip.jsx";
 const CLOUD_COVER_SERIES = [
     {
         key: "clear",
-        label: "Ясные дни",
-        color: "#95a2e3",
-        fill: "#8fc5f4",
+        labelKey: "clearDays",
+        color: "var(--chart-cloud-outline)",
+        fill: "var(--chart-cloud-clear)",
     },
     {
         key: "partly_cloudy",
-        label: "Переменная облачность",
-        color: "#7292bd",
-        fill: "#c9d1dc",
+        labelKey: "partlyCloudy",
+        color: "var(--chart-cloud-outline)",
+        fill: "var(--chart-cloud-partly)",
     },
     {
         key: "cloudy",
-        label: "Пасмурные дни",
-        color: "#667382",
-        fill: "#687484",
+        labelKey: "cloudyDays",
+        color: "var(--chart-cloud-overcast)",
+        fill: "var(--chart-cloud-overcast)",
     },
 ];
 
 function CloudCoverChart({ data }) {
+    const { t } = useTranslation();
+    const seriesData = CLOUD_COVER_SERIES.map((series) => ({
+        ...series,
+        label: t(`charts.${series.labelKey}`),
+    }));
+
     return (
         <ClimateChart
             data={data}
@@ -35,9 +42,9 @@ function CloudCoverChart({ data }) {
             timeScale="monthly"
             showLegend
             tooltipCursor={false}
-            tooltipContent={<CloudCoverTooltip series={CLOUD_COVER_SERIES} />}
+            tooltipContent={<CloudCoverTooltip series={seriesData} />}
         >
-            {CLOUD_COVER_SERIES.map((series) => (
+            {seriesData.map((series) => (
                 <Area
                     key={series.key}
                     type="monotone"
@@ -52,7 +59,7 @@ function CloudCoverChart({ data }) {
                     activeDot={{
                         r: 3.5,
                         fill: series.color,
-                        stroke: "#ffffff",
+                        stroke: "var(--color-white)",
                         strokeWidth: 1.5,
                     }}
                     isAnimationActive={false}

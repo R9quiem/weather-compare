@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
     Bar,
     Line,
@@ -16,15 +17,15 @@ import { formatMonth } from "../ClimateChart/chartUtils.js";
 import { formatHumidityDate } from "../HumidityChart/humidityUtils.js";
 import { prepareMonthlyPrecipitation } from "../PrecipitationChart/precipitationUtils.js";
 import styles from "./CompareMetricCharts.module.css";
+import { useMeasurementFormatter } from "../../../units/useMeasurementFormatter.js";
 
-const COLORS = { first: "#4f5fdb", second: "#e58b55" };
+const COLORS = { first: "var(--color-accent-primary)", second: "var(--color-accent-secondary)" };
 const DIRECTIONS = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
-const DIRECTION_LABELS = { N: "С", NE: "СВ", E: "В", SE: "ЮВ", S: "Ю", SW: "ЮЗ", W: "З", NW: "СЗ" };
 const MONTH_DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 const CLOUD_CATEGORIES = [
-    { key: "Clear", label: "Ясно", fill: "#8ec5f4" },
-    { key: "Partly", label: "Переменная облачность", fill: "#c9d1dc" },
-    { key: "Cloudy", label: "Пасмурно", fill: "#687484" },
+    { key: "Clear", labelKey: "clear", fill: "var(--chart-cloud-clear)" },
+    { key: "Partly", labelKey: "partly", fill: "var(--chart-cloud-partly)" },
+    { key: "Cloudy", labelKey: "cloudy", fill: "var(--chart-cloud-overcast)" },
 ];
 
 function mergeDaily(firstData, secondData, sourceKey) {
@@ -75,6 +76,7 @@ function CompareLineChart({
     secondCityName,
     sourceKey,
     unit,
+    yTickFormatter,
     yDomain,
     formatter,
 }) {
@@ -94,6 +96,7 @@ function CompareLineChart({
             yDomain={domain}
             height={470}
             unit={unit}
+            yTickFormatter={yTickFormatter}
             tooltipContent={<ComparisonTooltip series={series} formatter={formatter} />}
         >
             {series.map((item) => (
@@ -105,7 +108,7 @@ function CompareLineChart({
                     stroke={item.color}
                     strokeWidth={2.5}
                     dot={false}
-                    activeDot={{ r: 4, fill: item.color, stroke: "#fff", strokeWidth: 2 }}
+                    activeDot={{ r: 4, fill: item.color, stroke: "var(--color-white)", strokeWidth: 2 }}
                     isAnimationActive={false}
                 />
             ))}
@@ -126,12 +129,13 @@ export function CompareHumidityChart(props) {
 }
 
 export function CompareWindChart(props) {
+    const { convertValue, formatWind, unitLabel } = useMeasurementFormatter();
     return (
         <CompareLineChart
             {...props}
             sourceKey="wind_speed_10m_mean"
-            unit=" км/ч"
-            formatter={(value) => `${Number(value).toFixed(1)} км/ч`}
+            yTickFormatter={(value) => `${convertValue("wind", value).toFixed(1)} ${unitLabel("wind")}`}
+            formatter={formatWind}
         />
     );
 }
@@ -142,6 +146,7 @@ export function ComparePrecipitationChart({
     firstCityName,
     secondCityName,
 }) {
+    const { convertValue, formatPrecipitation, unitLabel } = useMeasurementFormatter();
     const firstMonthly = useMemo(() => prepareMonthlyPrecipitation(firstData).data, [firstData]);
     const secondMonthly = useMemo(() => prepareMonthlyPrecipitation(secondData).data, [secondData]);
     const data = useMemo(
@@ -163,14 +168,14 @@ export function ComparePrecipitationChart({
             data={data}
             yDomain={getPositiveDomain(data, ["firstValue", "secondValue"])}
             height={470}
-            unit="мм"
+            yTickFormatter={(value) => `${convertValue("precipitation", value).toFixed(1)} ${unitLabel("precipitation")}`}
             timeScale="monthly"
             tooltipCursor={false}
             tooltipContent={
                 <ComparisonTooltip
                     monthly
                     series={series}
-                    formatter={(value) => `${Number(value).toFixed(0)} мм`}
+                    formatter={formatPrecipitation}
                 />
             }
         >
@@ -202,6 +207,7 @@ function CloudComparisonTooltip({
     secondCityName,
     cityPrefix,
 }) {
+    const { t } = useTranslation();
     const point = payload?.find((entry) => entry.payload?.observed_date)?.payload;
     if (!active || !point) return null;
 
@@ -226,9 +232,12 @@ function CloudComparisonTooltip({
 
                         return (
                             <div key={category.key} className={styles.cloudTooltipRow}>
-                                <span>{category.label}</span>
+                                <span>{t(`charts.cloud.${category.labelKey}`)}</span>
                                 <strong>
-                                    {value.toFixed(1)}% · ≈{days} дн.
+                                    {t("charts.approxDays", {
+                                        value: value.toFixed(1),
+                                        days,
+                                    })}
                                 </strong>
                             </div>
                         );
@@ -240,11 +249,12 @@ function CloudComparisonTooltip({
 }
 
 function CloudBars({ prefix, cityName, cityColor, barSize = 18 }) {
+    const { t } = useTranslation();
     return CLOUD_CATEGORIES.map((category, index) => (
         <Bar
             key={`${prefix}${category.key}`}
             dataKey={`${prefix}${category.key}`}
-            name={`${cityName} · ${category.label}`}
+            name={`${cityName} В· ${t(`charts.cloud.${category.labelKey}`)}`}
             stackId={prefix}
             fill={category.fill}
             stroke={cityColor}
@@ -257,6 +267,7 @@ function CloudBars({ prefix, cityName, cityColor, barSize = 18 }) {
 }
 
 export function CompareCloudCoverChart({ firstData, secondData, firstCityName, secondCityName }) {
+    const { t } = useTranslation();
     const secondByDate = new Map(secondData.map((point) => [point.observed_date, point]));
     const data = firstData.flatMap((firstPoint) => {
         const secondPoint = secondByDate.get(firstPoint.observed_date);
@@ -286,18 +297,18 @@ export function CompareCloudCoverChart({ firstData, secondData, firstCityName, s
                         {CLOUD_CATEGORIES.map((category) => (
                             <span key={category.key}>
                                 <i style={{ backgroundColor: category.fill }} />
-                                {category.label}
+                                {t(`charts.cloud.${category.labelKey}`)}
                             </span>
                         ))}
                     </div>
                     <div className={styles.cloudCities}>
                         <span>
                             <i style={{ backgroundColor: COLORS.first }} />
-                            Слева — {firstCityName}
+                            {t("charts.leftCity", { city: firstCityName })}
                         </span>
                         <span>
                             <i style={{ backgroundColor: COLORS.second }} />
-                            Справа — {secondCityName}
+                            {t("charts.rightCity", { city: secondCityName })}
                         </span>
                     </div>
                 </div>
@@ -308,7 +319,7 @@ export function CompareCloudCoverChart({ firstData, secondData, firstCityName, s
                     yTickFormatter={(value) => `${value}%`}
                     height={430}
                     timeScale="monthly"
-                    tooltipCursor={{ fill: "rgba(102, 116, 132, 0.08)" }}
+                    tooltipCursor={{ fill: "rgb(var(--rgb-muted) / 8%)" }}
                     tooltipContent={
                         <CloudComparisonTooltip
                             firstCityName={firstCityName}
@@ -352,11 +363,12 @@ function WindRoseTooltip({ active, payload, firstCityName, secondCityName }) {
 }
 
 export function CompareWindRoseChart({ firstData, secondData, firstCityName, secondCityName }) {
+    const { t } = useTranslation();
     const firstByDirection = new Map(firstData.map((point) => [point.direction, point]));
     const secondByDirection = new Map(secondData.map((point) => [point.direction, point]));
     const data = DIRECTIONS.map((direction) => ({
         direction,
-        label: DIRECTION_LABELS[direction],
+        label: t(`directions.short.${direction}`),
         firstValue: firstByDirection.get(direction)?.frequency ?? 0,
         secondValue: secondByDirection.get(direction)?.frequency ?? 0,
     }));
@@ -364,18 +376,18 @@ export function CompareWindRoseChart({ firstData, secondData, firstCityName, sec
     const domainMaximum = Math.ceil(maximum / 5) * 5;
 
     return (
-        <div className={styles.rose} role="img" aria-label="Сравнение роз ветров двух городов">
+        <div className={styles.rose} role="img" aria-label={t("charts.compareWindRoseAria")}>
             <ResponsiveContainer width="100%" height={470}>
                 <RadarChart data={data} outerRadius="72%">
-                    <PolarGrid stroke="#dfe3e9" radialLines />
+                    <PolarGrid stroke="var(--chart-grid)" radialLines />
                     <PolarAngleAxis
                         dataKey="label"
-                        tick={{ fill: "#5f6875", fontSize: 12, fontWeight: 600 }}
+                        tick={{ fill: "var(--chart-axis)", fontSize: 12, fontWeight: 600 }}
                     />
                     <PolarRadiusAxis
                         angle={90}
                         domain={[0, domainMaximum]}
-                        tick={{ fill: "#8e97a1", fontSize: 10 }}
+                        tick={{ fill: "var(--chart-label)", fontSize: 10 }}
                         tickFormatter={(value) => `${value}%`}
                         axisLine={false}
                     />

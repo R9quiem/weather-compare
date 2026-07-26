@@ -27,60 +27,50 @@ export function calculateComparisonSummary(
 ) {
     let firstValue;
     let secondValue;
-    let leaderLabel;
-    let differenceLabel;
-    let formatter;
+    let leaderLabelKey;
+    let differenceLabelKey;
 
     if (metric === "temperature") {
         firstValue = average(firstWeather.data, "temperature_2m_mean");
         secondValue = average(secondWeather.data, "temperature_2m_mean");
-        leaderLabel = "Выше средняя температура";
-        differenceLabel = "Разница температур";
-        formatter = (value) => `${value.toFixed(1)} °C`;
+        leaderLabelKey = "temperatureLeader";
+        differenceLabelKey = "temperatureDifference";
     } else if (metric === "precipitation") {
         firstValue = total(firstWeather.data, "precipitation_sum");
         secondValue = total(secondWeather.data, "precipitation_sum");
-        leaderLabel = "Больше осадков за год";
-        differenceLabel = "Разница осадков";
-        formatter = (value) => `${value.toFixed(0)} мм`;
+        leaderLabelKey = "precipitationLeader";
+        differenceLabelKey = "precipitationDifference";
     } else if (metric === "humidity") {
         firstValue = average(firstWeather.data, "relative_humidity_2m_mean");
         secondValue = average(secondWeather.data, "relative_humidity_2m_mean");
-        leaderLabel = "Выше средняя влажность";
-        differenceLabel = "Разница влажности";
-        formatter = (value) => `${value.toFixed(1)} п. п.`;
+        leaderLabelKey = "humidityLeader";
+        differenceLabelKey = "humidityDifference";
     } else if (metric === "wind") {
         firstValue = average(firstWeather.data, "wind_speed_10m_mean");
         secondValue = average(secondWeather.data, "wind_speed_10m_mean");
-        leaderLabel = "Выше средняя скорость ветра";
-        differenceLabel = "Разница скорости";
-        formatter = (value) => `${value.toFixed(1)} км/ч`;
+        leaderLabelKey = "windLeader";
+        differenceLabelKey = "windDifference";
     } else {
         firstValue = average(firstWeather.cloudCover, "cloudy");
         secondValue = average(secondWeather.cloudCover, "cloudy");
-        leaderLabel = "Выше доля пасмурных дней";
-        differenceLabel = "Разница долей";
-        formatter = (value) => `${value.toFixed(1)} п. п.`;
+        leaderLabelKey = "cloudLeader";
+        differenceLabelKey = "cloudDifference";
     }
 
     const hasValues = Number.isFinite(firstValue) && Number.isFinite(secondValue);
     const difference = hasValues ? firstValue - secondValue : null;
     const isTie = difference != null && Math.abs(difference) < 0.05;
     const leader =
-        difference == null
-            ? null
-            : isTie
-              ? { name: "Значения равны" }
-              : difference > 0
-                ? firstCity
-                : secondCity;
+        difference == null ? null : isTie ? null : difference > 0 ? firstCity : secondCity;
     const differenceMagnitude = difference == null ? 0 : Math.abs(difference);
 
     return {
-        leaderLabel,
-        differenceLabel,
-        leaderName: leader?.name ?? "—",
-        difference: difference == null ? "—" : formatter(Math.abs(difference)),
+        metric,
+        leaderLabelKey,
+        differenceLabelKey,
+        leader,
+        isTie,
+        difference: difference == null ? null : Math.abs(difference),
         leaderSide: difference == null || isTie ? "neutral" : difference > 0 ? "first" : "second",
         differenceIntensity: Math.min(differenceMagnitude / DIFFERENCE_SCALES[metric], 1),
     };
