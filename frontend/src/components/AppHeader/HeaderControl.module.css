@@ -1,0 +1,31 @@
+.control {
+    box-sizing: border-box;
+    height: 42px;
+    border: 1px solid var(--header-control-border);
+    border-radius: 11px;
+    background: var(--header-control-bg);
+    color: var(--header-control-color);
+    font: inherit;
+    cursor: pointer;
+    box-shadow: var(--header-control-shadow);
+    backdrop-filter: var(--header-control-backdrop);
+    transition:
+        border-color 160ms ease,
+        background-color 160ms ease,
+        color 100ms ease,
+        box-shadow 160ms ease,
+        transform 160ms ease;
+}
+
+.control:hover,
+.control[data-state="open"] {
+    border-color: var(--header-control-hover-border);
+    background: var(--header-control-hover-bg);
+    color: var(--header-control-hover-color);
+    box-shadow: var(--header-control-hover-shadow);
+}
+
+.control:focus-visible {
+    outline: 2px solid var(--color-accent-primary);
+    outline-offset: 2px;
+}

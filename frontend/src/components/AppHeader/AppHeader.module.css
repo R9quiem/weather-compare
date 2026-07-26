@@ -1,9 +1,23 @@
 .app-header {
-    height: 70px;
+    --header-control-border: var(--color-border);
+    --header-control-bg: var(--color-surface-control);
+    --header-control-color: var(--color-text-muted);
+    --header-control-shadow: 0 2px 8px rgb(var(--rgb-shadow) / 5%);
+    --header-control-backdrop: none;
+    --header-control-hover-border: var(--color-border-strong);
+    --header-control-hover-bg: var(--color-surface-hover);
+    --header-control-hover-color: var(--color-text-strong);
+    --header-control-hover-shadow: 0 5px 16px rgb(var(--rgb-shadow) / 9%);
+    --header-control-active-border: var(--color-nav-active);
+    --header-control-active-bg: var(--color-nav-active);
+
+    height: 80px;
     display: flex;
     align-items: center;
     position: relative;
+    z-index: 100;
     padding-left: 30px;
+    background: transparent;
 }
 
 .app-name {
@@ -22,30 +36,37 @@
     width: 20px;
     height: 20px;
     border-radius: 3px;
-    background: #4f5fdb;
-    box-shadow: 5px 5px 0 #e58b55;
+    background: var(--color-accent-primary);
+    box-shadow: 5px 5px 0 var(--color-accent-secondary);
 }
 
 .app-nav {
     position: absolute;
     left: 50%;
     display: flex;
-    gap: 16px;
-    transform: translateX(-50%);
+    gap: 10px;
+    transform: translate(-50%, -4px);
+}
+
+.app-tools {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+    padding-right: 30px;
 }
 
 .app-nav a {
-    min-height: 38px;
-    padding: 0 16px;
-
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
-    border-radius: 10px;
-
-    background-color: var(--color-secondary);
-    color: var(--color-text-secondary);
+    gap: 0;
+    width: auto;
+    min-width: 42px;
+    max-width: 42px;
+    padding: 0 11px;
+    overflow: visible;
 
     font-size: 13px;
     font-weight: 550;
@@ -53,13 +74,31 @@
     text-decoration: none;
 
     transition:
-        color 50ms ease,
+        max-width 700ms ease,
+        gap 220ms ease,
+        padding 220ms ease,
+        border-color 160ms ease,
         background-color 160ms ease,
+        color 100ms ease,
+        box-shadow 160ms ease,
         transform 160ms ease;
 }
 
-.app-nav a:hover {
-    color: var(--color-text);
+.app-nav a svg {
+    width: 19px;
+    height: 19px;
+    flex: 0 0 auto;
+    stroke-width: 1.8;
+}
+
+.nav-label {
+    max-width: 0;
+    overflow: hidden;
+    opacity: 0;
+    white-space: nowrap;
+    transition:
+        max-width 220ms ease,
+        opacity 120ms ease;
 }
 
 .app-nav a:active {
@@ -67,6 +106,49 @@
 }
 
 .app-nav a[aria-current="page"] {
-    background: #424242;
-    color: white;
+    gap: 8px;
+    max-width: 210px;
+    padding-inline: 15px;
+    border-color: var(--header-control-active-border);
+    background: var(--header-control-active-bg);
+    color: var(--color-nav-active-text);
+}
+
+.app-nav a[aria-current="page"] .nav-label {
+    max-width: 160px;
+    opacity: 1;
+}
+
+.app-nav a[aria-current="page"]::after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    width: 12px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--color-nav-active);
+    transform: translateX(-50%);
+}
+
+.app-header[data-sunlit] {
+    --header-control-border: rgb(var(--rgb-muted) / 62%);
+    --header-control-bg: rgb(var(--rgb-surface) / 58%);
+    --header-control-backdrop: blur(10px);
+    --header-control-hover-bg: rgb(var(--rgb-surface) / 90%);
+    --header-control-active-border: rgb(var(--rgb-shadow) / 55%);
+    --header-control-active-bg: rgb(var(--rgb-shadow) / 76%);
+}
+
+.app-header[data-sunlit] .app-nav a[aria-current="page"] {
+    color: var(--color-white);
+}
+
+:global(:root[data-theme="dark"]) .app-header[data-sunlit] {
+    --header-control-active-border: var(--color-nav-active);
+    --header-control-active-bg: var(--color-nav-active);
+}
+
+:global(:root[data-theme="dark"]) .app-header[data-sunlit] .app-nav a[aria-current="page"] {
+    color: var(--color-nav-active-text);
 }
