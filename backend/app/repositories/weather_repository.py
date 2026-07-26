@@ -299,6 +299,99 @@ class WeatherRepository:
             (row["sector"], row["sample_count"], row["average_speed"]) for row in rows
         ]
 
+    def get_monthly_cloud_cover_distribution(
+        self,
+        city_id: int,
+        monthly_biases: tuple[float, ...],
+        expected_hours: int,
+        clear_daily_mean_max: float,
+        cloudy_daily_mean_min: float,
+        opposite_hour_boundary: float,
+        max_cloudy_hours_in_clear_day: int,
+    ) -> list[tuple[str, int, int, int, int]]:
+        rows = self.connection.execute(
+            """
+            WITH adjusted_hourly_cloud_cover AS (
+                SELECT
+                    observed_at,
+                    MIN(
+                        100,
+                        MAX(
+                            0,
+                            cloud_cover + CASE substr(observed_at, 6, 2)
+                                WHEN '01' THEN ? WHEN '02' THEN ?
+                                WHEN '03' THEN ? WHEN '04' THEN ?
+                                WHEN '05' THEN ? WHEN '06' THEN ?
+                                WHEN '07' THEN ? WHEN '08' THEN ?
+                                WHEN '09' THEN ? WHEN '10' THEN ?
+                                WHEN '11' THEN ? WHEN '12' THEN ?
+                                ELSE 0
+                            END
+                        )
+                    ) AS cloud_cover
+                FROM hourly_weather
+                WHERE city_id = ?
+                  AND cloud_cover IS NOT NULL
+            ),
+            daily_cloud_cover AS (
+                SELECT
+                    substr(observed_at, 1, 10) AS day,
+                    substr(observed_at, 6, 2) AS month,
+                    COUNT(*) AS observed_hours,
+                    SUM(cloud_cover) AS cloud_cover_sum,
+                    SUM(cloud_cover > ?) AS hours_above_boundary
+                FROM adjusted_hourly_cloud_cover
+                GROUP BY day, month
+                HAVING observed_hours = ?
+            )
+            SELECT
+                month,
+                COUNT(*) AS total_days,
+                SUM(
+                    cloud_cover_sum <= ? * ?
+                    AND hours_above_boundary <= ?
+                ) AS clear_days,
+                SUM(
+                    NOT (
+                        cloud_cover_sum <= ? * ?
+                        AND hours_above_boundary <= ?
+                    )
+                    AND cloud_cover_sum < ? * ?
+                ) AS partly_cloudy_days,
+                SUM(cloud_cover_sum >= ? * ?) AS cloudy_days
+            FROM daily_cloud_cover
+            GROUP BY month
+            ORDER BY month
+            """,
+            (
+                *monthly_biases,
+                city_id,
+                opposite_hour_boundary,
+                expected_hours,
+                clear_daily_mean_max,
+                expected_hours,
+                max_cloudy_hours_in_clear_day,
+                clear_daily_mean_max,
+                expected_hours,
+                max_cloudy_hours_in_clear_day,
+                cloudy_daily_mean_min,
+                expected_hours,
+                cloudy_daily_mean_min,
+                expected_hours,
+            ),
+        ).fetchall()
+
+        return [
+            (
+                row["month"],
+                row["total_days"],
+                row["clear_days"],
+                row["partly_cloudy_days"],
+                row["cloudy_days"],
+            )
+            for row in rows
+        ]
+
     def replace_wind_rose(
         self,
         city_id: int,
