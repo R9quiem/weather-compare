@@ -16,28 +16,22 @@ function CityClimateCard({
             <div className={styles.cityHeader}>
                 <p className={styles.cityEyebrow}>Климат города</p>
 
-                <h2 className={styles.cityTitle}>
-                    {currentCity?.name ?? "Выберите город"}
-                </h2>
-
-                <p className={styles.cityMeta}>
-                    {currentCity?.country_code ?? "—"} · норма 1995–2025
-                </p>
-            </div>
-
-            <div className={styles.citySelect}>
-                <span className={styles.citySelectLabel}>Сменить город</span>
-
-                {!isCitiesLoading && !error && (
+                {!isCitiesLoading && !error ? (
                     <CitySelect
                         cities={cities}
                         selectedCityId={currentCityId}
                         setSelectedCityId={setCurrentCityId}
                         placeholder="Выберите город"
                     />
+                ) : (
+                    <h2 className={styles.cityTitle}>Выберите город</h2>
                 )}
-            </div>
 
+                <div className={styles.cityMeta}>
+                    <span className={styles.cityCountry}>{currentCity?.country_code ?? "—"}</span>
+                    <span className={styles.cityPeriod}>Период наблюдений: 1995–2025</span>
+                </div>
+            </div>
         </DashboardCard>
     );
 }

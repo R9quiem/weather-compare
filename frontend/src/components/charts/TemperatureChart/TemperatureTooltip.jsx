@@ -1,14 +1,12 @@
 import styles from "./TemperatureChart.module.css";
-import {formatDate, formatTemperature} from "./temperatureUtils.js";
+import { formatDate, formatTemperature } from "./temperatureUtils.js";
 
-function TemperatureTooltip({active, label, payload, series}) {
+function TemperatureTooltip({ active, label, payload, series, apparentTemperatureKey }) {
     if (!active) {
         return null;
     }
 
-    const point = payload?.find(
-        (entry) => entry.payload?.observed_date,
-    )?.payload;
+    const point = payload?.find((entry) => entry.payload?.observed_date)?.payload;
 
     if (!point) {
         return null;
@@ -18,9 +16,7 @@ function TemperatureTooltip({active, label, payload, series}) {
 
     return (
         <div className={styles.tooltip}>
-            <p className={styles.tooltipDate}>
-                {formatDate(label ?? point.observed_date)}
-            </p>
+            <p className={styles.tooltipDate}>{formatDate(label ?? point.observed_date)}</p>
 
             {series.map((item, index) => (
                 <div
@@ -31,7 +27,7 @@ function TemperatureTooltip({active, label, payload, series}) {
                         <div className={styles.tooltipSeriesName}>
                             <span
                                 className={styles.tooltipSeriesDot}
-                                style={{backgroundColor: item.color}}
+                                style={{ backgroundColor: item.color }}
                             />
                             {item.label}
                         </div>
@@ -41,6 +37,13 @@ function TemperatureTooltip({active, label, payload, series}) {
                         <span>Средняя</span>
                         <strong>{formatTemperature(point[item.meanKey])}</strong>
                     </div>
+
+                    {apparentTemperatureKey && Number.isFinite(point[apparentTemperatureKey]) && (
+                        <div className={`${styles.tooltipRow} ${styles.tooltipApparent}`}>
+                            <span>Ощущается</span>
+                            <strong>{formatTemperature(point[apparentTemperatureKey])}</strong>
+                        </div>
+                    )}
 
                     <div className={styles.tooltipRange}>
                         <div className={styles.tooltipRow}>

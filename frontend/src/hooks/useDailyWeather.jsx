@@ -2,44 +2,46 @@ import { useEffect, useState } from "react";
 import { getDailyWeather } from "../api/weatherApi.jsx";
 
 export function useDailyWeather(cityId) {
-  const [data, setData] = useState([]);
-  const [windRose, setWindRose] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+    const [data, setData] = useState([]);
+    const [windRose, setWindRose] = useState([]);
+    const [cloudCover, setCloudCover] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (cityId === null) return;
+    useEffect(() => {
+        if (cityId === null) return;
 
-    let isCancelled = false;
+        let isCancelled = false;
 
-    async function loadDailyWeather() {
-      try {
-        setIsLoading(true);
-        setError(null);
+        async function loadDailyWeather() {
+            try {
+                setIsLoading(true);
+                setError(null);
 
-        const loadedWeather = await getDailyWeather(cityId);
+                const loadedWeather = await getDailyWeather(cityId);
 
-        if (!isCancelled) {
-          setData(loadedWeather.daily);
-          setWindRose(loadedWeather.wind_rose);
+                if (!isCancelled) {
+                    setData(loadedWeather.daily);
+                    setWindRose(loadedWeather.wind_rose);
+                    setCloudCover(loadedWeather.cloud_cover ?? []);
+                }
+            } catch (requestError) {
+                if (!isCancelled) {
+                    setError(requestError.message);
+                }
+            } finally {
+                if (!isCancelled) {
+                    setIsLoading(false);
+                }
+            }
         }
-      } catch (requestError) {
-        if (!isCancelled) {
-          setError(requestError.message);
-        }
-      } finally {
-        if (!isCancelled) {
-          setIsLoading(false);
-        }
-      }
-    }
 
-    loadDailyWeather();
+        loadDailyWeather();
 
-    return () => {
-      isCancelled = true;
-    };
-  }, [cityId]);
+        return () => {
+            isCancelled = true;
+        };
+    }, [cityId]);
 
-  return { data, windRose, isLoading, error };
+    return { data, windRose, cloudCover, isLoading, error };
 }

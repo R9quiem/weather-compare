@@ -1,5 +1,4 @@
-import {useState} from "react";
-
+import CloudCoverChart from "../../components/charts/CloudCoverChart/CloudCoverChart.jsx";
 import HumidityChart from "../../components/charts/HumidityChart/HumidityChart.jsx";
 import PrecipitationChart from "../../components/charts/PrecipitationChart/PrecipitationChart.jsx";
 import TemperatureChart from "../../components/charts/TemperatureChart/TemperatureChart.jsx";
@@ -10,11 +9,11 @@ import DashboardCard from "../../components/DashboardCard/DashboardCard.jsx";
 import styles from "./CityWeatherPage.module.css";
 
 const WEATHER_METRICS = [
-    {key: "temperature", label: "Температура"},
-    {key: "precipitation", label: "Осадки"},
-    {key: "humidity", label: "Влажность"},
-    {key: "wind", label: "Ветер"},
-    {key: "cloud", label: "Облачность"},
+    { key: "temperature", label: "Температура" },
+    { key: "precipitation", label: "Осадки" },
+    { key: "humidity", label: "Влажность" },
+    { key: "wind", label: "Ветер" },
+    { key: "cloud", label: "Облачность" },
 ];
 
 const CHART_NOTES = {
@@ -23,19 +22,33 @@ const CHART_NOTES = {
     humidity: "Относительная влажность воздуха на высоте 2 м · среднесуточные значения",
     windSpeed: "Скорость ветра на высоте 10 м · среднесуточные значения",
     windRose: "Направления ветра на высоте 10 м · распределение по почасовым наблюдениям",
+    cloud: "Доля дней по категориям · 24 почасовых наблюдения в сутки · пороги 20% и 80%",
 };
 
-function ClimateOverviewCard({dailyWeather, windRose}) {
-    const [selectedMetric, setSelectedMetric] = useState("temperature");
-    const [windView, setWindView] = useState("speed");
+function ClimateOverviewCard({
+    dailyWeather,
+    windRose,
+    cloudCover,
+    selectedMetric,
+    setSelectedMetric,
+    windView,
+    setWindView,
+}) {
     const showWindRose = selectedMetric === "wind" && windView === "rose";
 
     const selectedMetricLabel = WEATHER_METRICS.find(
-        (metric) => metric.key === selectedMetric,
+        (metric) => metric.key === selectedMetric
     )?.label;
-    const chartNote = selectedMetric === "wind"
-        ? CHART_NOTES[showWindRose ? "windRose" : "windSpeed"]
-        : CHART_NOTES[selectedMetric];
+    let chartNote =
+        selectedMetric === "wind"
+            ? CHART_NOTES[showWindRose ? "windRose" : "windSpeed"]
+            : CHART_NOTES[selectedMetric];
+
+    if (selectedMetric === "cloud") {
+        chartNote += cloudCover?.[0]?.calibrated
+            ? " · данные ERA5 скорректированы по наблюдениям станции"
+            : " · данные реанализа ERA5";
+    }
 
     return (
         <DashboardCard className={styles.chart}>
@@ -46,9 +59,7 @@ function ClimateOverviewCard({dailyWeather, windRose}) {
                         <h2 className={styles.chartTitle}>{selectedMetricLabel}</h2>
                     </div>
 
-                    {chartNote && (
-                        <p className={styles.chartSubtitle}>{chartNote}</p>
-                    )}
+                    {chartNote && <p className={styles.chartSubtitle}>{chartNote}</p>}
                 </div>
 
                 <div className={styles.metricPickerShell}>
@@ -57,10 +68,7 @@ function ClimateOverviewCard({dailyWeather, windRose}) {
                             const isWindMetric = metric.key === "wind";
 
                             return (
-                                <div
-                                    key={metric.key}
-                                    className={styles.metricButtonSlot}
-                                >
+                                <div key={metric.key} className={styles.metricButtonSlot}>
                                     <button
                                         type="button"
                                         className={styles.metricButton}
@@ -102,32 +110,27 @@ function ClimateOverviewCard({dailyWeather, windRose}) {
             </div>
 
             <div className={styles.chartBody}>
-                {selectedMetric === "temperature" && (
-                    <TemperatureChart data={dailyWeather}/>
-                )}
+                {selectedMetric === "temperature" && <TemperatureChart data={dailyWeather} />}
 
-                {selectedMetric === "precipitation" && (
-                    <PrecipitationChart data={dailyWeather}/>
-                )}
+                {selectedMetric === "precipitation" && <PrecipitationChart data={dailyWeather} />}
 
-                {selectedMetric === "humidity" && (
-                    <HumidityChart data={dailyWeather}/>
-                )}
+                {selectedMetric === "humidity" && <HumidityChart data={dailyWeather} />}
 
                 {selectedMetric === "wind" && windView === "speed" && (
-                    <WindChart data={dailyWeather}/>
+                    <WindChart data={dailyWeather} />
                 )}
 
-                {showWindRose && (
-                    <WindRoseChart data={windRose}/>
-                )}
+                {showWindRose && <WindRoseChart data={windRose} />}
 
-                {!["temperature", "precipitation", "humidity", "wind"].includes(selectedMetric) && (
+                {selectedMetric === "cloud" && <CloudCoverChart data={cloudCover} />}
+
+                {!["temperature", "precipitation", "humidity", "wind", "cloud"].includes(
+                    selectedMetric
+                ) && (
                     <div className={styles.chartPlaceholder}>
                         График показателя будет добавлен позже
                     </div>
                 )}
-
             </div>
         </DashboardCard>
     );
