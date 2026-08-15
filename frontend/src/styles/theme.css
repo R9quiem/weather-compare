@@ -49,6 +49,7 @@
 
     /* Weather data */
     --chart-temperature: #596de2;
+    --chart-today: #f00000;
     --chart-secondary: #8f98a6;
     --chart-precipitation: #4e91c7;
     --chart-humidity: #7292bd;
@@ -78,7 +79,6 @@
     --radar-neutral: #8f98a6;
     --radar-mark: #969ca6;
     --radar-label: #c16e3d;
-
 }
 
 :root[data-theme="dark"] {
@@ -120,6 +120,7 @@
     --color-danger-soft: #2c1c1a;
 
     --chart-temperature: #7c89f2;
+    --chart-today: #ff1a1a;
     --chart-secondary: #9da5b3;
     --chart-precipitation: #65a7dc;
     --chart-humidity: #8eacd1;

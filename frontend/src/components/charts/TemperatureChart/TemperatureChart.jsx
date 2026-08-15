@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Line } from "recharts";
+import { Line, ReferenceDot } from "recharts";
 import { useTranslation } from "react-i18next";
 
 import ClimateChart from "../ClimateChart/ClimateChart.jsx";
@@ -47,6 +47,14 @@ function TemperatureChart({ data }) {
         ];
     }, [chartData]);
     const extremes = useMemo(() => getTemperatureExtremes(chartData), [chartData]);
+    const todayPoint = useMemo(() => {
+        const today = new Date();
+        const dateKey = `${String(today.getMonth() + 1).padStart(2, "0")}-${String(
+            today.getDate()
+        ).padStart(2, "0")}`;
+
+        return chartData.find((point) => point.observed_date === dateKey) ?? null;
+    }, [chartData]);
 
     return (
         <div className={styles.chart}>
@@ -59,13 +67,19 @@ function TemperatureChart({ data }) {
                     <i className={styles.apparentTemperatureKey} />
                     {t("charts.apparentTemperature")}
                 </span>
+                <span className={styles.averageBadgeItem}>
+                    <i className={styles.todayKey} />
+                    {t("charts.today")}
+                </span>
             </div>
 
             <ClimateChart
                 data={chartData}
                 yDomain={yDomain}
                 height={360}
-                yTickFormatter={(value) => `${convertValue("temperature", value).toFixed(0)} ${unitLabel("temperature")}`}
+                yTickFormatter={(value) =>
+                    `${convertValue("temperature", value).toFixed(0)} ${unitLabel("temperature")}`
+                }
                 tooltipContent={
                     <TemperatureTooltip
                         series={[temperatureSeries]}
@@ -91,6 +105,16 @@ function TemperatureChart({ data }) {
                     isAnimationActive={false}
                 />
                 <TemperatureExtremes extremes={extremes} color={TEMPERATURE_SERIES.color} />
+                {Number.isFinite(todayPoint?.[TEMPERATURE_SERIES.meanKey]) && (
+                    <ReferenceDot
+                        x={todayPoint.observed_date}
+                        y={todayPoint[TEMPERATURE_SERIES.meanKey]}
+                        r={3.5}
+                        fill="var(--chart-today)"
+                        stroke="var(--color-surface)"
+                        strokeWidth={1}
+                    />
+                )}
             </ClimateChart>
         </div>
     );

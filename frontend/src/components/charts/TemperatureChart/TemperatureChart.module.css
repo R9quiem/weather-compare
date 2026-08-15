@@ -8,7 +8,7 @@
     top: 2px;
     right: 30px;
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 14px;
     color: var(--color-text-muted);
     font-size: 10px;
@@ -29,6 +29,14 @@
 .averageBadgeItem .apparentTemperatureKey {
     border-color: var(--chart-secondary);
     border-top-style: dashed;
+}
+
+.averageBadgeItem .todayKey {
+    width: 7px;
+    height: 7px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--chart-today);
 }
 
 .tooltip {
