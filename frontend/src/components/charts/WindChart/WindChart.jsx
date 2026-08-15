@@ -26,7 +26,9 @@ function WindChart({ data }) {
                 data={data}
                 yDomain={summary.yDomain}
                 height={360}
-                yTickFormatter={(value) => `${convertValue("wind", value).toFixed(1)} ${unitLabel("wind")}`}
+                yTickFormatter={(value) =>
+                    `${convertValue("wind", value).toFixed(1)} ${unitLabel("wind")}`
+                }
                 tooltipContent={<WindTooltip />}
             >
                 <WindSeries annualAverage={summary.annualAverage} />

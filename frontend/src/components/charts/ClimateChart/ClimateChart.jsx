@@ -76,7 +76,11 @@ function ClimateChart({
                             />
                         ))}
 
-                    <CartesianGrid vertical={false} stroke="var(--chart-grid)" strokeDasharray="3 3" />
+                    <CartesianGrid
+                        vertical={false}
+                        stroke="var(--chart-grid)"
+                        strokeDasharray="3 3"
+                    />
 
                     <XAxis
                         dataKey="observed_date"

@@ -108,7 +108,12 @@ function CompareLineChart({
                     stroke={item.color}
                     strokeWidth={2.5}
                     dot={false}
-                    activeDot={{ r: 4, fill: item.color, stroke: "var(--color-white)", strokeWidth: 2 }}
+                    activeDot={{
+                        r: 4,
+                        fill: item.color,
+                        stroke: "var(--color-white)",
+                        strokeWidth: 2,
+                    }}
                     isAnimationActive={false}
                 />
             ))}
@@ -134,7 +139,9 @@ export function CompareWindChart(props) {
         <CompareLineChart
             {...props}
             sourceKey="wind_speed_10m_mean"
-            yTickFormatter={(value) => `${convertValue("wind", value).toFixed(1)} ${unitLabel("wind")}`}
+            yTickFormatter={(value) =>
+                `${convertValue("wind", value).toFixed(1)} ${unitLabel("wind")}`
+            }
             formatter={formatWind}
         />
     );
@@ -168,15 +175,13 @@ export function ComparePrecipitationChart({
             data={data}
             yDomain={getPositiveDomain(data, ["firstValue", "secondValue"])}
             height={470}
-            yTickFormatter={(value) => `${convertValue("precipitation", value).toFixed(1)} ${unitLabel("precipitation")}`}
+            yTickFormatter={(value) =>
+                `${convertValue("precipitation", value).toFixed(1)} ${unitLabel("precipitation")}`
+            }
             timeScale="monthly"
             tooltipCursor={false}
             tooltipContent={
-                <ComparisonTooltip
-                    monthly
-                    series={series}
-                    formatter={formatPrecipitation}
-                />
+                <ComparisonTooltip monthly series={series} formatter={formatPrecipitation} />
             }
         >
             <Bar

@@ -2,7 +2,11 @@ import { useId } from "react";
 import { Area, Line, ReferenceLine } from "recharts";
 import { useTranslation } from "react-i18next";
 
-function WindSeries({ dataKey = "wind_speed_10m_mean", annualAverage, color = "var(--chart-wind)" }) {
+function WindSeries({
+    dataKey = "wind_speed_10m_mean",
+    annualAverage,
+    color = "var(--chart-wind)",
+}) {
     const { t } = useTranslation();
     const reactId = useId().replaceAll(":", "");
     const gradientId = `wind-area-${reactId}`;

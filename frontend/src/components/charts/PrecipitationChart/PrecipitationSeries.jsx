@@ -2,7 +2,11 @@ import { useId } from "react";
 import { Bar, ReferenceLine } from "recharts";
 import { useTranslation } from "react-i18next";
 
-function PrecipitationSeries({ dataKey = "precipitation", monthlyAverage, color = "var(--color-accent-primary)" }) {
+function PrecipitationSeries({
+    dataKey = "precipitation",
+    monthlyAverage,
+    color = "var(--color-accent-primary)",
+}) {
     const { t } = useTranslation();
     const reactId = useId().replaceAll(":", "");
     const gradientId = `precipitation-bars-${reactId}`;

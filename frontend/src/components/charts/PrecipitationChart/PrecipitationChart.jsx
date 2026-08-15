@@ -26,7 +26,9 @@ function PrecipitationChart({ data }) {
                 data={precipitation.data}
                 yDomain={precipitation.yDomain}
                 height={360}
-                yTickFormatter={(value) => `${convertValue("precipitation", value).toFixed(1)} ${unitLabel("precipitation")}`}
+                yTickFormatter={(value) =>
+                    `${convertValue("precipitation", value).toFixed(1)} ${unitLabel("precipitation")}`
+                }
                 timeScale="monthly"
                 tooltipCursor={false}
                 tooltipContent={<PrecipitationTooltip />}

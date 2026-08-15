@@ -47,9 +47,7 @@ function getWindPreview(t, windRose, climateSummary, formatWind) {
               }),
           }
         : {
-              value: climateSummary
-                  ? formatWind(climateSummary.annualWindSpeed)
-                  : "—",
+              value: climateSummary ? formatWind(climateSummary.annualWindSpeed) : "—",
               detail: t("cityPage.stats.windFallback"),
           };
 }
@@ -84,9 +82,7 @@ function ClimateStats({
             key: "precipitation",
             label: t("cityPage.stats.annualPrecipitation"),
             value: value(() =>
-                climateSummary
-                    ? formatPrecipitation(climateSummary.annualPrecipitation)
-                    : "—"
+                climateSummary ? formatPrecipitation(climateSummary.annualPrecipitation) : "—"
             ),
             detail: value(() =>
                 climateSummary

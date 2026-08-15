@@ -336,7 +336,15 @@ function cloudInsight(t, cloudCover) {
     };
 }
 
-export function getMetricInsight(t, metric, dailyWeather, windRose, cloudCover, windView, formatter) {
+export function getMetricInsight(
+    t,
+    metric,
+    dailyWeather,
+    windRose,
+    cloudCover,
+    windView,
+    formatter
+) {
     if (!dailyWeather.length && metric !== "cloud") return null;
 
     switch (metric) {

@@ -44,9 +44,7 @@ def get_retry_delay(response: requests.Response, attempt: int) -> float:
         return max((next_utc_minute - now).total_seconds() + 5, 1.0)
 
     if "hourly api request limit" in reason:
-        next_utc_hour = now.replace(minute=0, second=0, microsecond=0) + timedelta(
-            hours=1
-        )
+        next_utc_hour = now.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1)
         return max((next_utc_hour - now).total_seconds() + 30, 1.0)
 
     if "daily api request limit" in reason:
@@ -136,15 +134,12 @@ def load_weather(
         values = hourly.get(variable)
 
         if values is None or len(values) != expected_length:
-            raise ValueError(
-                f"Open-Meteo returned incomplete {variable} data for city {city_id}"
-            )
+            raise ValueError(f"Open-Meteo returned incomplete {variable} data for city {city_id}")
 
         missing_values = sum(value is None for value in values)
         if missing_values:
             raise ValueError(
-                f"Open-Meteo returned {missing_values} null values "
-                f"for {variable} in city {city_id}"
+                f"Open-Meteo returned {missing_values} null values for {variable} in city {city_id}"
             )
 
     rows: list[WeatherHourly] = []

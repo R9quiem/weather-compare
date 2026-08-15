@@ -103,10 +103,7 @@ class WeatherRepository:
             SET apparent_temperature_mean = ?
             WHERE city_id = ? AND observed_date = ?
             """,
-            [
-                (value, city_id, observed_date)
-                for observed_date, value in values_by_day.items()
-            ],
+            [(value, city_id, observed_date) for observed_date, value in values_by_day.items()],
         )
 
     def get_daily_averages_by_city_id(self, city_id: int) -> list[WeatherDaily]:
@@ -295,9 +292,7 @@ class WeatherRepository:
             (city_id,),
         ).fetchall()
 
-        return [
-            (row["sector"], row["sample_count"], row["average_speed"]) for row in rows
-        ]
+        return [(row["sector"], row["sample_count"], row["average_speed"]) for row in rows]
 
     def get_monthly_cloud_cover_distribution(
         self,
@@ -548,7 +543,4 @@ class WeatherRepository:
             (city_id,),
         ).fetchone()
 
-        return (
-            row["total_rows"] > 0
-            and row["apparent_temperature_rows"] == row["total_rows"]
-        )
+        return row["total_rows"] > 0 and row["apparent_temperature_rows"] == row["total_rows"]

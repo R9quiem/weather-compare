@@ -84,7 +84,9 @@ function CompareTemperatureChart({
                 data={chartData}
                 yDomain={yDomain}
                 height={470}
-                yTickFormatter={(value) => `${convertValue("temperature", value).toFixed(0)} ${unitLabel("temperature")}`}
+                yTickFormatter={(value) =>
+                    `${convertValue("temperature", value).toFixed(0)} ${unitLabel("temperature")}`
+                }
                 tooltipContent={<TemperatureTooltip series={series} />}
             >
                 {series.map((item) => (

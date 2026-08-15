@@ -1,6 +1,6 @@
 from app.clients.open_meteo_api import load_daily_apparent_temperature, load_weather
-from app.db.init_db import init_db
 from app.db.connection import create_connection
+from app.db.init_db import init_db
 from app.repositories.city_repository import CityRepository
 from app.repositories.weather_repository import WeatherRepository
 from app.services.weather_analysis_service import (
@@ -8,7 +8,7 @@ from app.services.weather_analysis_service import (
     calculate_daily_weather_averages,
 )
 from app.services.weather_service import WeatherService
-from app.utils.config import CITIES, START_DATE, END_DATE, HOURLY_VARIABLES
+from app.utils.config import CITIES, END_DATE, HOURLY_VARIABLES, START_DATE
 from app.utils.logging import log_time
 
 
@@ -36,9 +36,7 @@ def seed_database() -> None:
                 city = city_repository.update_slug(city.id, city_data.slug)
                 connection.commit()
 
-            hourly_weather_is_complete = weather_repository.has_complete_hourly_weather(
-                city.id
-            )
+            hourly_weather_is_complete = weather_repository.has_complete_hourly_weather(city.id)
 
             if not hourly_weather_is_complete:
                 hourly_weather = load_weather(
@@ -53,13 +51,9 @@ def seed_database() -> None:
                 weather_service.create_hourly_weather(hourly_weather)
 
                 if not weather_repository.has_complete_hourly_weather(city.id):
-                    raise ValueError(
-                        f"Hourly weather is incomplete after seeding city {city.id}"
-                    )
+                    raise ValueError(f"Hourly weather is incomplete after seeding city {city.id}")
 
-            daily_weather_is_complete = weather_repository.has_complete_daily_weather(
-                city.id
-            )
+            daily_weather_is_complete = weather_repository.has_complete_daily_weather(city.id)
 
             if not daily_weather_is_complete:
                 hourly_weather = weather_repository.get_hourly_by_city_id(city.id)
@@ -68,14 +62,10 @@ def seed_database() -> None:
 
                 daily_weather_averages = calculate_daily_weather_averages(daily_weather)
 
-                weather_service.create_daily_averages(
-                    list(daily_weather_averages.values())
-                )
+                weather_service.create_daily_averages(list(daily_weather_averages.values()))
 
                 if not weather_repository.has_complete_daily_weather(city.id):
-                    raise ValueError(
-                        f"Daily weather is incomplete after seeding city {city.id}"
-                    )
+                    raise ValueError(f"Daily weather is incomplete after seeding city {city.id}")
 
             if not weather_repository.has_complete_daily_apparent_temperature(city.id):
                 apparent_temperatures = load_daily_apparent_temperature(
@@ -89,12 +79,9 @@ def seed_database() -> None:
                     apparent_temperatures,
                 )
 
-                if not weather_repository.has_complete_daily_apparent_temperature(
-                    city.id
-                ):
+                if not weather_repository.has_complete_daily_apparent_temperature(city.id):
                     raise ValueError(
-                        "Daily apparent temperature is incomplete after seeding "
-                        f"city {city.id}"
+                        f"Daily apparent temperature is incomplete after seeding city {city.id}"
                     )
 
             if not weather_repository.has_complete_wind_rose(city.id):
@@ -102,9 +89,7 @@ def seed_database() -> None:
                 weather_service.create_wind_rose(city.id, wind_rose)
 
                 if not weather_repository.has_complete_wind_rose(city.id):
-                    raise ValueError(
-                        f"Wind rose is incomplete after seeding city {city.id}"
-                    )
+                    raise ValueError(f"Wind rose is incomplete after seeding city {city.id}")
 
     finally:
         connection.close()

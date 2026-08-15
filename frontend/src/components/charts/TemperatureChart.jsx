@@ -1,1 +1,1 @@
-export {default} from "./TemperatureChart/TemperatureChart.jsx";
+export { default } from "./TemperatureChart/TemperatureChart.jsx";

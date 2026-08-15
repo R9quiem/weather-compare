@@ -29,7 +29,9 @@ function ThemeSwitcher() {
 
             <DropdownMenu.Portal>
                 <DropdownMenu.Content className={styles.menu} align="end" sideOffset={8}>
-                    <DropdownMenu.Label className={styles.title}>{t("theme.label")}</DropdownMenu.Label>
+                    <DropdownMenu.Label className={styles.title}>
+                        {t("theme.label")}
+                    </DropdownMenu.Label>
                     <DropdownMenu.RadioGroup
                         className={styles.options}
                         value={theme}

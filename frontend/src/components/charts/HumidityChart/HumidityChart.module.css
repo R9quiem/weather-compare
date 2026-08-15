@@ -1,56 +1,56 @@
 .chart {
-  position: relative;
+    position: relative;
 }
 
 .averageBadge {
-  position: absolute;
-  z-index: 2;
-  top: 2px;
-  right: 30px;
-  display: flex;
-  align-items: baseline;
-  gap: 7px;
-  color: var(--chart-humidity);
-  font-size: 10px;
-  pointer-events: none;
+    position: absolute;
+    z-index: 2;
+    top: 2px;
+    right: 30px;
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+    color: var(--chart-humidity);
+    font-size: 10px;
+    pointer-events: none;
 }
 
 .averageBadge strong {
-  color: var(--chart-humidity);
-  font-size: 11px;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
+    color: var(--chart-humidity);
+    font-size: 11px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
 }
 
 .tooltip {
-  display: grid;
-  min-width: 150px;
-  padding: 12px;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 14px;
-  background: rgb(var(--rgb-surface) / 84%);
-  box-shadow:
-    0 1px 3px rgb(var(--rgb-shadow) / 5%),
-    0 8px 20px rgb(var(--rgb-shadow) / 8%);
+    display: grid;
+    min-width: 150px;
+    padding: 12px;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 14px;
+    background: rgb(var(--rgb-surface) / 84%);
+    box-shadow:
+        0 1px 3px rgb(var(--rgb-shadow) / 5%),
+        0 8px 20px rgb(var(--rgb-shadow) / 8%);
 }
 
 .tooltipDate {
-  margin: 0 0 9px;
-  color: var(--color-text-strong);
-  font-size: 12px;
-  font-weight: 650;
-  text-transform: capitalize;
+    margin: 0 0 9px;
+    color: var(--color-text-strong);
+    font-size: 12px;
+    font-weight: 650;
+    text-transform: capitalize;
 }
 
 .tooltipLabel {
-  color: var(--chart-humidity);
-  font-size: 11px;
+    color: var(--chart-humidity);
+    font-size: 11px;
 }
 
 .tooltipValue {
-  margin-top: 4px;
-  color: var(--chart-humidity);
-  font-size: 16px;
-  font-weight: 650;
-  font-variant-numeric: tabular-nums;
+    margin-top: 4px;
+    color: var(--chart-humidity);
+    font-size: 16px;
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
 }

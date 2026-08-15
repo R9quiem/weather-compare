@@ -19,7 +19,8 @@ function CompareStats({ summary }) {
     };
     const formattedDifference = (() => {
         if (summary.difference == null) return "—";
-        if (summary.metric === "temperature") return formatTemperature(summary.difference, { delta: true });
+        if (summary.metric === "temperature")
+            return formatTemperature(summary.difference, { delta: true });
         if (summary.metric === "precipitation") return formatPrecipitation(summary.difference);
         if (summary.metric === "wind") return formatWind(summary.difference);
         return t("common.percentagePoints", { value: summary.difference.toFixed(1) });
@@ -28,10 +29,7 @@ function CompareStats({ summary }) {
 
     return (
         <>
-            <DashboardCard
-                className={styles.summaryItem}
-                aria-label={t("compare.period")}
-            >
+            <DashboardCard className={styles.summaryItem} aria-label={t("compare.period")}>
                 <span>{t("compare.period")}</span>
                 <strong>1995–2025</strong>
             </DashboardCard>

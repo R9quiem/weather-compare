@@ -28,9 +28,7 @@ function WindRoseTooltip({ active, payload }) {
             <span>{t("charts.observations", { value: sector.frequency.toFixed(1) })}</span>
             <small>
                 {t("charts.averageWind")}{" "}
-                {sector.average_speed == null
-                    ? "вЂ”"
-                    : formatWind(sector.average_speed)}
+                {sector.average_speed == null ? "вЂ”" : formatWind(sector.average_speed)}
             </small>
         </div>
     );
@@ -96,7 +94,12 @@ function WindRoseChart({ data }) {
                         fill="var(--chart-wind)"
                         fillOpacity={0.25}
                         dot={{ r: 3, fill: "var(--chart-wind)", strokeWidth: 0 }}
-                        activeDot={{ r: 4, fill: "var(--chart-wind)", stroke: "var(--color-white)", strokeWidth: 2 }}
+                        activeDot={{
+                            r: 4,
+                            fill: "var(--chart-wind)",
+                            stroke: "var(--color-white)",
+                            strokeWidth: 2,
+                        }}
                         isAnimationActive={false}
                     />
                 </RadarChart>

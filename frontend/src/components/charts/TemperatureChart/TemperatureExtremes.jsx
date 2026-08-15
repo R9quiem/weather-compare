@@ -36,7 +36,13 @@ function ExtremeLabel({ viewBox, point, kind, valueKey }) {
             >
                 {kind} {formatTemperature(point[valueKey])}
             </text>
-            <text x={x + width / 2} y={y + 26} textAnchor="middle" fill="var(--color-text-muted)" fontSize={9}>
+            <text
+                x={x + width / 2}
+                y={y + 26}
+                textAnchor="middle"
+                fill="var(--color-text-muted)"
+                fontSize={9}
+            >
                 {formatDate(point.observed_date, true)}
             </text>
         </g>

@@ -1,9 +1,9 @@
-from collections import defaultdict
-from datetime import date, datetime
 import math
 import statistics
+from collections import defaultdict
+from datetime import date, datetime
 
-from app.models.weather import WeatherHourly, WeatherDaily
+from app.models.weather import WeatherDaily, WeatherHourly
 
 
 def mean(values) -> float | None:
@@ -74,11 +74,7 @@ def aggregate_hourly_weather_by_day(
     daily_weather = []
 
     for (city_id, observed_date), records in sorted(grouped.items()):
-        gusts = [
-            record.wind_gusts_10m
-            for record in records
-            if record.wind_gusts_10m is not None
-        ]
+        gusts = [record.wind_gusts_10m for record in records if record.wind_gusts_10m is not None]
 
         daily_weather.append(
             WeatherDaily(
@@ -90,12 +86,8 @@ def aggregate_hourly_weather_by_day(
                 apparent_temperature_mean=None,
                 precipitation_sum=total(record.precipitation for record in records),
                 cloud_cover_mean=mean(record.cloud_cover for record in records),
-                sunshine_duration_sum=total(
-                    record.sunshine_duration for record in records
-                ),
-                relative_humidity_2m_mean=mean(
-                    record.relative_humidity_2m for record in records
-                ),
+                sunshine_duration_sum=total(record.sunshine_duration for record in records),
+                relative_humidity_2m_mean=mean(record.relative_humidity_2m for record in records),
                 wind_speed_10m_mean=mean(record.wind_speed_10m for record in records),
                 wind_direction_10m_dominant=circular_mean_degrees(
                     [record.wind_direction_10m for record in records],
@@ -113,40 +105,26 @@ def get_historical_weather_averages(daily_weather: list[WeatherDaily]) -> dict:
     averages = {}
 
     averages["city"] = daily_weather[0].city_id
-    averages["temperature_2m"] = rounded_mean(
-        item.temperature_2m_mean for item in daily_weather
-    )
-    averages["precipitation"] = rounded_mean(
-        item.precipitation_sum for item in daily_weather
-    )
-    averages["cloud_cover"] = rounded_mean(
-        item.cloud_cover_mean for item in daily_weather
-    )
+    averages["temperature_2m"] = rounded_mean(item.temperature_2m_mean for item in daily_weather)
+    averages["precipitation"] = rounded_mean(item.precipitation_sum for item in daily_weather)
+    averages["cloud_cover"] = rounded_mean(item.cloud_cover_mean for item in daily_weather)
     averages["sunshine_duration"] = rounded_mean(
         item.sunshine_duration_sum for item in daily_weather
     )
     averages["relative_humidity_2m"] = rounded_mean(
         item.relative_humidity_2m_mean for item in daily_weather
     )
-    averages["wind_speed_10m"] = rounded_mean(
-        item.wind_speed_10m_mean for item in daily_weather
-    )
+    averages["wind_speed_10m"] = rounded_mean(item.wind_speed_10m_mean for item in daily_weather)
     gusts = [
-        item.wind_gusts_10m_max
-        for item in daily_weather
-        if item.wind_gusts_10m_max is not None
+        item.wind_gusts_10m_max for item in daily_weather if item.wind_gusts_10m_max is not None
     ]
     averages["wind_gusts_10m"] = rounded_mean(gusts)
     averages["wind_direction_10m"] = circular_mean_degrees(
         [item.wind_direction_10m_dominant for item in daily_weather],
         [item.wind_speed_10m_mean for item in daily_weather],
     )
-    averages["temperature_2m_max"] = rounded_mean(
-        item.temperature_2m_max for item in daily_weather
-    )
-    averages["temperature_2m_min"] = rounded_mean(
-        item.temperature_2m_min for item in daily_weather
-    )
+    averages["temperature_2m_max"] = rounded_mean(item.temperature_2m_max for item in daily_weather)
+    averages["temperature_2m_min"] = rounded_mean(item.temperature_2m_min for item in daily_weather)
     averages["apparent_temperature"] = rounded_mean(
         item.apparent_temperature_mean for item in daily_weather
     )
@@ -174,9 +152,7 @@ def calculate_daily_weather_averages(daily_weather: list[WeatherDaily]) -> dict:
     for record in sorted(grouped):
         records_list = grouped[record]
         gusts = [
-            item.wind_gusts_10m_max
-            for item in records_list
-            if item.wind_gusts_10m_max is not None
+            item.wind_gusts_10m_max for item in records_list if item.wind_gusts_10m_max is not None
         ]
 
         string_key = f"{record[0]:02d}-{record[1]:02d}"
@@ -184,33 +160,19 @@ def calculate_daily_weather_averages(daily_weather: list[WeatherDaily]) -> dict:
         daily_averages[string_key] = WeatherDaily(
             city_id=records_list[0].city_id,
             observed_date=records_list[0].observed_date[5:],
-            temperature_2m_mean=rounded_mean(
-                item.temperature_2m_mean for item in records_list
-            ),
-            temperature_2m_max=rounded_mean(
-                item.temperature_2m_max for item in records_list
-            ),
-            temperature_2m_min=rounded_mean(
-                item.temperature_2m_min for item in records_list
-            ),
+            temperature_2m_mean=rounded_mean(item.temperature_2m_mean for item in records_list),
+            temperature_2m_max=rounded_mean(item.temperature_2m_max for item in records_list),
+            temperature_2m_min=rounded_mean(item.temperature_2m_min for item in records_list),
             apparent_temperature_mean=rounded_mean(
                 item.apparent_temperature_mean for item in records_list
             ),
-            precipitation_sum=rounded_mean(
-                item.precipitation_sum for item in records_list
-            ),
-            cloud_cover_mean=rounded_mean(
-                item.cloud_cover_mean for item in records_list
-            ),
-            sunshine_duration_sum=rounded_mean(
-                item.sunshine_duration_sum for item in records_list
-            ),
+            precipitation_sum=rounded_mean(item.precipitation_sum for item in records_list),
+            cloud_cover_mean=rounded_mean(item.cloud_cover_mean for item in records_list),
+            sunshine_duration_sum=rounded_mean(item.sunshine_duration_sum for item in records_list),
             relative_humidity_2m_mean=rounded_mean(
                 item.relative_humidity_2m_mean for item in records_list
             ),
-            wind_speed_10m_mean=rounded_mean(
-                item.wind_speed_10m_mean for item in records_list
-            ),
+            wind_speed_10m_mean=rounded_mean(item.wind_speed_10m_mean for item in records_list),
             wind_direction_10m_dominant=circular_mean_degrees(
                 [item.wind_direction_10m_dominant for item in records_list],
                 [item.wind_speed_10m_mean for item in records_list],

@@ -27,11 +27,15 @@ function UnitSwitcher() {
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
                 <DropdownMenu.Content className={styles.menu} align="end" sideOffset={8}>
-                    <DropdownMenu.Label className={styles.title}>{t("units.label")}</DropdownMenu.Label>
+                    <DropdownMenu.Label className={styles.title}>
+                        {t("units.label")}
+                    </DropdownMenu.Label>
                     {GROUPS.map(({ metric, values }, index) => (
                         <div className={styles.group} key={metric}>
                             {index > 0 && <DropdownMenu.Separator className={styles.separator} />}
-                            <DropdownMenu.Label className={styles.label}>{t(`units.${metric}`)}</DropdownMenu.Label>
+                            <DropdownMenu.Label className={styles.label}>
+                                {t(`units.${metric}`)}
+                            </DropdownMenu.Label>
                             <DropdownMenu.RadioGroup
                                 className={styles.options}
                                 style={{ "--unit-columns": values.length }}
@@ -39,7 +43,12 @@ function UnitSwitcher() {
                                 onValueChange={(value) => setUnit(metric, value)}
                             >
                                 {values.map((value) => (
-                                    <DropdownMenu.RadioItem key={value} value={value} className={styles.option} onSelect={(event) => event.preventDefault()}>
+                                    <DropdownMenu.RadioItem
+                                        key={value}
+                                        value={value}
+                                        className={styles.option}
+                                        onSelect={(event) => event.preventDefault()}
+                                    >
                                         <span>{t(`units.values.${value}`)}</span>
                                     </DropdownMenu.RadioItem>
                                 ))}

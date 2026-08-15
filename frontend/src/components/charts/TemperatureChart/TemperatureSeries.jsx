@@ -1,5 +1,5 @@
-import {useId} from "react";
-import {Area, Line} from "recharts";
+import { useId } from "react";
+import { Area, Line } from "recharts";
 
 function TemperatureSeries({
     id,
@@ -16,15 +16,9 @@ function TemperatureSeries({
     return (
         <>
             <defs>
-                <linearGradient
-                    id={gradientId}
-                    x1="0"
-                    y1="0"
-                    x2="0"
-                    y2="1"
-                >
-                    <stop offset="0%" stopColor={color} stopOpacity={0.34}/>
-                    <stop offset="100%" stopColor={color} stopOpacity={0.18}/>
+                <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={color} stopOpacity={0.34} />
+                    <stop offset="100%" stopColor={color} stopOpacity={0.18} />
                 </linearGradient>
             </defs>
 

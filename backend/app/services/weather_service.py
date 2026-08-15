@@ -115,7 +115,7 @@ class WeatherService:
 
         result = []
 
-        for month, total, clear, partly_cloudy, cloudy in distribution:
+        for month, total, clear, partly_cloudy, _cloudy in distribution:
             if total == 0:
                 continue
 
