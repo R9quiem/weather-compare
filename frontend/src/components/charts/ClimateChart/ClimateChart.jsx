@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
     CartesianGrid,
@@ -12,7 +12,15 @@ import {
     YAxis,
 } from "recharts";
 
-import { formatMonth, MONTH_EDGES, MONTH_TICKS, MONTH_ZONES } from "./chartUtils.js";
+import {
+    COMPACT_MONTH_TICKS,
+    aggregateDailyDataByMonth,
+    formatMonth,
+    MONTH_EDGES,
+    MONTH_TICKS,
+    MONTH_ZONES,
+} from "./chartUtils.js";
+import useMediaQuery from "../../../hooks/useMediaQuery.js";
 import styles from "./ClimateChart.module.css";
 
 function ClimateChart({
@@ -27,13 +35,20 @@ function ClimateChart({
     showLegend = false,
     timeScale = "daily",
     tooltipCursor,
+    aggregateOnCompact = true,
 }) {
     const { i18n } = useTranslation();
     const [hoveredMonth, setHoveredMonth] = useState(null);
+    const isCompact = useMediaQuery("(max-width: 600px)");
+    const shouldAggregate = isCompact && timeScale === "daily" && aggregateOnCompact;
+    const chartData = useMemo(
+        () => (shouldAggregate ? aggregateDailyDataByMonth(data) : data),
+        [data, shouldAggregate]
+    );
     const [yMin, yMax] = yDomain;
     const hasNumericDomain = Number.isFinite(yMin) && Number.isFinite(yMax);
     const monthEdgeHeight = hasNumericDomain ? (yMax - yMin) * 0.025 : 0;
-    const showDailyMonthStructure = timeScale === "daily";
+    const showDailyMonthStructure = timeScale === "daily" && !shouldAggregate;
     const defaultTooltipCursor = {
         stroke: "var(--chart-secondary)",
         strokeWidth: 1,
@@ -56,8 +71,12 @@ function ClimateChart({
         <div className={styles.chart} style={{ height }}>
             <ResponsiveContainer>
                 <ComposedChart
-                    data={data}
-                    margin={{ top: 30, right: 30, bottom: 20, left: 10 }}
+                    data={chartData}
+                    margin={
+                        isCompact
+                            ? { top: 20, right: 6, bottom: 14, left: 0 }
+                            : { top: 30, right: 30, bottom: 20, left: 10 }
+                    }
                     onMouseMove={showDailyMonthStructure ? handleMouseMove : undefined}
                     onMouseLeave={showDailyMonthStructure ? () => setHoveredMonth(null) : undefined}
                 >
@@ -84,11 +103,13 @@ function ClimateChart({
 
                     <XAxis
                         dataKey="observed_date"
-                        ticks={MONTH_TICKS}
-                        tickFormatter={(date) => formatMonth(date, i18n.resolvedLanguage)}
+                        ticks={isCompact ? COMPACT_MONTH_TICKS : MONTH_TICKS}
+                        tickFormatter={(date) =>
+                            formatMonth(date, i18n.resolvedLanguage, isCompact)
+                        }
                         interval={0}
                         tickLine={false}
-                        tick={{ fontSize: 10, fill: "var(--chart-label)" }}
+                        tick={{ fontSize: isCompact ? 9 : 10, fill: "var(--chart-label)" }}
                         tickMargin={10}
                     />
 
@@ -96,6 +117,7 @@ function ClimateChart({
                         domain={yDomain}
                         unit={unit}
                         ticks={yTicks}
+                        width={isCompact ? 42 : 60}
                         tickFormatter={yTickFormatter}
                         tick={{ fontSize: 12, fill: "var(--chart-axis)" }}
                         tickMargin={10}

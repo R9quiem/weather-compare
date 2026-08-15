@@ -43,7 +43,7 @@ function ExtremeLabel({ viewBox, point, kind, valueKey }) {
                 fill="var(--color-text-muted)"
                 fontSize={9}
             >
-                {formatDate(point.observed_date, true)}
+                {formatDate(point.observed_date, true, point._isMonthlyAggregate)}
             </text>
         </g>
     );

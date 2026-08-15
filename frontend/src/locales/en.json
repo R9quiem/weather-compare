@@ -262,6 +262,7 @@
         "minimum": "Minimum",
         "maximum": "Maximum",
         "today": "Today",
+        "currentMonth": "Current month",
         "minShort": "Min",
         "maxShort": "Max",
         "averageTemperature": "Mean temperature",

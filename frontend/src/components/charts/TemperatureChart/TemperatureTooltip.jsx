@@ -20,7 +20,9 @@ function TemperatureTooltip({ active, label, payload, series, apparentTemperatur
 
     return (
         <div className={styles.tooltip}>
-            <p className={styles.tooltipDate}>{formatDate(label ?? point.observed_date)}</p>
+            <p className={styles.tooltipDate}>
+                {formatDate(label ?? point.observed_date, false, point._isMonthlyAggregate)}
+            </p>
 
             {series.map((item, index) => (
                 <div

@@ -8,11 +8,11 @@ export function formatWindSpeed(value) {
     return i18n.t("common.kmh", { value: Number(value).toFixed(1) });
 }
 
-export function formatWindDate(date) {
+export function formatWindDate(date, monthly = false) {
     const [month, day] = date.split("-").map(Number);
 
     return new Intl.DateTimeFormat(i18n.resolvedLanguage ?? "ru", {
-        day: "numeric",
+        day: monthly ? undefined : "numeric",
         month: "long",
     }).format(new Date(2000, month - 1, day));
 }

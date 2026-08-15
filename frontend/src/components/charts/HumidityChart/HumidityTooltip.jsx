@@ -16,7 +16,9 @@ function HumidityTooltip({ active, label, payload }) {
 
     return (
         <div className={styles.tooltip}>
-            <p className={styles.tooltipDate}>{formatHumidityDate(label)}</p>
+            <p className={styles.tooltipDate}>
+                {formatHumidityDate(label, point._isMonthlyAggregate)}
+            </p>
             <span className={styles.tooltipLabel}>{t("charts.averageHumidity")}</span>
             <strong className={styles.tooltipValue}>
                 {formatHumidity(point.relative_humidity_2m_mean)}

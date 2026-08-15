@@ -18,7 +18,7 @@ function WindTooltip({ active, label, payload }) {
 
     return (
         <div className={styles.tooltip}>
-            <p className={styles.tooltipDate}>{formatWindDate(label)}</p>
+            <p className={styles.tooltipDate}>{formatWindDate(label, point._isMonthlyAggregate)}</p>
             <span className={styles.tooltipLabel}>{t("charts.averageWind")}</span>
             <strong className={styles.tooltipValue}>{formatWind(point.wind_speed_10m_mean)}</strong>
             <small className={styles.tooltipMeta}>{t("charts.atTenMetres")}</small>

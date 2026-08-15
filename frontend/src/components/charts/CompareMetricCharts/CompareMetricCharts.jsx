@@ -57,7 +57,11 @@ function ComparisonTooltip({ active, label, payload, series, formatter, monthly 
 
     return (
         <div className={styles.tooltip}>
-            <p>{monthly ? formatMonth(label) : formatHumidityDate(label)}</p>
+            <p>
+                {monthly || point._isMonthlyAggregate
+                    ? formatMonth(label)
+                    : formatHumidityDate(label)}
+            </p>
             {series.map((item) => (
                 <div key={item.key} className={styles.tooltipRow}>
                     <i style={{ backgroundColor: item.color }} />

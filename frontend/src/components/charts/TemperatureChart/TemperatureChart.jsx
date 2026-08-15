@@ -11,8 +11,10 @@ import {
     getTemperatureDomain,
     getTemperatureExtremes,
 } from "./temperatureUtils.js";
+import { aggregateDailyDataByMonth } from "../ClimateChart/chartUtils.js";
 import styles from "./TemperatureChart.module.css";
 import { useMeasurementFormatter } from "../../../units/useMeasurementFormatter.js";
+import useMediaQuery from "../../../hooks/useMediaQuery.js";
 
 const TEMPERATURE_SERIES = {
     id: "city-temperature",
@@ -28,11 +30,16 @@ const APPARENT_TEMPERATURE_COLOR = "var(--chart-secondary)";
 function TemperatureChart({ data }) {
     const { t } = useTranslation();
     const { convertValue, unitLabel } = useMeasurementFormatter();
+    const isCompact = useMediaQuery("(max-width: 600px)");
     const temperatureSeries = {
         ...TEMPERATURE_SERIES,
         label: t("charts.averageTemperature"),
     };
-    const chartData = useMemo(() => addTemperatureRange(data), [data]);
+    const dailyChartData = useMemo(() => addTemperatureRange(data), [data]);
+    const chartData = useMemo(
+        () => (isCompact ? aggregateDailyDataByMonth(dailyChartData) : dailyChartData),
+        [dailyChartData, isCompact]
+    );
     const yDomain = useMemo(() => {
         const baseDomain = getTemperatureDomain(chartData, [TEMPERATURE_SERIES]);
         const apparentValues = chartData
@@ -49,12 +56,13 @@ function TemperatureChart({ data }) {
     const extremes = useMemo(() => getTemperatureExtremes(chartData), [chartData]);
     const todayPoint = useMemo(() => {
         const today = new Date();
-        const dateKey = `${String(today.getMonth() + 1).padStart(2, "0")}-${String(
-            today.getDate()
-        ).padStart(2, "0")}`;
+        const month = String(today.getMonth() + 1).padStart(2, "0");
+        const dateKey = isCompact
+            ? `${month}-15`
+            : `${month}-${String(today.getDate()).padStart(2, "0")}`;
 
         return chartData.find((point) => point.observed_date === dateKey) ?? null;
-    }, [chartData]);
+    }, [chartData, isCompact]);
 
     return (
         <div className={styles.chart}>
@@ -69,7 +77,7 @@ function TemperatureChart({ data }) {
                 </span>
                 <span className={styles.averageBadgeItem}>
                     <i className={styles.todayKey} />
-                    {t("charts.today")}
+                    {t(isCompact ? "charts.currentMonth" : "charts.today")}
                 </span>
             </div>
 
@@ -77,6 +85,8 @@ function TemperatureChart({ data }) {
                 data={chartData}
                 yDomain={yDomain}
                 height={360}
+                timeScale={isCompact ? "monthly" : "daily"}
+                aggregateOnCompact={false}
                 yTickFormatter={(value) =>
                     `${convertValue("temperature", value).toFixed(0)} ${unitLabel("temperature")}`
                 }

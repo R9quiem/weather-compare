@@ -8,11 +8,11 @@ export function formatHumidity(value) {
     return `${Number(value).toFixed(0)}%`;
 }
 
-export function formatHumidityDate(date) {
+export function formatHumidityDate(date, monthly = false) {
     const [month, day] = date.split("-").map(Number);
 
     return new Intl.DateTimeFormat(i18n.resolvedLanguage ?? "ru", {
-        day: "numeric",
+        day: monthly ? undefined : "numeric",
         month: "long",
     }).format(new Date(2000, month - 1, day));
 }

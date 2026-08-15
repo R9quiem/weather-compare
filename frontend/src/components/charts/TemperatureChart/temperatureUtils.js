@@ -1,9 +1,9 @@
 import i18n from "../../../i18n.js";
 
-export function formatDate(date, short = false) {
+export function formatDate(date, short = false, monthly = false) {
     const [month, day] = date.split("-").map(Number);
     const formatter = new Intl.DateTimeFormat(i18n.resolvedLanguage ?? "ru", {
-        day: "numeric",
+        day: monthly ? undefined : "numeric",
         month: short ? "short" : "long",
     });
 
