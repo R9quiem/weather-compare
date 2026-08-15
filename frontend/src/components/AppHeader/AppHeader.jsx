@@ -8,7 +8,7 @@ import controlStyles from "./HeaderControl.module.css";
 import styles from "./AppHeader.module.css";
 
 const NAV_ITEMS = [
-    { to: "/", end: true, labelKey: "nav.current", Icon: CloudSun },
+    { to: "/weather", labelKey: "nav.current", Icon: CloudSun },
     { to: "/climate", labelKey: "nav.climate", Icon: ChartSpline },
     { to: "/compare", labelKey: "nav.compare", Icon: ArrowLeftRight },
 ];
@@ -18,7 +18,10 @@ function AppHeader() {
     const { pathname } = useLocation();
 
     return (
-        <header className={styles["app-header"]} data-sunlit={pathname === "/" ? "" : undefined}>
+        <header
+            className={styles["app-header"]}
+            data-sunlit={pathname === "/weather" ? "" : undefined}
+        >
             <div className={styles["app-name"]}>{t("brand")}</div>
             <nav className={styles["app-nav"]} aria-label={t("nav.label")}>
                 {NAV_ITEMS.map(({ to, end, labelKey, Icon }) => (

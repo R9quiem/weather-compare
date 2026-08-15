@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import AppLayout from "./AppLayout.jsx";
 import CityWeatherPage from "../pages/CityWeatherPage/CityWeatherPage.jsx";
 import CurrentWeatherPage from "../pages/CurrentWeatherPage/CurrentWeatherPage.jsx";
@@ -10,7 +10,8 @@ export const router = createBrowserRouter([
         path: "/",
         element: <AppLayout />,
         children: [
-            { path: "/", element: <CurrentWeatherPage /> },
+            { index: true, element: <Navigate to="/climate" replace /> },
+            { path: "/weather", element: <CurrentWeatherPage /> },
             { path: "/climate", element: <CityWeatherPage /> },
             { path: "/compare", element: <WeatherComparePage /> },
             { path: "*", element: <NotFoundPage /> },
