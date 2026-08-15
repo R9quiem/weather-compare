@@ -28,3 +28,6 @@ dist/
 # Logs
 *.log
 logs/
+
+# Local project notes
+PROJECT_ROADMAP.md
