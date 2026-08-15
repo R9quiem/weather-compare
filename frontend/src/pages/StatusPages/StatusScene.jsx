@@ -39,9 +39,15 @@ function MissingSunRadar() {
     return (
         <div className={styles.missingSunScene} aria-hidden="true">
             <div className={styles.missingSun} />
-            <div className={`${styles.scanner} ${styles.scannerLeft}`}><i /></div>
-            <div className={`${styles.scanner} ${styles.scannerRight}`}><i /></div>
-            <div className={`${styles.scanner} ${styles.scannerTop}`}><i /></div>
+            <div className={`${styles.scanner} ${styles.scannerLeft}`}>
+                <i />
+            </div>
+            <div className={`${styles.scanner} ${styles.scannerRight}`}>
+                <i />
+            </div>
+            <div className={`${styles.scanner} ${styles.scannerTop}`}>
+                <i />
+            </div>
             <div className={styles.afterimageMarks}>
                 {afterimageAngles.map((angle, index) => (
                     <i key={angle} style={{ "--angle": `${angle}deg`, "--mark-index": index }} />
@@ -58,7 +64,9 @@ function NotFoundScene() {
     return (
         <section className={`${styles.page} ${styles.notFound}`}>
             <div className={styles.frame}>
-                <div className={styles.errorNumber} aria-hidden="true">404</div>
+                <div className={styles.errorNumber} aria-hidden="true">
+                    404
+                </div>
                 <MissingSunRadar />
                 <div className={styles.notFoundCopy}>
                     <p>{t("status.notFound.eyebrow")}</p>

@@ -10,10 +10,10 @@
     height: 100%;
     min-height: 620px;
     overflow: hidden;
-    border: 1px solid var(--color-surface-glass);
-    border-radius: 28px;
-    background: var(--color-surface-panel);
-    box-shadow: 0 22px 54px rgb(var(--rgb-shadow) / 8%);
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
     isolation: isolate;
 }
 
@@ -37,27 +37,21 @@
     transition: transform 160ms ease;
 }
 
-.returnLink:hover svg { transform: translateX(-3px); }
-.returnLink:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 3px; }
+.returnLink:hover svg {
+    transform: translateX(-3px);
+}
+.returnLink:focus-visible {
+    outline: 2px solid var(--color-accent-primary);
+    outline-offset: 3px;
+}
 
 .coming .frame {
-    background: transparent;
     isolation: auto;
 }
 
 .coming {
     position: relative;
     isolation: isolate;
-}
-
-.coming::after {
-    content: "";
-    position: absolute;
-    z-index: -2;
-    inset: 0 30px 30px;
-    border-radius: 28px;
-    background: var(--color-surface-panel);
-    pointer-events: none;
 }
 
 .coming::before {
@@ -69,7 +63,14 @@
     width: 270px;
     height: 270px;
     border-radius: 50%;
-    background: radial-gradient(circle at 46% 42%, var(--sun-core) 0%, var(--sun-mid) 40%, var(--sun-edge) 62%, rgb(var(--rgb-sun) / 22%) 830%, transparent 100%);
+    background: radial-gradient(
+        circle at 46% 42%,
+        var(--sun-core) 0%,
+        var(--sun-mid) 40%,
+        var(--sun-edge) 62%,
+        rgb(var(--rgb-sun) / 22%) 830%,
+        transparent 100%
+    );
     box-shadow:
         0 0 72px rgb(var(--rgb-sun) / 50%),
         0 0 160px rgb(var(--rgb-sun) / 40%),
@@ -88,10 +89,23 @@
     height: 790px;
     border: 0;
     border-radius: 50%;
-    background: linear-gradient(to bottom, rgb(var(--rgb-white) / 26%) 0%, rgb(var(--rgb-white) / 17%) 42%, rgb(var(--rgb-white) / 8%) 66%, transparent 100%);
+    background: linear-gradient(
+        to bottom,
+        rgb(var(--rgb-white) / 26%) 0%,
+        rgb(var(--rgb-white) / 17%) 42%,
+        rgb(var(--rgb-white) / 8%) 66%,
+        transparent 100%
+    );
     box-shadow: inset 0 1px 0 rgb(var(--rgb-white) / 54%);
     backdrop-filter: blur(28px) saturate(0.96);
-    mask-image: linear-gradient(to bottom, var(--color-black) 0%, var(--color-black) 40%, rgb(var(--rgb-black) / 72%) 50%, rgb(var(--rgb-black) / 20%) 61%, transparent 69%);
+    mask-image: linear-gradient(
+        to bottom,
+        var(--color-black) 0%,
+        var(--color-black) 40%,
+        rgb(var(--rgb-black) / 72%) 50%,
+        rgb(var(--rgb-black) / 20%) 61%,
+        transparent 69%
+    );
     transform: translateX(-50%);
 }
 
@@ -101,7 +115,14 @@
     inset: 0;
     border: 2px solid rgb(var(--rgb-white) / 82%);
     border-radius: inherit;
-    mask-image: linear-gradient(to bottom, var(--color-black) 0%, var(--color-black) 38%, rgb(var(--rgb-black) / 62%) 48%, rgb(var(--rgb-black) / 16%) 58%, transparent 66%);
+    mask-image: linear-gradient(
+        to bottom,
+        var(--color-black) 0%,
+        var(--color-black) 38%,
+        rgb(var(--rgb-black) / 62%) 48%,
+        rgb(var(--rgb-black) / 16%) 58%,
+        transparent 66%
+    );
     pointer-events: none;
 }
 
@@ -147,7 +168,10 @@
     text-decoration: none;
     box-shadow: 0 8px 20px rgb(var(--rgb-shadow) / 14%);
     backdrop-filter: blur(8px);
-    transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+    transition:
+        background-color 160ms ease,
+        box-shadow 160ms ease,
+        transform 160ms ease;
 }
 
 .comingAction svg {
@@ -163,11 +187,12 @@
     transform: translateY(-1px);
 }
 
-.comingAction:hover svg { transform: translateX(2px); }
-.comingAction:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 3px; }
-
-.notFound .frame {
-    background: var(--color-surface-panel);
+.comingAction:hover svg {
+    transform: translateX(2px);
+}
+.comingAction:focus-visible {
+    outline: 2px solid var(--color-accent-primary);
+    outline-offset: 3px;
 }
 
 .errorNumber {
@@ -262,7 +287,13 @@
     right: 0;
     bottom: 0;
     left: 7px;
-    background: linear-gradient(90deg, rgb(var(--rgb-accent-primary) / 38%) 0%, rgb(var(--rgb-accent-primary) / 18%) 30%, rgb(var(--rgb-accent-primary) / 5%) 68%, transparent 100%);
+    background: linear-gradient(
+        90deg,
+        rgb(var(--rgb-accent-primary) / 38%) 0%,
+        rgb(var(--rgb-accent-primary) / 18%) 30%,
+        rgb(var(--rgb-accent-primary) / 5%) 68%,
+        transparent 100%
+    );
     clip-path: polygon(0 48%, 100% 0, 100% 100%, 0 52%);
     filter: blur(3px);
 }
@@ -285,7 +316,13 @@
 }
 
 .scannerRight i {
-    background: linear-gradient(90deg, rgb(var(--rgb-accent-secondary) / 38%) 0%, rgb(var(--rgb-accent-secondary) / 18%) 30%, rgb(var(--rgb-accent-secondary) / 5%) 68%, transparent 100%);
+    background: linear-gradient(
+        90deg,
+        rgb(var(--rgb-accent-secondary) / 38%) 0%,
+        rgb(var(--rgb-accent-secondary) / 18%) 30%,
+        rgb(var(--rgb-accent-secondary) / 5%) 68%,
+        transparent 100%
+    );
 }
 
 .scannerTop {
@@ -300,7 +337,13 @@
 }
 
 .scannerTop i {
-    background: linear-gradient(90deg, rgb(var(--rgb-muted) / 34%) 0%, rgb(var(--rgb-muted) / 16%) 30%, rgb(var(--rgb-muted) / 4%) 68%, transparent 100%);
+    background: linear-gradient(
+        90deg,
+        rgb(var(--rgb-muted) / 34%) 0%,
+        rgb(var(--rgb-muted) / 16%) 30%,
+        rgb(var(--rgb-muted) / 4%) 68%,
+        transparent 100%
+    );
 }
 
 .afterimageMarks {
@@ -316,7 +359,9 @@
     height: 3px;
     border-radius: 3px;
     background: var(--radar-mark);
-    box-shadow: 11px 0 0 rgb(var(--rgb-muted) / 30%), 21px 0 0 rgb(var(--rgb-muted) / 10%);
+    box-shadow:
+        11px 0 0 rgb(var(--rgb-muted) / 30%),
+        21px 0 0 rgb(var(--rgb-muted) / 10%);
     transform: rotate(var(--angle)) translateX(181px);
     transform-origin: 0 50%;
 }
@@ -337,16 +382,44 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-    .scannerLeft { animation: scanLeft 2.8s ease-in-out infinite alternate; }
-    .scannerRight { animation: scanRight 3.2s ease-in-out infinite alternate; }
-    .scannerTop { animation: scanTop 3s ease-in-out infinite alternate; }
-    .afterimageMarks i { animation: signalBlink 2.2s steps(1, end) infinite; }
+    .scannerLeft {
+        animation: scanLeft 2.8s ease-in-out infinite alternate;
+    }
+    .scannerRight {
+        animation: scanRight 3.2s ease-in-out infinite alternate;
+    }
+    .scannerTop {
+        animation: scanTop 3s ease-in-out infinite alternate;
+    }
+    .afterimageMarks i {
+        animation: signalBlink 2.2s steps(1, end) infinite;
+    }
 }
 
-@keyframes scanLeft { to { transform: rotate(34deg); } }
-@keyframes scanRight { to { transform: rotate(208deg); } }
-@keyframes scanTop { to { transform: rotate(86deg); } }
+@keyframes scanLeft {
+    to {
+        transform: rotate(34deg);
+    }
+}
+@keyframes scanRight {
+    to {
+        transform: rotate(208deg);
+    }
+}
+@keyframes scanTop {
+    to {
+        transform: rotate(86deg);
+    }
+}
 @keyframes signalBlink {
-    0%, 11%, 24%, 100% { opacity: 0.55; }
-    5%, 18% { opacity: 1; }
+    0%,
+    11%,
+    24%,
+    100% {
+        opacity: 0.55;
+    }
+    5%,
+    18% {
+        opacity: 1;
+    }
 }
