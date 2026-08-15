@@ -1,10 +1,12 @@
+import logging
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.router import router
+from app.db.init_db import init_db
 from app.db.seed import seed_database
-
-import logging
+from app.utils.settings import settings
 
 logging.basicConfig(
     level=logging.INFO,
@@ -20,11 +22,16 @@ async def lifespan(app: FastAPI):
     logger.info("Application startup started")
 
     try:
-        logger.info("Database seeding started")
+        init_db()
 
-        seed_database()
+        if settings.seed_database_on_startup:
+            logger.info("Database seeding started")
 
-        logger.info("Database seeding finished")
+            seed_database()
+
+            logger.info("Database seeding finished")
+        else:
+            logger.info("Database seeding is disabled")
 
         logger.info("Application startup finished")
 
@@ -48,10 +55,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ],
+    allow_origins=list(settings.cors_origins),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -1,16 +1,12 @@
 import sqlite3
-from pathlib import Path
 
+from app.utils.settings import settings
 
-BACKEND_DIR = Path(__file__).resolve().parents[2]
-DATA_DIR = BACKEND_DIR / "data"
-DATABASE_PATH = DATA_DIR / "app.db"
-
-DATA_DIR.mkdir(parents=True, exist_ok=True)
+settings.database_path.parent.mkdir(parents=True, exist_ok=True)
 
 
 def create_connection() -> sqlite3.Connection:
-    connection = sqlite3.connect(DATABASE_PATH)
+    connection = sqlite3.connect(settings.database_path)
 
     connection.row_factory = sqlite3.Row
 
