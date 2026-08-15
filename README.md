@@ -133,7 +133,54 @@ Backend разделён на несколько слоёв:
 | `GET` | `/weather/hourly/{city_id}` | Почасовые исторические данные города |
 | `GET` | `/weather/daily_averages/{city_id}` | Климатический год, роза ветров и распределение облачности |
 
-После запуска интерактивная документация доступна по адресу [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).
+После запуска интерактивная документация доступна по адресу `/docs` на backend или `/api/docs` при запуске через Docker.
+
+## Запуск в Docker
+
+Для запуска потребуются Docker Engine и Docker Compose. В Docker Desktop они устанавливаются вместе.
+
+Клонируйте репозиторий и создайте локальный файл с настройками:
+
+```bash
+git clone https://github.com/R9quiem/weather-compare.git
+cd weather-compare
+cp .env.example .env
+```
+
+В Windows PowerShell последнюю команду нужно заменить на:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Если готовая база уже есть, поместите её в `backend/data/app.db` и установите в `.env`:
+
+```dotenv
+SEED_DATABASE_ON_STARTUP=false
+```
+
+Если базы нет, оставьте значение `true`. При первом запуске backend создаст её и загрузит исторические данные, поэтому потребуется интернет, а запуск займёт продолжительное время.
+
+Соберите и запустите приложение:
+
+```bash
+docker compose up --build -d
+```
+
+После запуска доступны:
+
+- приложение: [http://localhost:8080](http://localhost:8080);
+- Swagger UI: [http://localhost:8080/api/docs](http://localhost:8080/api/docs);
+- проверка API: [http://localhost:8080/api/health](http://localhost:8080/api/health).
+
+Порт можно изменить через `APP_PORT` в `.env`. Посмотреть логи и остановить приложение можно командами:
+
+```bash
+docker compose logs -f
+docker compose down
+```
+
+Папка `backend/data` подключается к backend-контейнеру как постоянное хранилище. База не попадает внутрь Docker-образа и сохраняется после пересборки или удаления контейнера.
 
 ## Локальный запуск
 
@@ -200,7 +247,7 @@ cd ..
 Запустите frontend и backend одной командой из корня проекта:
 
 ```bash
-node start.mjs dev
+node start.mjs
 ```
 
 После запуска:
@@ -245,7 +292,9 @@ npm run build
 
 ```text
 weather-compare/
+├── compose.yaml             # Combined Docker launch
 ├── backend/
+│   ├── Dockerfile           # Backend image
 │   ├── app/
 │   │   ├── api/             # FastAPI routes
 │   │   ├── clients/         # Open-Meteo client
@@ -258,6 +307,8 @@ weather-compare/
 │   ├── tests/               # Backend tests
 │   └── pyproject.toml       # Python dependencies and project settings
 ├── frontend/
+│   ├── Dockerfile           # Frontend build and Nginx image
+│   ├── nginx.conf           # Static files, SPA fallback and API proxy
 │   └── src/
 │       ├── api/             # Requests to backend
 │       ├── app/             # Layout and routing
