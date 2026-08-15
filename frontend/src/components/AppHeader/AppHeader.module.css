@@ -152,3 +152,103 @@
 :global(:root[data-theme="dark"]) .app-header[data-sunlit] .app-nav a[aria-current="page"] {
     color: var(--color-nav-active-text);
 }
+
+@media (max-width: 900px) {
+    .app-header {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        height: auto;
+        min-height: 126px;
+        gap: 14px 18px;
+        padding: 16px 20px 18px;
+    }
+
+    .app-name {
+        font-size: 21px;
+    }
+
+    .app-nav {
+        position: static;
+        grid-column: 1 / -1;
+        grid-row: 2;
+        width: 100%;
+        transform: none;
+    }
+
+    .app-nav a,
+    .app-nav a[aria-current="page"] {
+        min-width: 0;
+        max-width: none;
+        min-height: 44px;
+        flex: 1 1 0;
+        gap: 7px;
+        padding-inline: 10px;
+    }
+
+    .nav-label,
+    .app-nav a[aria-current="page"] .nav-label {
+        max-width: 150px;
+        opacity: 1;
+    }
+
+    .app-tools {
+        padding-right: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .app-header {
+        gap: 12px 10px;
+        padding-inline: 14px;
+    }
+
+    .app-name {
+        font-size: 18px;
+    }
+
+    .app-name::before {
+        width: 17px;
+        height: 17px;
+        box-shadow: 4px 4px 0 var(--color-accent-secondary);
+    }
+
+    .app-nav {
+        gap: 6px;
+    }
+
+    .app-nav a,
+    .app-nav a[aria-current="page"] {
+        gap: 5px;
+        padding-inline: 6px;
+        font-size: 11px;
+    }
+
+    .app-nav a svg {
+        width: 17px;
+        height: 17px;
+    }
+
+    .app-tools {
+        gap: 6px;
+    }
+}
+
+@media (max-width: 420px) {
+    .app-header {
+        grid-template-columns: 1fr;
+        min-height: 176px;
+    }
+
+    .app-name,
+    .app-tools {
+        justify-self: center;
+    }
+
+    .app-tools {
+        grid-row: 2;
+    }
+
+    .app-nav {
+        grid-row: 3;
+    }
+}

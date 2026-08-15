@@ -423,3 +423,121 @@
         opacity: 1;
     }
 }
+
+@media (max-width: 900px) {
+    .page {
+        height: auto;
+        min-height: calc(100dvh - 126px);
+        padding: 0 20px 20px;
+    }
+
+    .frame {
+        min-height: calc(100dvh - 146px);
+    }
+
+    .comingCopy {
+        width: calc(100% - 40px);
+    }
+
+    .comingCopy h1 {
+        font-size: clamp(48px, 9vw, 64px);
+    }
+
+    .sun {
+        width: min(720px, 90vw);
+        height: auto;
+        aspect-ratio: 1;
+    }
+
+    .errorNumber {
+        top: 36px;
+        left: 24px;
+        font-size: 190px;
+    }
+
+    .notFoundCopy {
+        top: 25%;
+        left: 24px;
+        width: calc(100% - 48px);
+        transform: none;
+    }
+
+    .notFoundCopy h1 {
+        font-size: clamp(42px, 8vw, 54px);
+    }
+
+    .missingSunScene {
+        top: 67%;
+        right: 50%;
+        transform: translate(50%, -50%) scale(0.72);
+    }
+}
+
+@media (max-width: 520px) {
+    .page {
+        min-height: calc(100dvh - 126px);
+        padding: 0 12px 12px;
+    }
+
+    .frame {
+        min-height: 590px;
+    }
+
+    .coming::before {
+        top: 170px;
+        width: min(190px, 48vw);
+        height: auto;
+        aspect-ratio: 1;
+    }
+
+    .sun {
+        top: 22%;
+        width: 90vw;
+        height: auto;
+        aspect-ratio: 1;
+    }
+
+    .comingCopy {
+        width: calc(100% - 24px);
+    }
+
+    .comingCopy h1 {
+        font-size: 46px;
+    }
+
+    .comingCopy p {
+        font-size: 13px;
+    }
+
+    .errorNumber {
+        top: 28px;
+        left: 10px;
+        font-size: 132px;
+    }
+
+    .notFoundCopy {
+        top: 16%;
+        left: 14px;
+        width: calc(100% - 28px);
+    }
+
+    .notFoundCopy h1 {
+        font-size: 39px;
+    }
+
+    .notFoundCopy span {
+        margin-top: 12px;
+        font-size: 13px;
+    }
+
+    .missingSunScene {
+        top: 65%;
+        transform: translate(50%, -50%) scale(0.56);
+    }
+
+    .returnLink {
+        bottom: 18px;
+        left: 14px;
+        min-height: 44px;
+    }
+}

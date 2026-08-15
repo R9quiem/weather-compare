@@ -110,3 +110,14 @@
     font-size: 9px;
     font-variant-numeric: tabular-nums;
 }
+
+@media (max-width: 520px) {
+    .city-select-value {
+        font-size: clamp(24px, 8vw, 31px);
+    }
+
+    .city-select-content {
+        width: min(var(--radix-select-trigger-width), calc(100vw - 48px));
+        min-width: min(260px, calc(100vw - 48px));
+    }
+}

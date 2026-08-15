@@ -119,3 +119,12 @@
     height: 7px;
     border-radius: 50%;
 }
+
+@media (max-width: 600px) {
+    .averageBadge {
+        position: static;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        margin: 0 4px 4px;
+    }
+}

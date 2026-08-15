@@ -61,3 +61,15 @@
     color: var(--chart-axis);
     font-size: 10px;
 }
+
+@media (max-width: 600px) {
+    .dominant {
+        position: static;
+        justify-content: flex-end;
+        margin: 0 4px 4px;
+    }
+
+    .explanation {
+        padding-inline: 8px;
+    }
+}

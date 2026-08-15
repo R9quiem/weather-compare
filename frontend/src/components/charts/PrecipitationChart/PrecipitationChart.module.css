@@ -54,3 +54,11 @@
     font-weight: 650;
     font-variant-numeric: tabular-nums;
 }
+
+@media (max-width: 600px) {
+    .averageBadge {
+        position: static;
+        justify-content: flex-end;
+        margin: 0 4px 4px;
+    }
+}

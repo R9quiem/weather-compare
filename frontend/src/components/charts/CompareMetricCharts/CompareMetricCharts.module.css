@@ -125,3 +125,18 @@
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
 }
+
+@media (max-width: 600px) {
+    .lineKey,
+    .cloudLegend {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 8px 14px;
+        padding-inline: 8px;
+    }
+
+    .cloudCategories,
+    .cloudCities {
+        gap: 8px 12px;
+    }
+}

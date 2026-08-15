@@ -721,3 +721,147 @@
     line-height: 1.4;
     white-space: normal;
 }
+
+@media (max-width: 1100px) {
+    .page {
+        padding: 0 20px 20px;
+    }
+
+    .overviewGrid {
+        grid-auto-rows: auto;
+    }
+
+    .select {
+        grid-column: 1 / span 5;
+        grid-row: 1;
+    }
+
+    .metricInsight {
+        grid-column: 6 / span 7;
+        grid-row: 1;
+        min-height: 280px;
+    }
+
+    .chart {
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
+
+    .climateStats {
+        grid-row: 3;
+    }
+
+    .climateStat {
+        grid-column: span 6;
+    }
+}
+
+@media (max-width: 720px) {
+    .page {
+        padding: 0 12px 12px;
+    }
+
+    .overview {
+        padding: 12px;
+        border-radius: 20px;
+    }
+
+    .overviewGrid {
+        gap: 12px;
+    }
+
+    .select,
+    .metricInsight,
+    .chart,
+    .climateStats {
+        grid-column: 1 / -1;
+        grid-row: auto;
+    }
+
+    .select,
+    .chart {
+        padding: 18px;
+    }
+
+    .metricInsight {
+        min-height: 300px;
+    }
+
+    .chartHeader {
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .metricPickerShell {
+        width: 100%;
+        padding-bottom: 4px;
+        overflow-x: auto;
+        scrollbar-width: thin;
+    }
+
+    .metricPicker {
+        width: max-content;
+        min-width: 100%;
+    }
+
+    .metricButton {
+        min-width: 88px;
+        min-height: 42px;
+    }
+
+    .windViewPicker {
+        position: static;
+        margin-top: 7px;
+        transform: none;
+    }
+
+    .chartSubtitle {
+        min-height: 0;
+    }
+}
+
+@media (max-width: 520px) {
+    .climateStat {
+        grid-column: 1 / -1;
+        min-height: 126px;
+    }
+
+    .insightHeading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .insightHeading h2 {
+        max-width: none;
+    }
+
+    .insightHeading > strong {
+        font-size: 31px;
+    }
+
+    .temperatureVisual,
+    .precipitationVisual {
+        grid-template-columns: 1fr;
+    }
+
+    .temperatureVisual > strong,
+    .precipitationVisual strong {
+        grid-row: auto;
+        grid-column: auto;
+    }
+
+    .temperatureVisual > small,
+    .precipitationVisual small {
+        grid-row: auto;
+    }
+
+    .cloudSegment {
+        min-width: 0;
+        padding-inline: 4px;
+    }
+
+    .cloudSegment span {
+        font-size: 9px;
+    }
+}
