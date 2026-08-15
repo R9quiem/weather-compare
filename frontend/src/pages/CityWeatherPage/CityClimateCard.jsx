@@ -17,8 +17,6 @@ function CityClimateCard({
     return (
         <DashboardCard className={styles.select}>
             <div className={styles.cityHeader}>
-                <p className={styles.cityEyebrow}>{t("cityPage.eyebrow")}</p>
-
                 {!isCitiesLoading && !error ? (
                     <CitySelect
                         cities={cities}

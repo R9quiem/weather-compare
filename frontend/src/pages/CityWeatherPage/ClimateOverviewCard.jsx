@@ -25,19 +25,12 @@ function ClimateOverviewCard({
     const selectedMetricLabel = t(`metrics.${selectedMetric}`);
     const noteKey =
         selectedMetric === "wind" ? (showWindRose ? "windRose" : "windSpeed") : selectedMetric;
-    let chartNote = t(`cityPage.chartNotes.${noteKey}`);
-
-    if (selectedMetric === "cloud") {
-        chartNote += cloudCover?.[0]?.calibrated
-            ? t("cityPage.chartNotes.calibrated")
-            : t("cityPage.chartNotes.reanalysis");
-    }
+    const chartNote = t(`cityPage.chartNotes.${noteKey}`);
 
     return (
         <DashboardCard className={styles.chart}>
             <div className={styles.chartHeader}>
                 <div className={styles.chartHeading}>
-                    <p className={styles.chartLabel}>{t("cityPage.overview")}</p>
                     <div className={styles.chartTitleRow}>
                         <h2 className={styles.chartTitle}>{selectedMetricLabel}</h2>
                     </div>

@@ -2,9 +2,9 @@
     "brand": "Weather Report",
     "nav": {
         "label": "Main navigation",
-        "current": "Current Weather",
-        "climate": "City Climate",
-        "compare": "Compare Cities"
+        "current": "Weather",
+        "climate": "Climate",
+        "compare": "Compare"
     },
     "language": {
         "label": "Interface language",
@@ -19,9 +19,9 @@
         "system": "System"
     },
     "units": {
-        "label": "Measurement units",
-        "temperature": "Temperature scale",
-        "precipitation": "Precipitation amount",
+        "label": "Units",
+        "temperature": "Temperature",
+        "precipitation": "Precipitation",
         "wind": "Wind speed",
         "values": {
             "celsius": "°C",
@@ -118,34 +118,34 @@
     },
     "cityPage": {
         "eyebrow": "City climate",
-        "period": "Observation period: 1995–2025",
+        "period": "Data for 1995–2025",
         "overview": "Climate overview",
         "windView": "Wind chart view",
         "speed": "Speed",
         "windRose": "Wind rose",
         "chartPlaceholder": "This metric chart will be added later",
         "chartNotes": {
-            "temperature": "Air temperature at 2 m · daily mean values",
-            "precipitation": "Atmospheric precipitation (rain and snow) · average monthly total",
-            "humidity": "Relative humidity at 2 m · daily mean values",
-            "windSpeed": "Wind speed at 10 m · daily mean values",
-            "windRose": "Wind directions at 10 m · distribution of hourly observations",
-            "cloud": "Share of days by category · 24 hourly observations per day · 20% and 80% thresholds",
+            "temperature": "Daily mean values at 2 m",
+            "precipitation": "Average monthly precipitation",
+            "humidity": "Daily mean values at 2 m",
+            "windSpeed": "Daily mean values at 10 m",
+            "windRose": "Distribution by wind direction",
+            "cloud": "Share of clear, partly cloudy, and overcast days",
             "calibrated": " · ERA5 data adjusted using station observations",
             "reanalysis": " · ERA5 reanalysis data"
         },
         "stats": {
             "meanTemperature": "Mean temperature",
-            "temperatureRange": "Mean minimum and maximum: {{min}} / {{max}}",
+            "temperatureRange": "Mean minimum: {{min}} · maximum: {{max}}",
             "annualPrecipitation": "Annual precipitation",
-            "wettestMonth": "Most precipitation: {{month}} · {{value}}",
+            "wettestMonth": "Maximum: {{month}} · {{value}}",
             "meanHumidity": "Mean humidity",
             "humidityRange": "Monthly range: {{min}}–{{max}}%",
             "prevailingWind": "Prevailing wind",
-            "windFrequency": "Wind comes from here in {{value}}% of observations",
+            "windFrequency": "Frequency: {{value}}%",
             "windFallback": "mean speed at 10 m",
             "prevailingCloud": "Prevailing cloud cover",
-            "cloudFrequency": "{{value}}% of days fall into this category",
+            "cloudFrequency": "{{value}}% of days on average",
             "cloud": {
                 "clear": "Clear sky",
                 "partly_cloudy": "Partly cloudy",
@@ -159,7 +159,7 @@
             "temperature": {
                 "eyebrow": "Temperature pattern",
                 "title": "Mean temperature",
-                "detail": "Daily mean climate normal",
+                "detail": "Average for 1995–2025",
                 "coldest": "Coldest month",
                 "warmest": "Warmest month",
                 "apparent": "Mean apparent temperature",
@@ -192,7 +192,7 @@
                 "distribution": "Distribution by direction",
                 "second": "Second most frequent",
                 "averageSpeed": "Mean speed from this direction",
-                "arrow": "The arrow shows where the wind most often comes from"
+                "arrow": "The arrow shows the prevailing wind direction"
             },
             "windSpeed": {
                 "eyebrow": "Wind pattern",
@@ -210,11 +210,11 @@
                 "dominant": "Prevailing: {{state}} — {{value}}%",
                 "dominantEmpty": "Prevailing condition — no data",
                 "detail": "Mean share of days per year",
-                "clearVsCloudy": "Clear versus overcast",
+                "clearVsCloudy": "Clear and overcast days",
                 "moreClear": "clear more often",
                 "moreCloudy": "overcast more often",
-                "extremes": "Extreme conditions",
-                "extremesDetail": "clear or overcast",
+                "extremes": "Clear or overcast days",
+                "extremesDetail": "combined annual share",
                 "clear": "Clear sky",
                 "partly": "Partly cloudy",
                 "cloudy": "Overcast sky",
@@ -261,6 +261,7 @@
         "apparent": "Feels like",
         "minimum": "Minimum",
         "maximum": "Maximum",
+        "today": "Today",
         "minShort": "Min",
         "maxShort": "Max",
         "averageTemperature": "Mean temperature",

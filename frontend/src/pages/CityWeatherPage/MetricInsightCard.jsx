@@ -134,11 +134,6 @@ function MetricInsightCard({
         <DashboardCard
             className={`${styles.metricInsight} ${styles[`insight_${insight?.variant ?? selectedMetric}`]} ${layoutClass}`}
         >
-            <p className={styles.insightEyebrow}>
-                {isLoading
-                    ? t("cityPage.insight.analyzing")
-                    : (insight?.eyebrow ?? t("cityPage.insight.profile"))}
-            </p>
             <div className={styles.insightHeading}>
                 <h2>{insight?.title ?? t("common.noData")}</h2>
                 {(isLoading || insight?.value) && (
@@ -146,7 +141,9 @@ function MetricInsightCard({
                 )}
             </div>
             <p className={styles.insightDetail}>
-                {insight?.detail ?? t("cityPage.insight.chooseCity")}
+                {selectedMetric === "temperature" && insight
+                    ? null
+                    : (insight?.detail ?? t("cityPage.insight.chooseCity"))}
             </p>
 
             {!isLoading && <MetricVisual insight={insight} />}
