@@ -8,6 +8,8 @@
   <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sqlite/sqlite-original.svg" width="40" height="40" alt="SQLite" title="SQLite">
 </p>
 
+Рабочая версия проекта: https://weather-report.ru
+
 ## Что умеет приложение
 
 ### Раздел "Климат города"
