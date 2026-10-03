@@ -1,16 +1,117 @@
-import sqlite3
+import psycopg
 
 from app.models.weather import WeatherDaily, WeatherHourly, WindRoseSector
 
 
 class WeatherRepository:
-    def __init__(self, connection: sqlite3.Connection):
+    def __init__(self, connection: psycopg.Connection[dict]):
         self.connection = connection
 
     def create_daily_averages_many(self, data: list[WeatherDaily]):
-        self.connection.executemany(
+        with self.connection.cursor() as cursor:
+            cursor.executemany(
+                """
+                INSERT INTO daily_averages_weather (
+                    city_id,
+                    observed_date,
+                    temperature_2m_mean,
+                    temperature_2m_max,
+                    temperature_2m_min,
+                    apparent_temperature_mean,
+                    precipitation_sum,
+                    cloud_cover_mean,
+                    sunshine_duration_sum,
+                    relative_humidity_2m_mean,
+                    wind_speed_10m_mean,
+                    wind_direction_10m_dominant,
+                    wind_gusts_10m_max
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT(city_id, observed_date) DO UPDATE SET
+                    temperature_2m_mean = COALESCE(
+                        daily_averages_weather.temperature_2m_mean,
+                        excluded.temperature_2m_mean
+                    ),
+                    temperature_2m_max = COALESCE(
+                        daily_averages_weather.temperature_2m_max,
+                        excluded.temperature_2m_max
+                    ),
+                    temperature_2m_min = COALESCE(
+                        daily_averages_weather.temperature_2m_min,
+                        excluded.temperature_2m_min
+                    ),
+                    apparent_temperature_mean = COALESCE(
+                        daily_averages_weather.apparent_temperature_mean,
+                        excluded.apparent_temperature_mean
+                    ),
+                    precipitation_sum = COALESCE(
+                        daily_averages_weather.precipitation_sum,
+                        excluded.precipitation_sum
+                    ),
+                    cloud_cover_mean = COALESCE(
+                        daily_averages_weather.cloud_cover_mean,
+                        excluded.cloud_cover_mean
+                    ),
+                    sunshine_duration_sum = COALESCE(
+                        daily_averages_weather.sunshine_duration_sum,
+                        excluded.sunshine_duration_sum
+                    ),
+                    relative_humidity_2m_mean = COALESCE(
+                        daily_averages_weather.relative_humidity_2m_mean,
+                        excluded.relative_humidity_2m_mean
+                    ),
+                    wind_speed_10m_mean = COALESCE(
+                        daily_averages_weather.wind_speed_10m_mean,
+                        excluded.wind_speed_10m_mean
+                    ),
+                    wind_direction_10m_dominant = COALESCE(
+                        daily_averages_weather.wind_direction_10m_dominant,
+                        excluded.wind_direction_10m_dominant
+                    ),
+                    wind_gusts_10m_max = COALESCE(
+                        daily_averages_weather.wind_gusts_10m_max,
+                        excluded.wind_gusts_10m_max
+                    )
+                """,
+                [
+                    (
+                        record.city_id,
+                        record.observed_date,
+                        record.temperature_2m_mean,
+                        record.temperature_2m_max,
+                        record.temperature_2m_min,
+                        record.apparent_temperature_mean,
+                        record.precipitation_sum,
+                        record.cloud_cover_mean,
+                        record.sunshine_duration_sum,
+                        record.relative_humidity_2m_mean,
+                        record.wind_speed_10m_mean,
+                        record.wind_direction_10m_dominant,
+                        record.wind_gusts_10m_max,
+                    )
+                    for record in data
+                ],
+            )
+
+    def update_daily_apparent_temperatures(
+        self,
+        city_id: int,
+        values_by_day: dict[str, float],
+    ) -> None:
+        with self.connection.cursor() as cursor:
+            cursor.executemany(
+                """
+                UPDATE daily_averages_weather
+                SET apparent_temperature_mean = %s
+                WHERE city_id = %s AND observed_date = %s
+                """,
+                [(value, city_id, observed_date) for observed_date, value in values_by_day.items()],
+            )
+
+    def get_daily_averages_by_city_id(self, city_id: int) -> list[WeatherDaily]:
+        cursor = self.connection.execute(
             """
-            INSERT INTO daily_averages_weather (
+            SELECT
                 city_id,
                 observed_date,
                 temperature_2m_mean,
@@ -24,107 +125,8 @@ class WeatherRepository:
                 wind_speed_10m_mean,
                 wind_direction_10m_dominant,
                 wind_gusts_10m_max
-            )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ON CONFLICT(city_id, observed_date) DO UPDATE SET
-                temperature_2m_mean = COALESCE(
-                    daily_averages_weather.temperature_2m_mean,
-                    excluded.temperature_2m_mean
-                ),
-                temperature_2m_max = COALESCE(
-                    daily_averages_weather.temperature_2m_max,
-                    excluded.temperature_2m_max
-                ),
-                temperature_2m_min = COALESCE(
-                    daily_averages_weather.temperature_2m_min,
-                    excluded.temperature_2m_min
-                ),
-                apparent_temperature_mean = COALESCE(
-                    daily_averages_weather.apparent_temperature_mean,
-                    excluded.apparent_temperature_mean
-                ),
-                precipitation_sum = COALESCE(
-                    daily_averages_weather.precipitation_sum,
-                    excluded.precipitation_sum
-                ),
-                cloud_cover_mean = COALESCE(
-                    daily_averages_weather.cloud_cover_mean,
-                    excluded.cloud_cover_mean
-                ),
-                sunshine_duration_sum = COALESCE(
-                    daily_averages_weather.sunshine_duration_sum,
-                    excluded.sunshine_duration_sum
-                ),
-                relative_humidity_2m_mean = COALESCE(
-                    daily_averages_weather.relative_humidity_2m_mean,
-                    excluded.relative_humidity_2m_mean
-                ),
-                wind_speed_10m_mean = COALESCE(
-                    daily_averages_weather.wind_speed_10m_mean,
-                    excluded.wind_speed_10m_mean
-                ),
-                wind_direction_10m_dominant = COALESCE(
-                    daily_averages_weather.wind_direction_10m_dominant,
-                    excluded.wind_direction_10m_dominant
-                ),
-                wind_gusts_10m_max = COALESCE(
-                    daily_averages_weather.wind_gusts_10m_max,
-                    excluded.wind_gusts_10m_max
-                )
-            """,
-            [
-                (
-                    record.city_id,
-                    record.observed_date,
-                    record.temperature_2m_mean,
-                    record.temperature_2m_max,
-                    record.temperature_2m_min,
-                    record.apparent_temperature_mean,
-                    record.precipitation_sum,
-                    record.cloud_cover_mean,
-                    record.sunshine_duration_sum,
-                    record.relative_humidity_2m_mean,
-                    record.wind_speed_10m_mean,
-                    record.wind_direction_10m_dominant,
-                    record.wind_gusts_10m_max,
-                )
-                for record in data
-            ],
-        )
-
-    def update_daily_apparent_temperatures(
-        self,
-        city_id: int,
-        values_by_day: dict[str, float],
-    ) -> None:
-        self.connection.executemany(
-            """
-            UPDATE daily_averages_weather
-            SET apparent_temperature_mean = ?
-            WHERE city_id = ? AND observed_date = ?
-            """,
-            [(value, city_id, observed_date) for observed_date, value in values_by_day.items()],
-        )
-
-    def get_daily_averages_by_city_id(self, city_id: int) -> list[WeatherDaily]:
-        cursor = self.connection.execute(
-            """
-            SELECT
-                city_id, 
-                observed_date, 
-                temperature_2m_mean,
-                temperature_2m_max,
-                temperature_2m_min,
-                apparent_temperature_mean,
-                precipitation_sum,
-                cloud_cover_mean,
-                sunshine_duration_sum,
-                relative_humidity_2m_mean,
-                wind_speed_10m_mean,
-                wind_direction_10m_dominant,
-                wind_gusts_10m_max
             FROM daily_averages_weather
-            WHERE city_id = ?
+            WHERE city_id = %s
             ORDER BY observed_date
             """,
             (city_id,),
@@ -152,9 +154,77 @@ class WeatherRepository:
         ]
 
     def create_hourly_many(self, data: list[WeatherHourly]):
-        self.connection.executemany(
+        with self.connection.cursor() as cursor:
+            cursor.executemany(
+                """
+                INSERT INTO hourly_weather (
+                    city_id,
+                    observed_at,
+                    temperature_2m,
+                    precipitation,
+                    cloud_cover,
+                    sunshine_duration,
+                    relative_humidity_2m,
+                    wind_speed_10m,
+                    wind_direction_10m,
+                    wind_gusts_10m
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT(city_id, observed_at) DO UPDATE SET
+                    temperature_2m = COALESCE(
+                        hourly_weather.temperature_2m,
+                        excluded.temperature_2m
+                    ),
+                    precipitation = COALESCE(
+                        hourly_weather.precipitation,
+                        excluded.precipitation
+                    ),
+                    cloud_cover = COALESCE(
+                        hourly_weather.cloud_cover,
+                        excluded.cloud_cover
+                    ),
+                    sunshine_duration = COALESCE(
+                        hourly_weather.sunshine_duration,
+                        excluded.sunshine_duration
+                    ),
+                    relative_humidity_2m = COALESCE(
+                        hourly_weather.relative_humidity_2m,
+                        excluded.relative_humidity_2m
+                    ),
+                    wind_speed_10m = COALESCE(
+                        hourly_weather.wind_speed_10m,
+                        excluded.wind_speed_10m
+                    ),
+                    wind_direction_10m = COALESCE(
+                        hourly_weather.wind_direction_10m,
+                        excluded.wind_direction_10m
+                    ),
+                    wind_gusts_10m = COALESCE(
+                        hourly_weather.wind_gusts_10m,
+                        excluded.wind_gusts_10m
+                    )
+                """,
+                [
+                    (
+                        record.city_id,
+                        record.observed_at,
+                        record.temperature_2m,
+                        record.precipitation,
+                        record.cloud_cover,
+                        record.sunshine_duration,
+                        record.relative_humidity_2m,
+                        record.wind_speed_10m,
+                        record.wind_direction_10m,
+                        record.wind_gusts_10m,
+                    )
+                    for record in data
+                ],
+            )
+
+    def get_hourly_by_city_id(self, city_id: int) -> list[WeatherHourly]:
+        cursor = self.connection.execute(
             """
-            INSERT INTO hourly_weather (
+            SELECT
                 city_id,
                 observed_at,
                 temperature_2m,
@@ -165,75 +235,8 @@ class WeatherRepository:
                 wind_speed_10m,
                 wind_direction_10m,
                 wind_gusts_10m
-            ) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ON CONFLICT(city_id, observed_at) DO UPDATE SET
-                temperature_2m = COALESCE(
-                    hourly_weather.temperature_2m,
-                    excluded.temperature_2m
-                ),
-                precipitation = COALESCE(
-                    hourly_weather.precipitation,
-                    excluded.precipitation
-                ),
-                cloud_cover = COALESCE(
-                    hourly_weather.cloud_cover,
-                    excluded.cloud_cover
-                ),
-                sunshine_duration = COALESCE(
-                    hourly_weather.sunshine_duration,
-                    excluded.sunshine_duration
-                ),
-                relative_humidity_2m = COALESCE(
-                    hourly_weather.relative_humidity_2m,
-                    excluded.relative_humidity_2m
-                ),
-                wind_speed_10m = COALESCE(
-                    hourly_weather.wind_speed_10m,
-                    excluded.wind_speed_10m
-                ),
-                wind_direction_10m = COALESCE(
-                    hourly_weather.wind_direction_10m,
-                    excluded.wind_direction_10m
-                ),
-                wind_gusts_10m = COALESCE(
-                    hourly_weather.wind_gusts_10m,
-                    excluded.wind_gusts_10m
-                )
-            """,
-            [
-                (
-                    record.city_id,
-                    record.observed_at,
-                    record.temperature_2m,
-                    record.precipitation,
-                    record.cloud_cover,
-                    record.sunshine_duration,
-                    record.relative_humidity_2m,
-                    record.wind_speed_10m,
-                    record.wind_direction_10m,
-                    record.wind_gusts_10m,
-                )
-                for record in data
-            ],
-        )
-
-    def get_hourly_by_city_id(self, city_id: int) -> list[WeatherHourly]:
-        cursor = self.connection.execute(
-            """
-            SELECT
-                city_id, 
-                observed_at, 
-                temperature_2m,
-                precipitation,
-                cloud_cover,
-                sunshine_duration,
-                relative_humidity_2m,
-                wind_speed_10m,
-                wind_direction_10m,
-                wind_gusts_10m
             FROM hourly_weather
-            WHERE city_id = ?
+            WHERE city_id = %s
             ORDER BY observed_at
             """,
             (city_id,),
@@ -278,7 +281,7 @@ class WeatherRepository:
                     END AS sector,
                     wind_speed_10m
                 FROM hourly_weather
-                WHERE city_id = ?
+                WHERE city_id = %s
                   AND wind_direction_10m IS NOT NULL
             )
             SELECT
@@ -309,23 +312,23 @@ class WeatherRepository:
             WITH adjusted_hourly_cloud_cover AS (
                 SELECT
                     observed_at,
-                    MIN(
+                    LEAST(
                         100,
-                        MAX(
+                        GREATEST(
                             0,
                             cloud_cover + CASE substr(observed_at, 6, 2)
-                                WHEN '01' THEN ? WHEN '02' THEN ?
-                                WHEN '03' THEN ? WHEN '04' THEN ?
-                                WHEN '05' THEN ? WHEN '06' THEN ?
-                                WHEN '07' THEN ? WHEN '08' THEN ?
-                                WHEN '09' THEN ? WHEN '10' THEN ?
-                                WHEN '11' THEN ? WHEN '12' THEN ?
+                                WHEN '01' THEN %s WHEN '02' THEN %s
+                                WHEN '03' THEN %s WHEN '04' THEN %s
+                                WHEN '05' THEN %s WHEN '06' THEN %s
+                                WHEN '07' THEN %s WHEN '08' THEN %s
+                                WHEN '09' THEN %s WHEN '10' THEN %s
+                                WHEN '11' THEN %s WHEN '12' THEN %s
                                 ELSE 0
                             END
                         )
                     ) AS cloud_cover
                 FROM hourly_weather
-                WHERE city_id = ?
+                WHERE city_id = %s
                   AND cloud_cover IS NOT NULL
             ),
             daily_cloud_cover AS (
@@ -334,26 +337,26 @@ class WeatherRepository:
                     substr(observed_at, 6, 2) AS month,
                     COUNT(*) AS observed_hours,
                     SUM(cloud_cover) AS cloud_cover_sum,
-                    SUM(cloud_cover > ?) AS hours_above_boundary
+                    COUNT(*) FILTER (WHERE cloud_cover > %s) AS hours_above_boundary
                 FROM adjusted_hourly_cloud_cover
                 GROUP BY day, month
-                HAVING observed_hours = ?
+                HAVING COUNT(*) = %s
             )
             SELECT
                 month,
                 COUNT(*) AS total_days,
-                SUM(
-                    cloud_cover_sum <= ? * ?
-                    AND hours_above_boundary <= ?
+                COUNT(*) FILTER (WHERE
+                    cloud_cover_sum <= %s * %s
+                    AND hours_above_boundary <= %s
                 ) AS clear_days,
-                SUM(
+                COUNT(*) FILTER (WHERE
                     NOT (
-                        cloud_cover_sum <= ? * ?
-                        AND hours_above_boundary <= ?
+                        cloud_cover_sum <= %s * %s
+                        AND hours_above_boundary <= %s
                     )
-                    AND cloud_cover_sum < ? * ?
+                    AND cloud_cover_sum < %s * %s
                 ) AS partly_cloudy_days,
-                SUM(cloud_cover_sum >= ? * ?) AS cloudy_days
+                COUNT(*) FILTER (WHERE cloud_cover_sum >= %s * %s) AS cloudy_days
             FROM daily_cloud_cover
             GROUP BY month
             ORDER BY month
@@ -393,38 +396,39 @@ class WeatherRepository:
         sectors: list[WindRoseSector],
     ) -> None:
         self.connection.execute(
-            "DELETE FROM wind_rose WHERE city_id = ?",
+            "DELETE FROM wind_rose WHERE city_id = %s",
             (city_id,),
         )
-        self.connection.executemany(
-            """
-            INSERT INTO wind_rose (
-                city_id,
-                direction,
-                frequency,
-                sample_count,
-                average_speed
-            )
-            VALUES (?, ?, ?, ?, ?)
-            """,
-            [
-                (
+        with self.connection.cursor() as cursor:
+            cursor.executemany(
+                """
+                INSERT INTO wind_rose (
                     city_id,
-                    sector.direction,
-                    sector.frequency,
-                    sector.sample_count,
-                    sector.average_speed,
+                    direction,
+                    frequency,
+                    sample_count,
+                    average_speed
                 )
-                for sector in sectors
-            ],
-        )
+                VALUES (%s, %s, %s, %s, %s)
+                """,
+                [
+                    (
+                        city_id,
+                        sector.direction,
+                        sector.frequency,
+                        sector.sample_count,
+                        sector.average_speed,
+                    )
+                    for sector in sectors
+                ],
+            )
 
     def get_wind_rose_by_city_id(self, city_id: int) -> list[WindRoseSector]:
         rows = self.connection.execute(
             """
             SELECT direction, frequency, sample_count, average_speed
             FROM wind_rose
-            WHERE city_id = ?
+            WHERE city_id = %s
             ORDER BY CASE direction
                 WHEN 'N' THEN 0
                 WHEN 'NE' THEN 1
@@ -454,7 +458,7 @@ class WeatherRepository:
             """
             SELECT COUNT(*) AS sectors
             FROM wind_rose
-            WHERE city_id = ?
+            WHERE city_id = %s
             """,
             (city_id,),
         ).fetchone()
@@ -475,7 +479,7 @@ class WeatherRepository:
                 COUNT(wind_direction_10m) AS directions,
                 COUNT(wind_gusts_10m) AS gusts
             FROM hourly_weather
-            WHERE city_id = ?
+            WHERE city_id = %s
             """,
             (city_id,),
         ).fetchone()
@@ -510,7 +514,7 @@ class WeatherRepository:
                 COUNT(wind_direction_10m_dominant) AS directions,
                 COUNT(wind_gusts_10m_max) AS gusts
             FROM daily_averages_weather
-            WHERE city_id = ?
+            WHERE city_id = %s
             """,
             (city_id,),
         ).fetchone()
@@ -538,7 +542,7 @@ class WeatherRepository:
                 COUNT(*) AS total_rows,
                 COUNT(apparent_temperature_mean) AS apparent_temperature_rows
             FROM daily_averages_weather
-            WHERE city_id = ?
+            WHERE city_id = %s
             """,
             (city_id,),
         ).fetchone()

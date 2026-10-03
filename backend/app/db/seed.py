@@ -1,6 +1,6 @@
 from app.clients.open_meteo_api import load_daily_apparent_temperature, load_weather
 from app.db.connection import create_connection
-from app.db.init_db import init_db
+from app.db.init_db_postgres import init_db
 from app.repositories.city_repository import CityRepository
 from app.repositories.weather_repository import WeatherRepository
 from app.services.weather_analysis_service import (

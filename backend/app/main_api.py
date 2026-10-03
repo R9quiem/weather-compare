@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.router import router
-from app.db.init_db import init_db
+from app.db.init_db_postgres import init_db
 from app.db.seed import seed_database
 from app.utils.settings import settings
 
