@@ -1,4 +1,4 @@
-import sqlite3
+import psycopg
 
 from app.models.weather import WeatherDaily, WeatherHourly, WindRoseSector
 from app.repositories.weather_repository import WeatherRepository
@@ -20,7 +20,7 @@ class WeatherService:
 
     def __init__(
         self,
-        connection: sqlite3.Connection,
+        connection: psycopg.Connection[dict],
         repository: WeatherRepository,
     ) -> None:
         self.connection = connection

@@ -1,23 +1,25 @@
-import sqlite3
+import psycopg
 
 from app.models.city import City, CreateCity
 
 
 class CityRepository:
-    def __init__(self, connection: sqlite3.Connection) -> None:
+    def __init__(self, connection: psycopg.Connection[dict]) -> None:
         self.connection = connection
 
     def create(self, data: CreateCity) -> City:
         cursor = self.connection.execute(
             """
-            INSERT OR IGNORE INTO cities (
+            INSERT INTO cities (
                 slug,
                 name,
                 country_code,
                 latitude,
                 longitude
             )
-            VALUES (?, ?, ?, ?, ?)
+            VALUES (%s, %s, %s, %s, %s)
+            ON CONFLICT (name, country_code) DO NOTHING
+            RETURNING id
             """,
             (
                 data.slug,
@@ -28,15 +30,14 @@ class CityRepository:
             ),
         )
 
-        city_id = cursor.lastrowid
-
-        if city_id is None:
-            raise RuntimeError("SQLite did not return the created city id")
-
-        city = self.get_by_id(city_id)
+        row = cursor.fetchone()
+        if row is None:
+            city = self.get_by_name_and_country(data.name, data.country_code)
+        else:
+            city = self.get_by_id(row["id"])
 
         if city is None:
-            raise RuntimeError("Created city could not be read from database")
+            raise RuntimeError("Created or existing city could not be read from database")
 
         return city
 
@@ -51,7 +52,7 @@ class CityRepository:
                 latitude,
                 longitude
             FROM cities
-            WHERE id = ?
+            WHERE id = %s
             """,
             (city_id,),
         )
@@ -78,8 +79,8 @@ class CityRepository:
                 latitude,
                 longitude
             FROM cities
-            WHERE name = ?
-              AND country_code = ?
+            WHERE name = %s
+              AND country_code = %s
             """,
             (
                 name,
@@ -115,7 +116,7 @@ class CityRepository:
 
     def update_slug(self, city_id: int, slug: str) -> City:
         self.connection.execute(
-            "UPDATE cities SET slug = ? WHERE id = ?",
+            "UPDATE cities SET slug = %s WHERE id = %s",
             (slug, city_id),
         )
 
@@ -129,7 +130,7 @@ class CityRepository:
         cursor = self.connection.execute(
             """
             DELETE FROM cities
-            WHERE id = ?
+            WHERE id = %s
             """,
             (city_id,),
         )
@@ -137,7 +138,7 @@ class CityRepository:
         return cursor.rowcount > 0
 
     @staticmethod
-    def _row_to_city(row: sqlite3.Row) -> City:
+    def _row_to_city(row: dict) -> City:
         return City(
             id=row["id"],
             slug=row["slug"],

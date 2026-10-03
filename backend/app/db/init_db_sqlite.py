@@ -1,4 +1,6 @@
-from app.db.connection import create_connection
+import sqlite3
+
+from app.utils.settings import settings
 
 CREATE_CITIES_TABLE = """
 CREATE TABLE IF NOT EXISTS cities (
@@ -122,7 +124,10 @@ def add_missing_city_columns(connection) -> None:
 
 
 def init_db() -> None:
-    connection = create_connection()
+    settings.database_path.parent.mkdir(parents=True, exist_ok=True)
+    connection = sqlite3.connect(settings.database_path)
+    connection.row_factory = sqlite3.Row
+    connection.execute("PRAGMA foreign_keys = ON")
 
     try:
         connection.execute(CREATE_CITIES_TABLE)

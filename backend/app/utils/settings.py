@@ -1,5 +1,5 @@
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -32,9 +32,19 @@ class Settings:
     database_path: Path
     cors_origins: tuple[str, ...]
     seed_database_on_startup: bool
+    db_host: str = "localhost"
+    db_port: int = 5432
+    db_name: str = "weather"
+    db_user: str = "weather_app"
+    db_password: str = field(default="", repr=False)
 
 
 settings = Settings(
+    db_host=os.getenv("DB_HOST", "localhost"),
+    db_port=int(os.getenv("DB_PORT", "5432")),
+    db_name=os.getenv("DB_NAME", "weather"),
+    db_user=os.getenv("DB_USER", "weather_app"),
+    db_password=os.getenv("DB_PASSWORD", ""),
     database_path=_database_path(),
     cors_origins=_cors_origins(),
     seed_database_on_startup=_is_enabled("SEED_DATABASE_ON_STARTUP", True),

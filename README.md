@@ -5,7 +5,7 @@
 <p>
   <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" width="40" height="40" alt="React" title="React">
   <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" width="40" height="40" alt="Python" title="Python">
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sqlite/sqlite-original.svg" width="40" height="40" alt="SQLite" title="SQLite">
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg" width="40" height="40" alt="PostgreSQL" title="PostgreSQL">
 </p>
 
 Рабочая версия проекта: https://weather-report.ru
@@ -86,11 +86,11 @@ Backend получает почасовые значения за период �
 4. получает климатические данные из 365/366 точек;
 5. рассчитывает преобладающее направление ветра через круговое среднее с весом по скорости;
 6. формирует восьмисекторную розу ветров;
-7. сохраняет исходные и агрегированные данные в SQLite.
+7. сохраняет исходные и агрегированные данные в PostgreSQL.
 
 При повторном запуске полнота данных проверяется, поэтому уже загруженные наборы не запрашиваются заново.
 
-> На первом запуске backend создаёт базу автоматически и загружает большой объём истории для всех городов. Процесс требует подключения к интернету, может занять продолжительное время и создать локальную базу размером около 300 МБ. Каталог `backend/data/` не добавляется в Git.
+> Backend создаёт таблицы в настроенной PostgreSQL-базе. Загрузка истории запускается только при `SEED_DATABASE_ON_STARTUP=true` и может занять продолжительное время. По умолчанию она отключена для переноса существующих данных. Каталог `backend/data/` со снимками SQLite и отчётами не добавляется в Git.
 
 ## Стек
 
@@ -106,7 +106,7 @@ Backend получает почасовые значения за период �
 
 - **Python 3.12:** серверная логика и обработка погодных данных;
 - **FastAPI:** создание REST API;
-- **SQLite:** хранение данных.
+- **PostgreSQL / Psycopg:** хранение данных.
 
 ## Архитектура
 
@@ -149,13 +149,15 @@ cp .env.example .env
 Copy-Item .env.example .env
 ```
 
-Если готовая база уже есть, поместите её в `backend/data/app.db` и установите в `.env`:
+Задайте непустой `DB_PASSWORD` в `.env`. Compose создаёт отдельный PostgreSQL-контейнер; backend подключается к нему по имени `postgres`, независимо от локального `DB_HOST`.
+
+Если данные уже перенесены в PostgreSQL, оставьте в `.env`:
 
 ```dotenv
 SEED_DATABASE_ON_STARTUP=false
 ```
 
-Если базы нет, оставьте значение `true`. При первом запуске backend создаст её и загрузит исторические данные, поэтому потребуется интернет, а запуск займёт продолжительное время.
+Для новой базы установите `SEED_DATABASE_ON_STARTUP=true`: backend загрузит исторические данные, поэтому потребуется интернет, а запуск займёт продолжительное время. Для переноса существующей SQLite-базы сначала выполните [инструкцию миграции](backend/scripts/README.md), оставив загрузку отключённой.
 
 Соберите и запустите приложение:
 
@@ -176,7 +178,7 @@ docker compose logs -f
 docker compose down
 ```
 
-Папка `backend/data` подключается к backend-контейнеру как постоянное хранилище. База не попадает внутрь Docker-образа и сохраняется после пересборки или удаления контейнера.
+Данные PostgreSQL хранятся в постоянном Docker volume `postgres_data` и сохраняются после `docker compose down`. Команда `docker compose down -v` удаляет volume и базу. Папка `backend/data` подключается для исходной SQLite-базы, снимков и отчётов переноса.
 
 ## Локальный запуск
 
@@ -185,6 +187,7 @@ docker compose down
 - Python 3.12+;
 - Node.js 20.19+ или 22.12+;
 - npm 10+;
+- PostgreSQL с созданной базой и пользователем;
 - интернет для первой загрузки исторических данных.
 
 ### Установка
@@ -210,7 +213,7 @@ macOS/Linux:
 cp .env.example .env
 ```
 
-В `.env` задаются адрес backend для frontend, разрешённые CORS-источники, путь к базе данных и автоматическое заполнение базы при запуске.
+В `.env` задаются адрес backend для frontend, разрешённые CORS-источники, настройки PostgreSQL (`DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`) и автоматическое заполнение базы при запуске. `DATABASE_PATH` указывает только на исходную SQLite-базу. Создайте PostgreSQL-базу и роль заранее; для существующих данных выполните [инструкцию миграции](backend/scripts/README.md).
 
 Создайте виртуальное окружение Python и установите backend-зависимости:
 
@@ -275,6 +278,8 @@ python -m ruff format --check .
 python -m pytest
 ```
 
+Тесты репозиториев требуют доступного PostgreSQL с настройками из `.env` и правом создавать схемы. Каждый тест использует отдельную схему внутри откатываемой транзакции. Проверить только логику сервисов без БД: `python -m pytest tests/unit`.
+
 Frontend:
 
 ```bash
@@ -294,7 +299,7 @@ weather-compare/
 │   ├── app/
 │   │   ├── api/             # FastAPI routes
 │   │   ├── clients/         # Open-Meteo client
-│   │   ├── db/              # SQLite initialization and seeding
+│   │   ├── db/              # PostgreSQL initialization and legacy SQLite schema
 │   │   ├── models/          # Data models
 │   │   ├── repositories/    # Database queries
 │   │   ├── services/        # Analysis and business logic
