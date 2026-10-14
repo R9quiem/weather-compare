@@ -1,0 +1,186 @@
+import type {
+    DailyWeather,
+    CloudCover,
+    WindRoseSector,
+    WeatherMetric,
+    WindView,
+} from "../../types/weather.ts";
+import DashboardCard from "../../components/DashboardCard/DashboardCard.tsx";
+import { useTranslation } from "react-i18next";
+import { getMetricInsight } from "./metricInsights.ts";
+import styles from "./CityWeatherPage.module.css";
+import { useMeasurementFormatter } from "../../units/useMeasurementFormatter.ts";
+
+type Insight = NonNullable<ReturnType<typeof getMetricInsight>>;
+type Visual<K extends Insight["variant"]> = Extract<Insight, { variant: K }>["visual"];
+interface MetricInsightCardProps {
+    selectedMetric: WeatherMetric;
+    dailyWeather: DailyWeather[];
+    windRose: WindRoseSector[];
+    cloudCover: CloudCover[];
+    windView: WindView;
+    isLoading: boolean;
+}
+function TemperatureVisual({ visual }: { visual: Visual<"temperature"> }) {
+    const { t } = useTranslation();
+    return (
+        <div className={styles.temperatureVisual}>
+            <span>{t("cityPage.insight.temperature.apparent")}</span>
+            <strong>{visual.apparent}</strong>
+            <small>{visual.difference}</small>
+        </div>
+    );
+}
+
+function PrecipitationVisual({ visual }: { visual: Visual<"precipitation"> }) {
+    const { t } = useTranslation();
+    return (
+        <div className={styles.precipitationVisual}>
+            <span className={styles.seasonMark}>
+                {t("cityPage.insight.precipitation.seasonMaximum")}
+            </span>
+            <strong>{visual.season}</strong>
+            <small>{visual.share}</small>
+        </div>
+    );
+}
+
+function HumidityVisual({ visual }: { visual: Visual<"humidity"> }) {
+    return (
+        <div className={styles.humidityVisual}>
+            <div
+                className={styles.humidityGauge}
+                style={{ "--humidity-level": `${visual.level * 3.6}deg` }}
+            >
+                <span>{visual.level}%</span>
+            </div>
+            <p>{visual.caption}</p>
+        </div>
+    );
+}
+
+function WindVisual({ visual }: { visual: Visual<"wind"> }) {
+    const { t } = useTranslation();
+    if (visual.mode === "rose") {
+        return (
+            <div className={styles.windRoseVisual}>
+                <div className={styles.miniCompass}>
+                    <span className={styles.compassNorth}>{t("directions.short.N")}</span>
+                    <div
+                        className={styles.compassArrow}
+                        style={{ transform: `rotate(${visual.angle}deg)` }}
+                    />
+                </div>
+                <p>{t("cityPage.insight.windRose.arrow")}</p>
+            </div>
+        );
+    }
+
+    return (
+        <div className={styles.windSpeedVisual}>
+            <strong>{visual.range}</strong>
+            <div>
+                <span>{t("cityPage.insight.windSpeed.variability")}</span>
+                <p>{visual.category}</p>
+            </div>
+        </div>
+    );
+}
+
+function CloudVisual({ visual }: { visual: Visual<"cloud"> }) {
+    return (
+        <div className={styles.cloudVisual}>
+            {visual.segments.map((segment) => (
+                <div
+                    key={segment.name}
+                    className={styles.cloudSegment}
+                    style={{ flexGrow: segment.value ?? 0, backgroundColor: segment.color }}
+                >
+                    <span>{segment.shortLabel}</span>
+                </div>
+            ))}
+        </div>
+    );
+}
+
+function MetricVisual({ insight }: { insight: Insight | null }) {
+    if (!insight?.visual) return null;
+
+    switch (insight.variant) {
+        case "temperature":
+            return <TemperatureVisual visual={insight.visual} />;
+        case "precipitation":
+            return <PrecipitationVisual visual={insight.visual} />;
+        case "humidity":
+            return <HumidityVisual visual={insight.visual} />;
+        case "wind":
+            return <WindVisual visual={insight.visual} />;
+        case "cloud":
+            return <CloudVisual visual={insight.visual} />;
+        default:
+            return null;
+    }
+}
+
+function MetricInsightCard({
+    selectedMetric,
+    dailyWeather,
+    windRose,
+    cloudCover,
+    windView,
+    isLoading,
+}: MetricInsightCardProps) {
+    const { t } = useTranslation();
+    const measurementFormatter = useMeasurementFormatter();
+    const insight = getMetricInsight(
+        t,
+        selectedMetric,
+        dailyWeather,
+        windRose,
+        cloudCover,
+        windView,
+        measurementFormatter
+    );
+
+    const layoutClass =
+        insight?.variant === "wind"
+            ? styles[`insight_${insight.variant}_${insight.visual.mode}`]
+            : "";
+
+    return (
+        <DashboardCard
+            className={`${styles.metricInsight} ${styles[`insight_${insight?.variant ?? selectedMetric}`]} ${layoutClass}`}
+        >
+            <div className={styles.insightHeading}>
+                <h2>{insight?.title ?? t("common.noData")}</h2>
+                {(isLoading || insight?.value) && (
+                    <strong>{isLoading ? "…" : insight?.value}</strong>
+                )}
+            </div>
+            <p className={styles.insightDetail}>
+                {selectedMetric === "temperature" && insight
+                    ? null
+                    : (insight?.detail ?? t("cityPage.insight.chooseCity"))}
+            </p>
+
+            {!isLoading && <MetricVisual insight={insight} />}
+
+            <div className={styles.insightSecondary}>
+                {(
+                    insight?.secondary ?? [
+                        { label: "—", value: "—" },
+                        { label: "—", value: "—" },
+                    ]
+                ).map((item, index) => (
+                    <div key={`${item.label}-${index}`}>
+                        <span>{item.label}</span>
+                        <strong>{isLoading ? "…" : item.value}</strong>
+                        {item.detail && <small>{item.detail}</small>}
+                    </div>
+                ))}
+            </div>
+        </DashboardCard>
+    );
+}
+
+export default MetricInsightCard;
