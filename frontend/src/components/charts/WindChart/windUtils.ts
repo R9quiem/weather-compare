@@ -1,0 +1,42 @@
+import type { DailyWeather } from "../../../types/weather.ts";
+import type { NumericDomain } from "../../../types/charts.ts";
+import type { MeasurementValue } from "../../../types/preferences.ts";
+import { isFiniteNumber } from "../../../utils/numbers.ts";
+import i18n from "../../../i18n.ts";
+
+export function formatWindSpeed(value: MeasurementValue) {
+    if (value == null) {
+        return "—";
+    }
+
+    return i18n.t("common.kmh", { value: Number(value).toFixed(1) });
+}
+
+export function formatWindDate(date: string, monthly = false) {
+    const [month, day] = date.split("-").map(Number);
+
+    return new Intl.DateTimeFormat(i18n.resolvedLanguage ?? "ru", {
+        day: monthly ? undefined : "numeric",
+        month: "long",
+    }).format(new Date(2000, month - 1, day));
+}
+
+export function calculateWindSummary(data: DailyWeather[]) {
+    const speeds = data.map((point) => point.wind_speed_10m_mean).filter(isFiniteNumber);
+
+    if (speeds.length === 0) {
+        return {
+            annualAverage: null,
+            yDomain: [0, 10] as NumericDomain,
+        };
+    }
+
+    const annualAverage = speeds.reduce((total, speed) => total + speed, 0) / speeds.length;
+    const maximum = Math.max(...speeds);
+    const yMaximum = Math.max(10, Math.ceil((maximum * 1.15) / 5) * 5);
+
+    return {
+        annualAverage,
+        yDomain: [0, yMaximum] as NumericDomain,
+    };
+}
